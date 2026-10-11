@@ -15,8 +15,11 @@ Twelve winning films are not linked to the award on Wikidata. They are listed in
 
 ## 2. Screen Australia — Drama Report 2024/25
 Published 4 December 2025. https://www.screenaustralia.gov.au/drama-report-2024-25-2-7-billion-spent-on-drama-production-in-australia-points-to-holistic-industry-growth/
+Retrieved 2026-10-11
 - `spend_by_state_2024_25.csv` — transcribed verbatim from the release (Task 3). ACT, NT and Tasmania are published only as a combined 1%.
 
 ## Boundaries
 - `js/au_states.geojson` — Australian states, simplified, from https://github.com/tonywr71/GeoJson-Data (derived from ABS boundaries)
+Retrieved 2026-10-11
 - `js/ne_110m_admin_0_countries.topojson` — Natural Earth 1:110m countries via the FIT3179 Week 8 studio repository
+Retrieved 2026-10-11
