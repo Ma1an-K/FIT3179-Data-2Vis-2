@@ -5,7 +5,8 @@ from pathlib import Path
 D = Path(__file__).parent
 HEADERS = {
     "best_film_winners.csv": "film_qid,film,year,director",
-    "best_film_locations.csv": "film,year,kind,place,country,lon,lat",
+    "best_film_locations.csv": "film,year,kind,place,country,lon,lat,level",
+    "best_film_settings.csv": "film,year,setting",
     "best_film_directors.csv": "director,film,year,birthplace,birth_country,lon,lat",
 }
 for name, hdr in HEADERS.items():
@@ -24,9 +25,17 @@ if years.count("1973") != 2: errors.append("1973 joint winners not present twice
 locs = list(csv.DictReader((D / "best_film_locations.csv").open()))
 if any(not r["lon"] or not r["lat"] for r in locs): errors.append("location without coords")
 if any(r["kind"] not in ("setting", "filming") for r in locs): errors.append("bad kind")
-if any(abs(float(r["lon"]) - 133.0) < 0.01 and abs(float(r["lat"]) + 25.0) < 0.01 for r in locs):
+if any(r["level"] not in ("country", "place") for r in locs): errors.append("bad level")
+if any(r["level"] == "place" and abs(float(r["lon"]) - 133.0) < 0.01 and abs(float(r["lat"]) + 25.0) < 0.01 for r in locs):
     errors.append("country-centroid 'Australia' row still present")
 if len(locs) < 40: errors.append(f"too few location rows {len(locs)}")
+
+settings = list(csv.DictReader((D / "best_film_settings.csv").open()))
+if len(settings) != len(winners): errors.append(f"settings rows {len(settings)} != winners {len(winners)}")
+ALLOWED = ("Set in Australia", "Set overseas", "Not recorded")
+if any(r["setting"] not in ALLOWED for r in settings): errors.append("bad setting value")
+counts = {k: sum(r["setting"] == k for r in settings) for k in ALLOWED}
+if counts["Set in Australia"] < 25: errors.append(f"too few Set in Australia: {counts}")
 
 dirs = list(csv.DictReader((D / "best_film_directors.csv").open()))
 with_coords = [r for r in dirs if r["lon"]]
@@ -38,6 +47,7 @@ if any(r["birthplace"] and r["birthplace"] == r["birth_country"] for r in dirs):
 if any(r["lon"] and abs(float(r["lon"]) - 133.0) < 0.01 and abs(float(r["lat"]) + 25.0) < 0.01 for r in dirs):
     errors.append("Australia centroid in directors")
 
+print("settings", counts)
 print("winners", len(winners), "| locations", len(locs), "| directors w/ coords", len(with_coords))
 if errors:
     print("FAIL:", *errors, sep="\n  "); sys.exit(1)

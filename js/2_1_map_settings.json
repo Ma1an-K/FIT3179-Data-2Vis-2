@@ -13,6 +13,7 @@
     {
       "data": {"url": "data/best_film_locations.csv"},
       "transform": [
+        {"filter": "datum.level == 'place'"},
         {"filter": "datum.lon != null && datum.lat != null"},
         {"filter": "datum.country == 'Australia'"},
         {"filter": "datum.kind == 'setting'"},
@@ -32,6 +33,7 @@
     {
       "data": {"url": "data/best_film_locations.csv"},
       "transform": [
+        {"filter": "datum.level == 'place'"},
         {"filter": "datum.lon != null && datum.lat != null"},
         {"filter": "datum.country == 'Australia'"},
         {"filter": "datum.kind == 'filming'"},

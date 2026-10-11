@@ -1,0 +1,94 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "title": {
+    "text": "Set in Australia, set abroad, or not recorded",
+    "subtitle": "One square per winning film"
+  },
+  "width": "container",
+  "height": 180,
+  "data": {
+    "url": "data/best_film_settings.csv"
+  },
+  "transform": [
+    {
+      "calculate": "datum.setting",
+      "as": "where"
+    },
+    {
+      "window": [
+        {
+          "op": "row_number",
+          "as": "i"
+        }
+      ],
+      "sort": [
+        {
+          "field": "where"
+        },
+        {
+          "field": "year"
+        }
+      ]
+    },
+    {
+      "calculate": "floor((datum.i - 1) / 10)",
+      "as": "row"
+    },
+    {
+      "calculate": "(datum.i - 1) % 10",
+      "as": "col"
+    }
+  ],
+  "mark": {
+    "type": "square",
+    "size": 420,
+    "stroke": "#14110F",
+    "strokeWidth": 2
+  },
+  "encoding": {
+    "x": {
+      "field": "col",
+      "type": "ordinal",
+      "axis": null
+    },
+    "y": {
+      "field": "row",
+      "type": "ordinal",
+      "axis": null
+    },
+    "color": {
+      "field": "where",
+      "type": "nominal",
+      "scale": {
+        "domain": [
+          "Set in Australia",
+          "Set overseas",
+          "Not recorded"
+        ],
+        "range": [
+          "#D4A24C",
+          "#EDE6DA",
+          "#3A332C"
+        ]
+      },
+      "legend": {
+        "title": null,
+        "orient": "right"
+      }
+    },
+    "tooltip": [
+      {
+        "field": "film",
+        "title": "Film"
+      },
+      {
+        "field": "year",
+        "title": "Year"
+      },
+      {
+        "field": "where",
+        "title": "Setting"
+      }
+    ]
+  }
+}
