@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Exports the three Best Film CSVs from Wikidata. Run from the repo root.
+# Exports the Best Film CSVs from Wikidata. Run from the repo root.
 set -euo pipefail
 UA="FIT3179-student-project/0.1 (contact: info@ormada.com.au)"
 # Makes up to 3 attempts in total (sleep 15 between) because the endpoint sometimes returns 504/timeouts.
@@ -25,7 +25,7 @@ Q 'SELECT ?film_qid ?film (MIN(?y) AS ?year) (GROUP_CONCAT(DISTINCT ?dirLabel; s
 } GROUP BY ?film_qid ?film ORDER BY ?year' > data/best_film_winners.csv
 
 # 1b. Winners whose award link is missing on Wikidata: appended from data/manual_winners.csv (source_url dropped).
-#     Queries 2-4 select films by the award statement only, so these films get no settings, directors or flows.
+#     These films are queried by QID in steps 2c, 3c and 4c below.
 python3 - <<'PY'
 import csv
 rows = list(csv.reader(open("data/manual_winners.csv", newline="")))[1:]
@@ -33,6 +33,34 @@ with open("data/best_film_winners.csv", "a", newline="") as f:
     w = csv.writer(f, lineterminator="\n")
     for r in rows: w.writerow(r[:4])
 PY
+
+# Helpers for the manual films (steps 2c, 3c, 4c). The award-linked queries 2-4 stay unchanged; a UNION of
+# both film sets timed out on the endpoint, so the 12 manual films are queried separately by QID.
+# MANUAL_VALUES: the film_qid column of manual_winners.csv as a SPARQL VALUES list.
+MANUAL_VALUES=$(python3 -c '
+import csv
+print(" ".join("wd:" + r["film_qid"].rsplit("/", 1)[1] for r in csv.DictReader(open("data/manual_winners.csv", newline=""))))
+')
+# append_manual TARGET [COLUMN]: reads a query result (first column ?f = film QID URI) on stdin, takes film name and year
+# from manual_winners.csv by film_qid, and appends rows to TARGET in TARGET's own column order. With COLUMN,
+# rows where that column is empty (no coordinates) are dropped.
+append_manual() {
+  python3 -c '
+import csv, sys
+target = sys.argv[1]
+manual = {r["film_qid"]: r for r in csv.DictReader(open("data/manual_winners.csv", newline=""))}
+header = open(target, newline="").readline().strip().split(",")
+rows = list(csv.DictReader(sys.stdin))
+if len(sys.argv) > 2: rows = [r for r in rows if r[sys.argv[2]]]
+with open(target, "a", newline="") as f:
+    w = csv.writer(f, lineterminator="\n")
+    for r in rows:
+        m = manual[r["f"]]
+        r["film"], r["year"] = m["film"], m["year"]
+        w.writerow([r[h] for h in header])
+print(target, "+", len(rows), "manual-film rows", file=sys.stderr)
+' "$@"
+}
 
 # 2. Locations: story settings (P840) and filming locations (P915) with coordinates.
 #    Country-level places (where the place IS the country) are kept but flagged level=country: they only have a
@@ -53,7 +81,19 @@ Q 'SELECT DISTINCT ?film ?year ?kind ?place ?country ?lon ?lat ?level WHERE {
   SERVICE wikibase:label { bd:serviceParam wikibase:language "en" . ?p rdfs:label ?place . ?c rdfs:label ?country . }
 } ORDER BY ?year ?film'> data/best_film_locations.csv
 
-# 2b. Derived: one setting classification per winner (used by the waffle chart).
+# 2c. Locations for the manual films (same columns as query 2; year from the CSV). Coordinates are OPTIONAL in
+#     the query (a required ?p wdt:P625 made the endpoint time out) and rows without them are dropped in Python,
+#     so the result matches query 2's coordinate requirement.
+Q 'SELECT DISTINCT ?f ?kind ?place ?country ?lon ?lat ?level WHERE {
+  VALUES ?f { '"$MANUAL_VALUES"' }
+  { ?f wdt:P840 ?p . BIND("setting" AS ?kind) } UNION { ?f wdt:P915 ?p . BIND("filming" AS ?kind) }
+  OPTIONAL { ?p wdt:P625 ?coord . BIND(geof:longitude(?coord) AS ?lon) BIND(geof:latitude(?coord) AS ?lat) }
+  OPTIONAL { ?p wdt:P17 ?c }
+  BIND(IF(EXISTS { ?p wdt:P31 wd:Q6256 }, "country", "place") AS ?level)
+  SERVICE wikibase:label { bd:serviceParam wikibase:language "en" . ?p rdfs:label ?place . ?c rdfs:label ?country . }
+}' | append_manual data/best_film_locations.csv lon
+
+# 2b. Derived (after 2c, so the manual films are included): one setting classification per winner (waffle chart).
 python3 - <<'PY'
 import csv
 setting = {}
@@ -81,6 +121,17 @@ Q 'SELECT ?director ?film ?year (SAMPLE(?bp) AS ?birthplace) (SAMPLE(?bc) AS ?bi
     BIND(geof:longitude(?coord) AS ?lo) BIND(geof:latitude(?coord) AS ?la) }
 } GROUP BY ?director ?film ?year ORDER BY ?year'> data/best_film_directors.csv
 
+# 3c. Directors of the manual films (same columns and exclusions as query 3; year from the CSV; rows without
+#     birthplace coordinates dropped).
+Q 'SELECT ?f ?director (SAMPLE(?bp) AS ?birthplace) (SAMPLE(?bc) AS ?birth_country) (SAMPLE(?lo) AS ?lon) (SAMPLE(?la) AS ?lat) WHERE {
+  VALUES ?f { '"$MANUAL_VALUES"' }
+  ?f wdt:P57 ?d . ?d rdfs:label ?director FILTER(LANG(?director)="en")
+  OPTIONAL { ?d wdt:P19 ?b . ?b wdt:P625 ?coord . ?b rdfs:label ?bp FILTER(LANG(?bp)="en")
+    FILTER NOT EXISTS { ?b wdt:P31 wd:Q6256 } FILTER NOT EXISTS { ?b wdt:P31 wd:Q3336843 }
+    OPTIONAL { ?b wdt:P17 ?c . ?c rdfs:label ?bc FILTER(LANG(?bc)="en") }
+    BIND(geof:longitude(?coord) AS ?lo) BIND(geof:latitude(?coord) AS ?la) }
+} GROUP BY ?f ?director' | append_manual data/best_film_directors.csv lon
+
 # 4. Flows: director birthplace -> a recorded narrative location of the winning film. Country-level settings are
 #    excluded (they only have a centroid), so a film set only in a whole country has no flow.
 Q 'SELECT ?director ?film ?year (SAMPLE(?bp) AS ?birthplace) (SAMPLE(?bc) AS ?birth_country) (SAMPLE(?lon1) AS ?lon1) (SAMPLE(?lat1) AS ?lat1) (SAMPLE(?setting) AS ?setting) (SAMPLE(?lon2) AS ?lon2) (SAMPLE(?lat2) AS ?lat2) WHERE {
@@ -97,5 +148,19 @@ Q 'SELECT ?director ?film ?year (SAMPLE(?bp) AS ?birthplace) (SAMPLE(?bc) AS ?bi
   FILTER NOT EXISTS { ?p wdt:P31 wd:Q6256 }
   BIND(geof:longitude(?c2) AS ?lon2) BIND(geof:latitude(?c2) AS ?lat2)
 } GROUP BY ?director ?film ?year ORDER BY ?year' > data/flows.csv
+
+# 4c. Flows for the manual films (same columns and exclusions as query 4; year from the CSV).
+Q 'SELECT ?f ?director (SAMPLE(?bp) AS ?birthplace) (SAMPLE(?bc) AS ?birth_country) (SAMPLE(?lon1) AS ?lon1) (SAMPLE(?lat1) AS ?lat1) (SAMPLE(?setting) AS ?setting) (SAMPLE(?lon2) AS ?lon2) (SAMPLE(?lat2) AS ?lat2) WHERE {
+  VALUES ?f { '"$MANUAL_VALUES"' }
+  ?f wdt:P57 ?d . ?d rdfs:label ?director FILTER(LANG(?director)="en")
+  ?d wdt:P19 ?b . ?b wdt:P625 ?c1 .
+  FILTER NOT EXISTS { ?b wdt:P31 wd:Q6256 } FILTER NOT EXISTS { ?b wdt:P31 wd:Q3336843 }
+  ?b rdfs:label ?bp FILTER(LANG(?bp)="en")
+  OPTIONAL { ?b wdt:P17 ?c . ?c rdfs:label ?bc FILTER(LANG(?bc)="en") }
+  BIND(geof:longitude(?c1) AS ?lon1) BIND(geof:latitude(?c1) AS ?lat1)
+  ?f wdt:P840 ?p . ?p wdt:P625 ?c2 . ?p rdfs:label ?setting FILTER(LANG(?setting)="en")
+  FILTER NOT EXISTS { ?p wdt:P31 wd:Q6256 }
+  BIND(geof:longitude(?c2) AS ?lon2) BIND(geof:latitude(?c2) AS ?lat2)
+} GROUP BY ?f ?director' | append_manual data/flows.csv
 
 wc -l data/best_film_*.csv data/flows.csv

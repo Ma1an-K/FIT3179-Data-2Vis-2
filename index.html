@@ -44,7 +44,7 @@
     <div class="vis" id="vis-2-1" data-spec="js/2_1_map_settings.json"></div>
     <p class="caption">Filled circles mark story settings; hollow rings mark filming locations. Where Wikidata records only a whole state as the setting, the circle sits at the state's centre. Only places recorded on Wikidata are shown.</p>
     <div class="vis" id="vis-2-2" data-spec="js/2_2_waffle.json"></div>
-    <p class="caption">One square per winning film. The 12 winners added from Wikipedia were not looked up on Wikidata, so they are counted as No setting data.</p>
+    <p class="caption">One square per winning film. "No setting data" means Wikidata records no story setting for that film.</p>
   </section>
 
   <section id="s3">
@@ -74,7 +74,7 @@
 
   <footer id="about">
     <h2>About this visualisation</h2>
-    <p class="narrative small"><strong>Data.</strong> Winning films, their settings, filming locations and directors' birthplaces are from <a href="https://www.wikidata.org/">Wikidata</a> (CC0), exported 11 October 2026. Twelve winners missing from Wikidata's award records were identified from Wikipedia's <a href="https://en.wikipedia.org/wiki/AACTA_Award_for_Best_Film">AACTA Award for Best Film</a> list (CC BY-SA); their directors were read from their Wikidata items, but their settings were not looked up. The exact queries are in <a href="data/README.md">data/README.md</a>. Production spending is from Screen Australia, <a href="https://www.screenaustralia.gov.au/drama-report-2024-25-2-7-billion-spent-on-drama-production-in-australia-points-to-holistic-industry-growth/">Drama Report 2024/25</a> (published 4 December 2025). Boundaries: Natural Earth (world) and Australian state boundaries derived from the ABS.</p>
+    <p class="narrative small"><strong>Data.</strong> Winning films, their settings, filming locations and directors' birthplaces are from <a href="https://www.wikidata.org/">Wikidata</a> (CC0), exported 11 October 2026. Twelve winners missing from Wikidata's award records were identified from Wikipedia's <a href="https://en.wikipedia.org/wiki/AACTA_Award_for_Best_Film">AACTA Award for Best Film</a> list (CC BY-SA) and then queried on Wikidata by their item IDs, like the other winners. The exact queries are in <a href="data/README.md">data/README.md</a>. Production spending is from Screen Australia, <a href="https://www.screenaustralia.gov.au/drama-report-2024-25-2-7-billion-spent-on-drama-production-in-australia-points-to-holistic-industry-growth/">Drama Report 2024/25</a> (published 4 December 2025). Boundaries: Natural Earth (world) and Australian state boundaries derived from the ABS.</p>
     <p class="narrative small"><strong>Method.</strong> Charts are built with Vega-Lite. Generative AI (Claude) was used to draft chart code and to check the grammar of this text; all design decisions and the hand-drawn sketch are the author's.</p>
     <p class="narrative small">© Matan Kimchi 2026 · Draft for peer critique, 12 October 2026.</p>
   </footer>

@@ -1,12 +1,12 @@
 director,film,year,birthplace,birth_country,lon1,lat1,setting,lon2,lat2
 Fred Schepisi,The Devil's Playground,1976,Richmond,Australia,1.44998E2,-3.7823E1,Melbourne,1.44963055555E2,-3.7814166666E1
 Henri Safran,Storm Boy,1977,Paris,France,2.352222222E0,4.8856666666E1,South Australia,1.35E2,-3.0E1
-Bruce Beresford,Breaker Morant,1980,Paddington,Australia,1.51226E2,-3.38848E1,Polokwane,2.945E1,-2.39E1
+Bruce Beresford,Breaker Morant,1980,Paddington,Australia,1.51226E2,-3.38848E1,South African Republic,2.823333333E1,-2.571666667E1
 Ray Lawrence,Bliss,1985,London,United Kingdom,-1.275E-1,5.1507222222E1,Queensland,1.43E2,-2.0E1
 Nadia Tass,Malcolm,1986,Lofoi,Greece,2.158833333E1,4.0795E1,Melbourne,1.44963055555E2,-3.7814166666E1
 John Duigan,The Year My Voice Broke,1987,Hartley Wintney,United Kingdom,-9.054E-1,5.13043E1,New South Wales,1.47E2,-3.2E1
 Vincent Ward,The Navigator: A Medieval Odyssey,1988,Greytown,New Zealand,1.75461E2,-4.108E1,Cumbria,-3.25E0,5.45E1
-Fred Schepisi,Evil Angels,1989,Richmond,Australia,1.44998E2,-3.7823E1,Northern Territory,1.33E2,-2.0E1
+Fred Schepisi,Evil Angels,1989,Richmond,Australia,1.44998E2,-3.7823E1,Uluru,1.31036111111E2,-2.5345E1
 Jane Campion,The Piano,1993,Wellington,New Zealand,1.74777222222E2,-4.1288888888E1,Nelson,1.73238056E2,-4.1293056E1
 P. J. Hogan,Muriel's Wedding,1994,Brisbane,Australia,1.53027777777E2,-2.7467777777E1,Sydney,1.5121E2,-3.3867777777E1
 Bill Bennett,Kiss or Kill,1997,London,United Kingdom,-1.275E-1,5.1507222222E1,South Australia,1.35E2,-3.0E1
@@ -20,5 +20,8 @@ Elissa Down,The Black Balloon,2008,Camden,Australia,1.506936111E2,-3.4058888888E
 Warwick Thornton,Samson and Delilah,2009,Alice Springs,Australia,1.33866666666E2,-2.37E1,Northern Territory,1.33E2,-2.0E1
 David Michôd,Animal Kingdom,2010,Sydney,Australia,1.5121E2,-3.3867777777E1,Melbourne,1.44963055555E2,-3.7814166666E1
 Baz Luhrmann,The Great Gatsby,2013,Sydney,Australia,1.5121E2,-3.3867777777E1,New York City,-7.4006111111E1,4.0712777777E1
-Garth Davis,Lion,2017,Brisbane,Australia,1.53027777777E2,-2.7467777777E1,Melbourne,1.44963055555E2,-3.7814166666E1
+Garth Davis,Lion,2017,Brisbane,Australia,1.53027777777E2,-2.7467777777E1,Khandwa,7.633E1,2.183E1
 Jennifer Kent,The Nightingale,2019,Brisbane,Australia,1.53027777777E2,-2.7467777777E1,Tasmania,1.47E2,-4.2E1
+Tim Burstall,Stork,1972,Stockton-on-Tees,United Kingdom,-1.32E0,5.457E1,Melbourne,1.44963055555E2,-3.7814166666E1
+Baz Luhrmann,Elvis,2022,Sydney,Australia,1.5121E2,-3.3867777777E1,Graceland,-9.0025833333E1,3.5046111111E1
+Michael Gracey,Better Man,2024,Melbourne,Australia,1.44963055555E2,-3.7814166666E1,Concerts at Knebworth House,-2.1888889E-1,5.187444444E1
