@@ -24,7 +24,8 @@ Q 'SELECT ?film_qid ?film (MIN(?y) AS ?year) (GROUP_CONCAT(DISTINCT ?dirLabel; s
   OPTIONAL { ?film_qid wdt:P57 ?dir . ?dir rdfs:label ?dirLabel FILTER(LANG(?dirLabel)="en") }
 } GROUP BY ?film_qid ?film ORDER BY ?year' > data/best_film_winners.csv
 
-# 1b. Winners missing from Wikidata: appended from data/manual_winners.csv (source_url dropped; film_qid empty).
+# 1b. Winners whose award link is missing on Wikidata: appended from data/manual_winners.csv (source_url dropped).
+#     Queries 2-4 select films by the award statement only, so these films get no settings, directors or flows.
 python3 - <<'PY'
 import csv
 rows = list(csv.reader(open("data/manual_winners.csv", newline="")))[1:]
@@ -65,7 +66,7 @@ with open("data/best_film_settings.csv", "w", newline="") as f:
     w.writerow(["film", "year", "setting"])
     for r in csv.DictReader(open("data/best_film_winners.csv", newline="")):
         f_ = r["film"]
-        w.writerow([f_, r["year"], "Not recorded" if f_ not in setting else ("Set in Australia" if setting[f_] else "Set overseas")])
+        w.writerow([f_, r["year"], "No setting data" if f_ not in setting else ("Set in Australia" if setting[f_] else "Set overseas")])
 PY
 
 # 3. Directors with birthplace coordinates.
@@ -80,7 +81,8 @@ Q 'SELECT ?director ?film ?year (SAMPLE(?bp) AS ?birthplace) (SAMPLE(?bc) AS ?bi
     BIND(geof:longitude(?coord) AS ?lo) BIND(geof:latitude(?coord) AS ?la) }
 } GROUP BY ?director ?film ?year ORDER BY ?year'> data/best_film_directors.csv
 
-# 4. Flows: director birthplace -> first recorded narrative location of the winning film.
+# 4. Flows: director birthplace -> a recorded narrative location of the winning film. Country-level settings are
+#    excluded (they only have a centroid), so a film set only in a whole country has no flow.
 Q 'SELECT ?director ?film ?year (SAMPLE(?bp) AS ?birthplace) (SAMPLE(?bc) AS ?birth_country) (SAMPLE(?lon1) AS ?lon1) (SAMPLE(?lat1) AS ?lat1) (SAMPLE(?setting) AS ?setting) (SAMPLE(?lon2) AS ?lon2) (SAMPLE(?lat2) AS ?lat2) WHERE {
   ?f p:P166 ?st . ?st ps:P166 wd:Q3600406 . ?f wdt:P31/wdt:P279* wd:Q11424 .
   OPTIONAL { ?st pq:P585 ?t } OPTIONAL { ?f wdt:P577 ?pub } BIND(YEAR(COALESCE(?t,?pub)) AS ?year)
@@ -92,6 +94,7 @@ Q 'SELECT ?director ?film ?year (SAMPLE(?bp) AS ?birthplace) (SAMPLE(?bc) AS ?bi
   OPTIONAL { ?b wdt:P17 ?c . ?c rdfs:label ?bc FILTER(LANG(?bc)="en") }
   BIND(geof:longitude(?c1) AS ?lon1) BIND(geof:latitude(?c1) AS ?lat1)
   ?f wdt:P840 ?p . ?p wdt:P625 ?c2 . ?p rdfs:label ?setting FILTER(LANG(?setting)="en")
+  FILTER NOT EXISTS { ?p wdt:P31 wd:Q6256 }
   BIND(geof:longitude(?c2) AS ?lon2) BIND(geof:latitude(?c2) AS ?lat2)
 } GROUP BY ?director ?film ?year ORDER BY ?year' > data/flows.csv
 

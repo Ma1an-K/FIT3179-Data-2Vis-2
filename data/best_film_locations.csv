@@ -11,37 +11,37 @@ Gallipoli,1981,filming,Egypt,Egypt,2.9E1,2.7E1,country
 Gallipoli,1981,setting,Australia,Australia,1.33E2,-2.5E1,country
 Annie's Coming Out,1984,setting,Australia,Australia,1.33E2,-2.5E1,country
 Bliss,1985,setting,Queensland,Australia,1.43E2,-2.0E1,place
-Malcolm,1986,setting,Melbourne,Australia,1.44963055555E2,-3.7814166666E1,place
 Malcolm,1986,filming,Australia,Australia,1.33E2,-2.5E1,country
+Malcolm,1986,setting,Melbourne,Australia,1.44963055555E2,-3.7814166666E1,place
 The Year My Voice Broke,1987,setting,New South Wales,Australia,1.47E2,-3.2E1,place
 The Navigator: A Medieval Odyssey,1988,filming,New Zealand,New Zealand,1.74E2,-4.12E1,country
 The Navigator: A Medieval Odyssey,1988,setting,Cumbria,United Kingdom,-3.25E0,5.45E1,place
 Evil Angels,1989,setting,Uluru,Australia,1.31036111111E2,-2.5345E1,place
-Evil Angels,1989,setting,Northern Territory,Australia,1.33E2,-2.0E1,place
 Evil Angels,1989,filming,Australia,Australia,1.33E2,-2.5E1,country
 Evil Angels,1989,setting,Australia,Australia,1.33E2,-2.5E1,country
-Strictly Ballroom,1992,filming,Sydney,Australia,1.5121E2,-3.3867777777E1,place
+Evil Angels,1989,setting,Northern Territory,Australia,1.33E2,-2.0E1,place
 Strictly Ballroom,1992,setting,Australia,Australia,1.33E2,-2.5E1,country
 Strictly Ballroom,1992,filming,Australia,Australia,1.33E2,-2.5E1,country
-The Piano,1993,setting,Scotland,United Kingdom,-5.0E0,5.7E1,place
+Strictly Ballroom,1992,filming,Sydney,Australia,1.5121E2,-3.3867777777E1,place
 The Piano,1993,filming,New Zealand,New Zealand,1.74E2,-4.12E1,country
 The Piano,1993,setting,New Zealand,New Zealand,1.74E2,-4.12E1,country
 The Piano,1993,setting,Nelson,New Zealand,1.73238056E2,-4.1293056E1,place
+The Piano,1993,setting,Scotland,United Kingdom,-5.0E0,5.7E1,place
 Muriel's Wedding,1994,filming,Sydney,Australia,1.5121E2,-3.3867777777E1,place
 Muriel's Wedding,1994,setting,Sydney,Australia,1.5121E2,-3.3867777777E1,place
-Shine,1996,filming,London,United Kingdom,-1.275E-1,5.1507222222E1,place
-Shine,1996,setting,London,United Kingdom,-1.275E-1,5.1507222222E1,place
-Shine,1996,filming,Adelaide,Australia,1.386E2,-3.49275E1,place
 Shine,1996,setting,Australia,Australia,1.33E2,-2.5E1,country
+Shine,1996,setting,London,United Kingdom,-1.275E-1,5.1507222222E1,place
+Shine,1996,filming,London,United Kingdom,-1.275E-1,5.1507222222E1,place
+Shine,1996,filming,Adelaide,Australia,1.386E2,-3.49275E1,place
 Kiss or Kill,1997,setting,South Australia,Australia,1.35E2,-3.0E1,place
 Two Hands,1999,setting,Sydney,Australia,1.5121E2,-3.3867777777E1,place
 Two Hands,1999,filming,Sydney,Australia,1.5121E2,-3.3867777777E1,place
-Looking for Alibrandi,2000,filming,Sydney,Australia,1.5121E2,-3.3867777777E1,place
 Looking for Alibrandi,2000,setting,Sydney,Australia,1.5121E2,-3.3867777777E1,place
-Lantana,2001,filming,Sydney,Australia,1.5121E2,-3.3867777777E1,place
-Lantana,2001,setting,Sydney,Australia,1.5121E2,-3.3867777777E1,place
+Looking for Alibrandi,2000,filming,Sydney,Australia,1.5121E2,-3.3867777777E1,place
 Lantana,2001,setting,Australia,Australia,1.33E2,-2.5E1,country
 Lantana,2001,filming,Australia,Australia,1.33E2,-2.5E1,country
+Lantana,2001,setting,Sydney,Australia,1.5121E2,-3.3867777777E1,place
+Lantana,2001,filming,Sydney,Australia,1.5121E2,-3.3867777777E1,place
 Rabbit-Proof Fence,2002,setting,Australia,Australia,1.33E2,-2.5E1,country
 Rabbit-Proof Fence,2002,filming,Adelaide,Australia,1.386E2,-3.49275E1,place
 Japanese Story,2003,setting,Western Australia,Australia,1.21E2,-2.6E1,place
@@ -52,13 +52,13 @@ Ten Canoes,2006,setting,Arafura Swamp,Australia,1.35E2,-1.22667E1,place
 "Romulus, My Father",2007,setting,Australia,Australia,1.33E2,-2.5E1,country
 "Romulus, My Father",2007,filming,Australia,Australia,1.33E2,-2.5E1,country
 "Romulus, My Father",2007,filming,Bendigo,Australia,1.44266666666E2,-3.675E1,place
+The Black Balloon,2008,filming,Australia,Australia,1.33E2,-2.5E1,country
 The Black Balloon,2008,setting,Sydney,Australia,1.5121E2,-3.3867777777E1,place
 The Black Balloon,2008,filming,Sydney,Australia,1.5121E2,-3.3867777777E1,place
-The Black Balloon,2008,filming,Australia,Australia,1.33E2,-2.5E1,country
 Samson and Delilah,2009,setting,Northern Territory,Australia,1.33E2,-2.0E1,place
-Animal Kingdom,2010,setting,Melbourne,Australia,1.44963055555E2,-3.7814166666E1,place
 Animal Kingdom,2010,setting,Australia,Australia,1.33E2,-2.5E1,country
 Animal Kingdom,2010,filming,Australia,Australia,1.33E2,-2.5E1,country
+Animal Kingdom,2010,setting,Melbourne,Australia,1.44963055555E2,-3.7814166666E1,place
 Red Dog,2011,setting,Australia,Australia,1.33E2,-2.5E1,country
 The Sapphires,2012,setting,Australia,Australia,1.33E2,-2.5E1,country
 The Great Gatsby,2013,setting,New York City,United States,-7.4006111111E1,4.0712777777E1,place
@@ -68,24 +68,24 @@ The Water Diviner,2014,setting,Turkey,Turkey,3.6E1,3.9E1,country
 The Water Diviner,2014,filming,Turkey,Turkey,3.6E1,3.9E1,country
 The Water Diviner,2014,setting,Australia,Australia,1.33E2,-2.5E1,country
 The Water Diviner,2014,filming,Australia,Australia,1.33E2,-2.5E1,country
-Mad Max: Fury Road,2015,filming,Sydney,Australia,1.5121E2,-3.3867777777E1,place
 Mad Max: Fury Road,2015,filming,South Africa,South Africa,2.4E1,-2.9E1,country
 Mad Max: Fury Road,2015,setting,Australia,Australia,1.33E2,-2.5E1,country
 Mad Max: Fury Road,2015,filming,Angola,Angola,1.735E1,-1.235E1,country
 Mad Max: Fury Road,2015,filming,Namibia,Namibia,1.7E1,-2.3E1,country
-Hacksaw Ridge,2016,filming,Sydney,Australia,1.5121E2,-3.3867777777E1,place
+Mad Max: Fury Road,2015,filming,Sydney,Australia,1.5121E2,-3.3867777777E1,place
 Hacksaw Ridge,2016,setting,Japan,Japan,1.36E2,3.5E1,country
+Hacksaw Ridge,2016,filming,Sydney,Australia,1.5121E2,-3.3867777777E1,place
 Hacksaw Ridge,2016,filming,Disney Studios Australia,Australia,1.51229E2,-3.3892E1,place
 Hacksaw Ridge,2016,filming,Centennial Park Cemetery,Australia,1.385881E2,-3.49973E1,place
 Lion,2017,filming,Hobart,Australia,1.47316666666E2,-4.2883333333E1,place
 Lion,2017,setting,Hobart,Australia,1.47316666666E2,-4.2883333333E1,place
-Lion,2017,filming,Melbourne,Australia,1.44963055555E2,-3.7814166666E1,place
-Lion,2017,setting,Melbourne,Australia,1.44963055555E2,-3.7814166666E1,place
 Lion,2017,filming,Kolkata,India,8.837E1,2.25675E1,place
 Lion,2017,setting,Kolkata,India,8.837E1,2.25675E1,place
 Lion,2017,filming,Khandwa,India,7.633E1,2.183E1,place
 Lion,2017,setting,Khandwa,India,7.633E1,2.183E1,place
-Sweet Country,2018,filming,Northern Territory,Australia,1.33E2,-2.0E1,place
+Lion,2017,filming,Melbourne,Australia,1.44963055555E2,-3.7814166666E1,place
+Lion,2017,setting,Melbourne,Australia,1.44963055555E2,-3.7814166666E1,place
 Sweet Country,2018,setting,Australia,Australia,1.33E2,-2.5E1,country
+Sweet Country,2018,filming,Northern Territory,Australia,1.33E2,-2.0E1,place
 The Nightingale,2019,setting,Tasmania,Australia,1.47E2,-4.2E1,place
 Babyteeth,2020,setting,Australia,Australia,1.33E2,-2.5E1,country

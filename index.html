@@ -24,8 +24,8 @@
   </header>
 
   <section id="s1">
-    <h2><span class="num">1</span> Fifty years of winners</h2>
-    <p class="narrative">Since 1969 the Australian Film Institute, and from 2011 its successor the Australian Academy of Cinema and Television Arts (AACTA), has named one feature film each year as the country's best. The winners run from <em>Jack and Jill: A Postscript</em> to <em>Bring Her Back</em>, with joint winners in 1973 and 2014.</p>
+    <h2><span class="num">1</span> Half a century of winners</h2>
+    <p class="narrative">Since 1969 the Australian Film Institute, and from 2011 its successor the Australian Academy of Cinema and Television Arts (AACTA), has named one feature film almost every year as the country's best. The winners run from <em>Jack and Jill: A Postscript</em> to <em>Bring Her Back</em>, with joint winners in 1973 and 2014.</p>
     <label class="lens">Show decade
       <select id="decade">
         <option value="All" selected>All years</option>
@@ -34,24 +34,24 @@
       </select>
     </label>
     <div class="vis" id="vis-1-1" data-spec="js/1_1_reel.json"></div>
-    <p class="caption">Fifty years on one reel: each wedge is a winning film, reading clockwise from 1969. The decade selector above filters the reel and both maps.</p>
+    <p class="caption">Every winner on one reel: each wedge is a winning film, reading clockwise from 1969. The decade selector above filters the reel, the settings map and the flow map; the squares and the spending map always show all years.</p>
     <div class="placeholder">Chart 1.2 · Decade × setting heatmap · coming after the critique</div>
   </section>
 
   <section id="s2">
     <h2><span class="num">2</span> Where the stories are set</h2>
-    <p class="narrative">Most winners are set in Australia, but rarely in the same Australia. Outback and regional stories such as <em>Samson and Delilah</em> and <em>Sweet Country</em> sit alongside Sydney and Melbourne dramas. The map shows where each winning film's story takes place and, where recorded, where it was shot.</p>
+    <p class="narrative">Most winners are set in Australia, but rarely in the same Australia. Outback and regional stories such as <em>Samson and Delilah</em> and <em>Ten Canoes</em> sit alongside Sydney and Melbourne dramas. The map shows where each winning film's story takes place and, where recorded, where it was shot.</p>
     <div class="vis" id="vis-2-1" data-spec="js/2_1_map_settings.json"></div>
     <p class="caption">Filled circles mark story settings; hollow rings mark filming locations. Where Wikidata records only a whole state as the setting, the circle sits at the state's centre. Only places recorded on Wikidata are shown.</p>
     <div class="vis" id="vis-2-2" data-spec="js/2_2_waffle.json"></div>
-    <p class="caption">One square per winning film.</p>
+    <p class="caption">One square per winning film. The 12 winners added from Wikipedia were not looked up on Wikidata, so they are counted as No setting data.</p>
   </section>
 
   <section id="s3">
     <h2><span class="num">3</span> Who made them</h2>
     <p class="narrative">The directors behind Australia's best films were born on three continents. Roughly a third were born overseas, from Hungary to the United States, which says something about who gets to tell Australian stories.</p>
     <div class="vis" id="vis-3-1" data-spec="js/3_1_map_flows.json"></div>
-    <p class="caption">Each line runs from a director's birthplace to the place their winning film is set. Gold lines start in Australia; cream lines start overseas.</p>
+    <p class="caption">Each line runs from a director's birthplace to the place their winning film is set. Gold lines start in Australia; cream lines start overseas. Films whose setting is recorded only as a whole country have no line.</p>
     <div class="placeholder">Chart 3.2 · World dot map of all winners' birthplaces · coming after the critique</div>
     <div class="placeholder">Chart 3.3 · Slope chart, Australian-born share · coming after the critique</div>
   </section>
@@ -74,7 +74,7 @@
 
   <footer id="about">
     <h2>About this visualisation</h2>
-    <p class="narrative small"><strong>Data.</strong> Winning films, their settings, filming locations and directors' birthplaces are from <a href="https://www.wikidata.org/">Wikidata</a> (CC0), exported 10 October 2026; the exact queries are in <a href="data/README.md">data/README.md</a>. Production spending is from Screen Australia, <a href="https://www.screenaustralia.gov.au/drama-report-2024-25-2-7-billion-spent-on-drama-production-in-australia-points-to-holistic-industry-growth/">Drama Report 2024/25</a> (published 4 December 2025). Boundaries: Natural Earth (world) and Australian state boundaries derived from the ABS.</p>
+    <p class="narrative small"><strong>Data.</strong> Winning films, their settings, filming locations and directors' birthplaces are from <a href="https://www.wikidata.org/">Wikidata</a> (CC0), exported 11 October 2026. Twelve winners missing from Wikidata's award records were identified from Wikipedia's <a href="https://en.wikipedia.org/wiki/AACTA_Award_for_Best_Film">AACTA Award for Best Film</a> list (CC BY-SA); their directors were read from their Wikidata items, but their settings were not looked up. The exact queries are in <a href="data/README.md">data/README.md</a>. Production spending is from Screen Australia, <a href="https://www.screenaustralia.gov.au/drama-report-2024-25-2-7-billion-spent-on-drama-production-in-australia-points-to-holistic-industry-growth/">Drama Report 2024/25</a> (published 4 December 2025). Boundaries: Natural Earth (world) and Australian state boundaries derived from the ABS.</p>
     <p class="narrative small"><strong>Method.</strong> Charts are built with Vega-Lite. Generative AI (Claude) was used to draft chart code and to check the grammar of this text; all design decisions and the hand-drawn sketch are the author's.</p>
     <p class="narrative small">© Matan Kimchi 2026 · Draft for peer critique, 12 October 2026.</p>
   </footer>

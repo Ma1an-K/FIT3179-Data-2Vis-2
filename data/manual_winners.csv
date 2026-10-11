@@ -1,13 +1,13 @@
 film_qid,film,year,director,source_url
-,Jack and Jill: A Postscript,1969,Phillip Adams,https://www.wikidata.org/wiki/Q12125196
-,Three to Go: Michael,1970,Peter Weir,https://www.wikidata.org/wiki/Q123304689
-,Homesdale,1971,Peter Weir,https://www.wikidata.org/wiki/Q3417503
-,Stork,1972,Tim Burstall,https://www.wikidata.org/wiki/Q7620062
-,27A,1973,Esben Storm,https://www.wikidata.org/wiki/Q4632540
-,Libido: The Child,1973,John B. Murray; Tim Burstall; Fred Schepisi,https://www.wikidata.org/wiki/Q6542266
-,Sunday Too Far Away,1975,Ken Hannam,https://www.wikidata.org/wiki/Q3503837
-,Proof,1991,Jocelyn Moorhouse,https://www.wikidata.org/wiki/Q3407500
-,Elvis,2022,Baz Luhrmann,https://www.wikidata.org/wiki/Q84362533
-,Talk to Me,2023,Danny Philippou; Michael Philippou,https://www.wikidata.org/wiki/Q116193178
-,Better Man,2024,Michael Gracey,https://www.wikidata.org/wiki/Q106261265
-,Bring Her Back,2025,Danny Philippou; Michael Philippou,https://www.wikidata.org/wiki/Q127602379
+http://www.wikidata.org/entity/Q12125196,Jack and Jill: A Postscript,1969,Phillip Adams,https://www.wikidata.org/wiki/Q12125196
+http://www.wikidata.org/entity/Q123304689,Three to Go: Michael,1970,Peter Weir,https://www.wikidata.org/wiki/Q123304689
+http://www.wikidata.org/entity/Q3417503,Homesdale,1971,Peter Weir,https://www.wikidata.org/wiki/Q3417503
+http://www.wikidata.org/entity/Q7620062,Stork,1972,Tim Burstall,https://www.wikidata.org/wiki/Q7620062
+http://www.wikidata.org/entity/Q4632540,27A,1973,Esben Storm,https://www.wikidata.org/wiki/Q4632540
+http://www.wikidata.org/entity/Q6542266,Libido: The Child,1973,John B. Murray; Tim Burstall; Fred Schepisi,https://www.wikidata.org/wiki/Q6542266
+http://www.wikidata.org/entity/Q3503837,Sunday Too Far Away,1975,Ken Hannam,https://www.wikidata.org/wiki/Q3503837
+http://www.wikidata.org/entity/Q3407500,Proof,1991,Jocelyn Moorhouse,https://www.wikidata.org/wiki/Q3407500
+http://www.wikidata.org/entity/Q84362533,Elvis,2022,Baz Luhrmann,https://www.wikidata.org/wiki/Q84362533
+http://www.wikidata.org/entity/Q116193178,Talk to Me,2023,Danny Philippou; Michael Philippou,https://www.wikidata.org/wiki/Q116193178
+http://www.wikidata.org/entity/Q106261265,Better Man,2024,Michael Gracey,https://www.wikidata.org/wiki/Q106261265
+http://www.wikidata.org/entity/Q127602379,Bring Her Back,2025,Danny Philippou; Michael Philippou,https://www.wikidata.org/wiki/Q127602379

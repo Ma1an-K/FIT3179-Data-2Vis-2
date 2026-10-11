@@ -32,7 +32,7 @@ if len(locs) < 40: errors.append(f"too few location rows {len(locs)}")
 
 settings = list(csv.DictReader((D / "best_film_settings.csv").open()))
 if len(settings) != len(winners): errors.append(f"settings rows {len(settings)} != winners {len(winners)}")
-ALLOWED = ("Set in Australia", "Set overseas", "Not recorded")
+ALLOWED = ("Set in Australia", "Set overseas", "No setting data")
 if any(r["setting"] not in ALLOWED for r in settings): errors.append("bad setting value")
 counts = {k: sum(r["setting"] == k for r in settings) for k in ALLOWED}
 if counts["Set in Australia"] < 25: errors.append(f"too few Set in Australia: {counts}")
@@ -48,7 +48,9 @@ if any(r["lon"] and abs(float(r["lon"]) - 133.0) < 0.01 and abs(float(r["lat"]) 
     errors.append("Australia centroid in directors")
 
 flows = list(csv.DictReader((D / "flows.csv").open()))
-if len(flows) < 30: errors.append(f"too few flow rows {len(flows)}")
+if len(flows) < 20: errors.append(f"too few flow rows {len(flows)}")
+if any(abs(float(r["lon2"]) - 133.0) < 0.01 and abs(float(r["lat2"]) + 25.0) < 0.01 for r in flows if r["lon2"] and r["lat2"]):
+    errors.append("flow ending at the Australia country centroid")
 if any(not r[k] for r in flows for k in ("lon1", "lat1", "lon2", "lat2")): errors.append("flow with missing endpoint")
 fp = [(r["director"], r["film"]) for r in flows]
 if len(fp) != len(set(fp)): errors.append("duplicate (director, film) flow rows")
