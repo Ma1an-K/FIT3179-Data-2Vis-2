@@ -1,0 +1,42 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "title": {
+    "text": "Queensland overtook New South Wales in 2024/25",
+    "subtitle": "Share of the $2.7 billion spent on drama production in Australia, by state and territory · * ACT, NT and Tasmania are published as a combined 1%"
+  },
+  "width": "container",
+  "height": 520,
+  "projection": {"type": "conicEqualArea", "parallels": [-18, -36], "rotate": [-134, 0, 0], "center": [0, -27]},
+  "data": {"url": "js/au_states.geojson", "format": {"type": "json", "property": "features"}},
+  "transform": [
+    {"lookup": "properties.STATE_NAME", "from": {"data": {"url": "data/spend_by_state_2024_25.csv"}, "key": "state", "fields": ["share_pct", "note"]}},
+    {"calculate": "datum.note ? datum.note : 'published separately'", "as": "note_text"}
+  ],
+  "layer": [
+    {
+      "mark": {"type": "geoshape", "stroke": "#14110F", "strokeWidth": 1.2},
+      "encoding": {
+        "color": {"field": "share_pct", "type": "quantitative", "scale": {"type": "linear", "domain": [0, 35], "range": ["#2A2521", "#D4A24C"]}, "legend": {"title": "Share of spend (%)", "orient": "bottom-left", "format": "d"}},
+        "tooltip": [
+          {"field": "properties.STATE_NAME", "title": "State"},
+          {"field": "share_pct", "title": "Share of spend (%)"},
+          {"field": "note_text", "title": "Note"}
+        ]
+      }
+    },
+    {
+      "data": {"values": [
+        {"lon": 147.0, "lat": -32.5, "label": "NSW 31%"}, {"lon": 144.5, "lat": -37.0, "label": "VIC 27%"},
+        {"lon": 144.5, "lat": -23.0, "label": "QLD 34%"}, {"lon": 135.5, "lat": -30.0, "label": "SA 3%"},
+        {"lon": 122.0, "lat": -26.0, "label": "WA 3%"}, {"lon": 133.5, "lat": -19.5, "label": "NT 1%*"},
+        {"lon": 146.8, "lat": -42.2, "label": "TAS 1%*"}
+      ]},
+      "mark": {"type": "text", "fontSize": 13, "fontWeight": 600, "color": "#EDE6DA"},
+      "encoding": {
+        "longitude": {"field": "lon", "type": "quantitative"},
+        "latitude": {"field": "lat", "type": "quantitative"},
+        "text": {"field": "label"}
+      }
+    }
+  ]
+}
