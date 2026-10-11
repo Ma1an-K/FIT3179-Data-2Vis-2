@@ -1,0 +1,53 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "title": {"text": "Where the winning stories are set and shot", "subtitle": "Places recorded on Wikidata for Best Film winners, 1976–2025 (Australia only)"},
+  "width": "container",
+  "height": 520,
+  "params": [{"name": "decade", "value": "All"}],
+  "projection": {"type": "conicEqualArea", "parallels": [-18, -36], "rotate": [-134, 0, 0], "center": [0, -27]},
+  "layer": [
+    {
+      "data": {"url": "js/au_states.geojson", "format": {"type": "json", "property": "features"}},
+      "mark": {"type": "geoshape", "fill": "#2A2521", "stroke": "#3A332C", "strokeWidth": 1}
+    },
+    {
+      "data": {"url": "data/best_film_locations.csv"},
+      "transform": [
+        {"filter": "datum.lon != null && datum.lat != null"},
+        {"filter": "datum.country == 'Australia'"},
+        {"filter": "datum.kind == 'setting'"},
+        {"filter": "decade == 'All' || floor(datum.year / 10) * 10 + 's' == decade"},
+        {"aggregate": [{"op": "count", "as": "films"}, {"op": "values", "as": "rows"}], "groupby": ["place", "lon", "lat"]},
+        {"calculate": "join(pluck(datum.rows, 'film'), ', ')", "as": "titles"}
+      ],
+      "mark": {"type": "circle", "opacity": 0.85, "stroke": "#14110F", "strokeWidth": 0.5},
+      "encoding": {
+        "longitude": {"field": "lon", "type": "quantitative"},
+        "latitude": {"field": "lat", "type": "quantitative"},
+        "size": {"field": "films", "type": "quantitative", "scale": {"range": [60, 900]}, "legend": {"title": "Films set here", "orient": "bottom-left"}},
+        "color": {"value": "#D4A24C"},
+        "tooltip": [{"field": "place", "title": "Place"}, {"field": "films", "title": "Films set here"}, {"field": "titles", "title": "Titles"}]
+      }
+    },
+    {
+      "data": {"url": "data/best_film_locations.csv"},
+      "transform": [
+        {"filter": "datum.lon != null && datum.lat != null"},
+        {"filter": "datum.country == 'Australia'"},
+        {"filter": "datum.kind == 'filming'"},
+        {"filter": "decade == 'All' || floor(datum.year / 10) * 10 + 's' == decade"}
+      ],
+      "mark": {"type": "point", "shape": "circle", "size": 120, "stroke": "#EDE6DA", "strokeWidth": 1.2, "fill": null, "opacity": 0.8},
+      "encoding": {
+        "longitude": {"field": "lon", "type": "quantitative"},
+        "latitude": {"field": "lat", "type": "quantitative"},
+        "tooltip": [{"field": "place", "title": "Filmed at"}, {"field": "film", "title": "Film"}, {"field": "year", "title": "Year"}]
+      }
+    },
+    {
+      "data": {"values": [{"lon": 151.2093, "lat": -33.8688, "label": "Sydney: 5 winning films are set here"}]},
+      "mark": {"type": "text", "align": "left", "dx": 14, "dy": -6, "fontSize": 12, "color": "#EDE6DA"},
+      "encoding": {"longitude": {"field": "lon", "type": "quantitative"}, "latitude": {"field": "lat", "type": "quantitative"}, "text": {"field": "label"}}
+    }
+  ]
+}
