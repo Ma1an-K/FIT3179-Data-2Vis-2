@@ -10,17 +10,25 @@ const sharedConfig = {
 };
 
 const views = [];
+const sel = document.getElementById("decade");
 document.querySelectorAll(".vis[data-spec]").forEach((el) => {
   vegaEmbed(el, el.dataset.spec, { actions: false, config: sharedConfig, renderer: "svg" })
-    .then((res) => views.push(res.view))
+    .then((res) => {
+      // Apply the current decade (late-loading charts, browser-restored select value).
+      try { res.view.signal("decade", sel.value).run(); } catch (_) { /* chart has no decade param */ }
+      views.push(res.view);
+    })
     .catch((err) => {
-      el.innerHTML = '<p class="caption">Chart failed to load: ' + err.message + "</p>";
+      const p = document.createElement("p");
+      p.className = "caption";
+      p.textContent = "Chart failed to load: " + err.message;
+      el.replaceChildren(p);
       console.error(el.id, err);
     });
 });
 
 // Global decade lens: one <select> drives the "decade" param in every chart that declares it.
-document.getElementById("decade").addEventListener("change", (e) => {
+sel.addEventListener("change", (e) => {
   views.forEach((v) => {
     try { v.signal("decade", e.target.value).run(); } catch (_) { /* chart has no decade param */ }
   });
