@@ -47,6 +47,12 @@ if any(r["birthplace"] and r["birthplace"] == r["birth_country"] for r in dirs):
 if any(r["lon"] and abs(float(r["lon"]) - 133.0) < 0.01 and abs(float(r["lat"]) + 25.0) < 0.01 for r in dirs):
     errors.append("Australia centroid in directors")
 
+flows = list(csv.DictReader((D / "flows.csv").open()))
+if len(flows) < 30: errors.append(f"too few flow rows {len(flows)}")
+if any(not r[k] for r in flows for k in ("lon1", "lat1", "lon2", "lat2")): errors.append("flow with missing endpoint")
+fp = [(r["director"], r["film"]) for r in flows]
+if len(fp) != len(set(fp)): errors.append("duplicate (director, film) flow rows")
+print("flows", len(flows))
 print("settings", counts)
 print("winners", len(winners), "| locations", len(locs), "| directors w/ coords", len(with_coords))
 if errors:

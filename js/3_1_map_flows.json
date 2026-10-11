@@ -1,0 +1,52 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "title": {"text": "From birthplace to the place the story is set", "subtitle": "One line per Best Film-winning director: where they were born → where their film takes place"},
+  "width": "container",
+  "height": 460,
+  "background": "#0F1B23",
+  "params": [{"name": "decade", "value": "All"}],
+  "projection": {"type": "equalEarth", "rotate": [-150, 0, 0]},
+  "layer": [
+    {"data": {"graticule": {"step": [30, 30]}}, "mark": {"type": "geoshape", "stroke": "#1E2A33", "strokeWidth": 0.5, "fill": null}},
+    {
+      "data": {"url": "js/ne_110m_admin_0_countries.topojson", "format": {"type": "topojson", "feature": "ne_110m_admin_0_countries"}},
+      "mark": {"type": "geoshape", "fill": "#2A2521", "stroke": "#3A332C", "strokeWidth": 0.5}
+    },
+    {
+      "data": {"url": "data/flows.csv"},
+      "transform": [
+        {"filter": "decade == 'All' || floor(datum.year / 10) * 10 + 's' == decade"},
+        {"calculate": "datum.birth_country == 'Australia' ? 'Australian-born' : 'Born overseas'", "as": "origin"}
+      ],
+      "mark": {"type": "rule", "strokeWidth": 1.4, "opacity": 0.7, "strokeCap": "round"},
+      "encoding": {
+        "longitude": {"field": "lon1", "type": "quantitative"},
+        "latitude": {"field": "lat1", "type": "quantitative"},
+        "longitude2": {"field": "lon2"},
+        "latitude2": {"field": "lat2"},
+        "color": {"field": "origin", "type": "nominal", "scale": {"domain": ["Australian-born", "Born overseas"], "range": ["#D4A24C", "#EDE6DA"]}, "legend": {"title": null, "orient": "bottom-right"}},
+        "tooltip": [
+          {"field": "director", "title": "Director"},
+          {"field": "birthplace", "title": "Born in"},
+          {"field": "film", "title": "Film"},
+          {"field": "year", "title": "Year"},
+          {"field": "setting", "title": "Story set in"}
+        ]
+      }
+    },
+    {
+      "data": {"url": "data/flows.csv"},
+      "transform": [
+        {"filter": "decade == 'All' || floor(datum.year / 10) * 10 + 's' == decade"},
+        {"calculate": "datum.birth_country == 'Australia' ? 'Australian-born' : 'Born overseas'", "as": "origin"}
+      ],
+      "mark": {"type": "circle", "size": 50, "opacity": 0.95, "stroke": "#0F1B23", "strokeWidth": 0.5},
+      "encoding": {
+        "longitude": {"field": "lon1", "type": "quantitative"},
+        "latitude": {"field": "lat1", "type": "quantitative"},
+        "color": {"field": "origin", "type": "nominal", "scale": {"domain": ["Australian-born", "Born overseas"], "range": ["#D4A24C", "#EDE6DA"]}, "legend": null},
+        "tooltip": [{"field": "director", "title": "Director"}, {"field": "birthplace", "title": "Born in"}]
+      }
+    }
+  ]
+}

@@ -80,4 +80,19 @@ Q 'SELECT ?director ?film ?year (SAMPLE(?bp) AS ?birthplace) (SAMPLE(?bc) AS ?bi
     BIND(geof:longitude(?coord) AS ?lo) BIND(geof:latitude(?coord) AS ?la) }
 } GROUP BY ?director ?film ?year ORDER BY ?year'> data/best_film_directors.csv
 
-wc -l data/best_film_*.csv
+# 4. Flows: director birthplace -> first recorded narrative location of the winning film.
+Q 'SELECT ?director ?film ?year (SAMPLE(?bp) AS ?birthplace) (SAMPLE(?bc) AS ?birth_country) (SAMPLE(?lon1) AS ?lon1) (SAMPLE(?lat1) AS ?lat1) (SAMPLE(?setting) AS ?setting) (SAMPLE(?lon2) AS ?lon2) (SAMPLE(?lat2) AS ?lat2) WHERE {
+  ?f p:P166 ?st . ?st ps:P166 wd:Q3600406 . ?f wdt:P31/wdt:P279* wd:Q11424 .
+  OPTIONAL { ?st pq:P585 ?t } OPTIONAL { ?f wdt:P577 ?pub } BIND(YEAR(COALESCE(?t,?pub)) AS ?year)
+  ?f rdfs:label ?film FILTER(LANG(?film)="en")
+  ?f wdt:P57 ?d . ?d rdfs:label ?director FILTER(LANG(?director)="en")
+  ?d wdt:P19 ?b . ?b wdt:P625 ?c1 .
+  FILTER NOT EXISTS { ?b wdt:P31 wd:Q6256 } FILTER NOT EXISTS { ?b wdt:P31 wd:Q3336843 }
+  ?b rdfs:label ?bp FILTER(LANG(?bp)="en")
+  OPTIONAL { ?b wdt:P17 ?c . ?c rdfs:label ?bc FILTER(LANG(?bc)="en") }
+  BIND(geof:longitude(?c1) AS ?lon1) BIND(geof:latitude(?c1) AS ?lat1)
+  ?f wdt:P840 ?p . ?p wdt:P625 ?c2 . ?p rdfs:label ?setting FILTER(LANG(?setting)="en")
+  BIND(geof:longitude(?c2) AS ?lon2) BIND(geof:latitude(?c2) AS ?lat2)
+} GROUP BY ?director ?film ?year ORDER BY ?year' > data/flows.csv
+
+wc -l data/best_film_*.csv data/flows.csv
