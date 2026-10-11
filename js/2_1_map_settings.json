@@ -1,6 +1,6 @@
 {
   "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-  "title": {"text": "Where the winning stories are set and shot", "subtitle": "Places recorded on Wikidata for Best Film winners, 1976–2025 (Australia only)"},
+  "title": {"text": "Where the winning stories are set and shot", "subtitle": "Places recorded on Wikidata for Best Film winners, 1969–2025 (Australia only)"},
   "width": "container",
   "height": 520,
   "params": [{"name": "decade", "value": "All"}],
@@ -25,7 +25,7 @@
       "encoding": {
         "longitude": {"field": "lon", "type": "quantitative"},
         "latitude": {"field": "lat", "type": "quantitative"},
-        "size": {"field": "films", "type": "quantitative", "scale": {"range": [60, 900]}, "legend": {"title": "Films set here", "orient": "bottom-left"}},
+        "size": {"field": "films", "type": "quantitative", "scale": {"domain": [1, 5], "range": [60, 900]}, "legend": {"title": "Films set here", "orient": "bottom-left", "values": [1, 2, 3, 4, 5]}},
         "color": {"value": "#D4A24C"},
         "tooltip": [{"field": "place", "title": "Place"}, {"field": "films", "title": "Films set here"}, {"field": "titles", "title": "Titles"}]
       }
@@ -47,7 +47,7 @@
       }
     },
     {
-      "data": {"values": [{"lon": 151.2093, "lat": -33.8688, "label": "Sydney: 5 winning films are set here"}]},
+      "data": {"values": [{"lon": 151.2093, "lat": -33.8688, "label": "Sydney: 5 winning films are set here (all years)"}]},
       "mark": {"type": "text", "align": "left", "dx": 14, "dy": -6, "fontSize": 12, "color": "#EDE6DA"},
       "encoding": {"longitude": {"field": "lon", "type": "quantitative"}, "latitude": {"field": "lat", "type": "quantitative"}, "text": {"field": "label"}}
     }

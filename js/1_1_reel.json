@@ -1,6 +1,6 @@
 {
   "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-  "title": {"text": "Every winner on one reel, 1969–2025", "subtitle": "One wedge per Best Film winner, clockwise from 1969 at the top; the 2014 tie is stacked"},
+  "title": {"text": "Every winner on one reel, 1969–2025", "subtitle": "One wedge per Best Film winner, clockwise from 1969 at the top; the 1973 and 2014 ties are stacked"},
   "width": "container",
   "height": 520,
   "params": [{"name": "decade", "value": "All"}],
@@ -30,7 +30,7 @@
       }
     },
     {
-      "transform": [{"filter": "datum.year % 10 == 0 || datum.year == 1969 || datum.year == 2025"}],
+      "transform": [{"filter": "datum.year % 10 == 0 && datum.year != 1970 || datum.year == 1969 || datum.year == 2025"}],
       "mark": {"type": "text", "fontSize": 12, "color": "#9C9385", "radiusOffset": 18},
       "encoding": {
         "theta": {"field": "theta", "type": "quantitative", "scale": {"domain": [0, 6.283185307]}},
