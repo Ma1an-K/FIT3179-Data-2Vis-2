@@ -15,6 +15,10 @@
       "as": "where"
     },
     {
+      "calculate": "datum.setting == 'Set in Australia' ? 0 : datum.setting == 'Set overseas' ? 1 : 2",
+      "as": "ord"
+    },
+    {
       "window": [
         {
           "op": "row_number",
@@ -23,7 +27,7 @@
       ],
       "sort": [
         {
-          "field": "where"
+          "field": "ord"
         },
         {
           "field": "year"

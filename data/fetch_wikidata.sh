@@ -2,14 +2,14 @@
 # Exports the three Best Film CSVs from Wikidata. Run from the repo root.
 set -euo pipefail
 UA="FIT3179-student-project/0.1 (contact: info@ormada.com.au)"
-# Retries up to 3 times (sleep 15 between) because the endpoint sometimes returns 504/timeouts.
+# Makes up to 3 attempts in total (sleep 15 between) because the endpoint sometimes returns 504/timeouts.
 Q() {
   local n out
-  for n in 1 2 3 4; do
+  for n in 1 2 3; do
     if out=$(curl -sS --fail -G 'https://query.wikidata.org/sparql' -H "Accept: text/csv" -A "$UA" --data-urlencode "query=$1"); then
       printf '%s\n' "$out"; return 0
     fi
-    if [ "$n" -lt 4 ]; then echo "query failed (attempt $n), retrying in 15 s" >&2; sleep 15; fi
+    if [ "$n" -lt 3 ]; then echo "query failed (attempt $n), retrying in 15 s" >&2; sleep 15; fi
   done
   return 1
 }
