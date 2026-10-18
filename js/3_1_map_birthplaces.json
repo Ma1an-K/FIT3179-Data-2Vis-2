@@ -1,0 +1,1162 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "title": {
+    "text": "Where the directors were born",
+    "subtitle": "One dot per Best Film win, placed at the winning director's birthplace; gold = born in Australia, ink = born overseas",
+    "offset": 14
+  },
+  "params": [
+    {
+      "name": "decade",
+      "value": "All"
+    }
+  ],
+  "spacing": 12,
+  "vconcat": [
+    {
+      "title": {
+        "text": "Born in Australia and New Zealand",
+        "fontSize": 13,
+        "anchor": "start"
+      },
+      "width": 925,
+      "height": 440,
+      "projection": {
+        "type": "conicEqualArea",
+        "parallels": [
+          -18,
+          -36
+        ],
+        "rotate": [
+          -150,
+          0,
+          0
+        ],
+        "center": [
+          0,
+          -30
+        ],
+        "scale": 640,
+        "translate": [
+          462.5,
+          220.0
+        ]
+      },
+      "layer": [
+        {
+          "data": {
+            "sphere": true
+          },
+          "mark": {
+            "type": "geoshape",
+            "fill": "#D9E4EC",
+            "stroke": null,
+            "clip": true
+          }
+        },
+        {
+          "data": {
+            "url": "js/ne_110m_admin_0_countries.topojson",
+            "format": {
+              "type": "topojson",
+              "feature": "ne_110m_admin_0_countries"
+            }
+          },
+          "mark": {
+            "type": "geoshape",
+            "fill": "#E5DED2",
+            "stroke": "#D9D1C4",
+            "strokeWidth": 0.6,
+            "clip": true
+          },
+          "transform": [
+            {
+              "filter": "datum.properties.NAME != 'Australia'"
+            }
+          ]
+        },
+        {
+          "data": {
+            "url": "js/au_states.geojson",
+            "format": {
+              "type": "json",
+              "property": "features"
+            }
+          },
+          "mark": {
+            "type": "geoshape",
+            "fill": "#E5DED2",
+            "stroke": "#FFFFFF",
+            "strokeWidth": 1,
+            "clip": true
+          }
+        },
+        {
+          "data": {
+            "url": "data/best_film_directors.csv",
+            "format": {
+              "type": "csv",
+              "parse": {
+                "year": "number",
+                "lon": "number",
+                "lat": "number"
+              }
+            }
+          },
+          "transform": [
+            {
+              "filter": "datum.birth_country == 'Australia' || datum.birth_country == 'New Zealand'"
+            },
+            {
+              "filter": "isValid(datum.lon) && isValid(datum.lat)"
+            },
+            {
+              "filter": "decade == 'All' || floor(datum.year / 10) * 10 + 's' == decade"
+            },
+            {
+              "calculate": "datum.birthplace == 'Richmond' ? 'Melbourne' : (datum.birthplace == 'Paddington' ? 'Sydney' : (datum.birthplace == 'Camden' ? 'Sydney' : (datum.birthplace == 'Gawler' ? 'Adelaide' : (datum.birthplace == 'Strathmore Park' ? 'Wellington' : (datum.birthplace == 'Greytown' ? 'Wellington' : (datum.birthplace == 'Hartley Wintney' ? 'London' : (datum.birthplace == 'Temora' ? 'Griffith' : (datum.birthplace))))))))",
+              "as": "group"
+            },
+            {
+              "calculate": "datum.birthplace == datum.group ? 0 : 1",
+              "as": "member"
+            },
+            {
+              "joinaggregate": [
+                {
+                  "op": "count",
+                  "as": "gsize"
+                }
+              ],
+              "groupby": [
+                "group"
+              ]
+            },
+            {
+              "window": [
+                {
+                  "op": "row_number",
+                  "as": "i"
+                },
+                {
+                  "op": "first_value",
+                  "field": "lon",
+                  "as": "glon"
+                },
+                {
+                  "op": "first_value",
+                  "field": "lat",
+                  "as": "glat"
+                }
+              ],
+              "groupby": [
+                "group"
+              ],
+              "sort": [
+                {
+                  "field": "member"
+                },
+                {
+                  "field": "birthplace"
+                },
+                {
+                  "field": "year"
+                }
+              ],
+              "frame": [
+                null,
+                null
+              ]
+            },
+            {
+              "calculate": "min(datum.gsize, 3)",
+              "as": "cols"
+            },
+            {
+              "calculate": "((datum.i - 1) % 3 - (datum.cols - 1) / 2) * 8",
+              "as": "px"
+            },
+            {
+              "calculate": "floor((datum.i - 1) / 3) * 8",
+              "as": "py"
+            },
+            {
+              "calculate": "'M' + (datum.px - 3.5) + ',' + datum.py + 'a3.5,3.5 0 1,0 7.0,0a3.5,3.5 0 1,0 -7.0,0Z'",
+              "as": "dot"
+            }
+          ],
+          "mark": {
+            "type": "point",
+            "filled": true,
+            "size": 4,
+            "opacity": 1,
+            "stroke": "#FFFFFF",
+            "strokeWidth": 0.8
+          },
+          "encoding": {
+            "longitude": {
+              "field": "glon",
+              "type": "quantitative"
+            },
+            "latitude": {
+              "field": "glat",
+              "type": "quantitative"
+            },
+            "shape": {
+              "field": "dot",
+              "type": "nominal",
+              "scale": null
+            },
+            "color": {
+              "condition": {
+                "test": "datum.birth_country == 'Australia'",
+                "value": "#B8892A"
+              },
+              "value": "#2E2A26"
+            },
+            "tooltip": [
+              {
+                "field": "director",
+                "title": "Director"
+              },
+              {
+                "field": "film",
+                "title": "Film"
+              },
+              {
+                "field": "year",
+                "title": "Year"
+              },
+              {
+                "field": "birthplace",
+                "title": "Born"
+              },
+              {
+                "field": "birth_country",
+                "title": "Country"
+              }
+            ]
+          }
+        },
+        {
+          "data": {
+            "url": "data/best_film_directors.csv",
+            "format": {
+              "type": "csv",
+              "parse": {
+                "year": "number",
+                "lon": "number",
+                "lat": "number"
+              }
+            }
+          },
+          "transform": [
+            {
+              "filter": "datum.birth_country == 'Australia' || datum.birth_country == 'New Zealand'"
+            },
+            {
+              "filter": "isValid(datum.lon) && isValid(datum.lat)"
+            },
+            {
+              "filter": "decade == 'All' || floor(datum.year / 10) * 10 + 's' == decade"
+            },
+            {
+              "calculate": "datum.birthplace == 'Richmond' ? 'Melbourne' : (datum.birthplace == 'Paddington' ? 'Sydney' : (datum.birthplace == 'Camden' ? 'Sydney' : (datum.birthplace == 'Gawler' ? 'Adelaide' : (datum.birthplace == 'Strathmore Park' ? 'Wellington' : (datum.birthplace == 'Greytown' ? 'Wellington' : (datum.birthplace == 'Hartley Wintney' ? 'London' : (datum.birthplace == 'Temora' ? 'Griffith' : (datum.birthplace))))))))",
+              "as": "group"
+            },
+            {
+              "calculate": "datum.birthplace == datum.group ? 0 : 1",
+              "as": "member"
+            },
+            {
+              "joinaggregate": [
+                {
+                  "op": "count",
+                  "as": "gsize"
+                }
+              ],
+              "groupby": [
+                "group"
+              ]
+            },
+            {
+              "window": [
+                {
+                  "op": "row_number",
+                  "as": "i"
+                },
+                {
+                  "op": "first_value",
+                  "field": "lon",
+                  "as": "glon"
+                },
+                {
+                  "op": "first_value",
+                  "field": "lat",
+                  "as": "glat"
+                }
+              ],
+              "groupby": [
+                "group"
+              ],
+              "sort": [
+                {
+                  "field": "member"
+                },
+                {
+                  "field": "birthplace"
+                },
+                {
+                  "field": "year"
+                }
+              ],
+              "frame": [
+                null,
+                null
+              ]
+            },
+            {
+              "calculate": "min(datum.gsize, 3)",
+              "as": "cols"
+            },
+            {
+              "aggregate": [
+                {
+                  "op": "count",
+                  "as": "n"
+                }
+              ],
+              "groupby": [
+                "birthplace",
+                "birth_country",
+                "group",
+                "member",
+                "glon",
+                "glat",
+                "cols",
+                "gsize"
+              ]
+            },
+            {
+              "window": [
+                {
+                  "op": "row_number",
+                  "as": "k"
+                }
+              ],
+              "groupby": [
+                "group"
+              ],
+              "sort": [
+                {
+                  "field": "member"
+                },
+                {
+                  "field": "birthplace"
+                }
+              ]
+            },
+            {
+              "filter": "datum.n >= 2 || datum.birth_country == 'New Zealand' || datum.gsize > datum.n"
+            },
+            {
+              "calculate": "datum.birthplace + ' · ' + datum.n",
+              "as": "label"
+            },
+            {
+              "calculate": "datum.birthplace == 'Melbourne' ? 'right' : (datum.birthplace == 'Richmond' ? 'right' : (datum.birthplace == 'Adelaide' ? 'right' : (datum.birthplace == 'Gawler' ? 'right' : (datum.birthplace == 'Griffith' ? 'right' : (datum.birthplace == 'London' ? 'right' : (datum.birthplace == 'Hartley Wintney' ? 'right' : (datum.birthplace == 'Peekskill' ? 'right' : (datum.birthplace == 'Temora' ? 'right' : ('left')))))))))",
+              "as": "lalign"
+            },
+            {
+              "calculate": "(datum.lalign == 'left' ? 1 : -1) * ((datum.cols - 1) / 2 * 8 + 3.5 + 12) + (datum.birthplace == 'Melbourne' ? 0 : (datum.birthplace == 'Richmond' ? 0 : (datum.birthplace == 'Adelaide' ? 0 : (datum.birthplace == 'Gawler' ? 0 : (datum.birthplace == 'Griffith' ? 0 : (datum.birthplace == 'London' ? 0 : (datum.birthplace == 'Hartley Wintney' ? 0 : (datum.birthplace == 'Peekskill' ? 0 : (datum.birthplace == 'Temora' ? 0 : (0))))))))))",
+              "as": "ldx"
+            },
+            {
+              "calculate": "(datum.k - 1) * 13 + (datum.birthplace == 'Melbourne' ? 0 : (datum.birthplace == 'Richmond' ? 0 : (datum.birthplace == 'Adelaide' ? 0 : (datum.birthplace == 'Gawler' ? 0 : (datum.birthplace == 'Griffith' ? -13 : (datum.birthplace == 'London' ? 0 : (datum.birthplace == 'Hartley Wintney' ? 0 : (datum.birthplace == 'Peekskill' ? 0 : (datum.birthplace == 'Temora' ? -13 : (0))))))))))",
+              "as": "ldy"
+            }
+          ],
+          "mark": {
+            "type": "text",
+            "fontSize": 11,
+            "color": "#1F1A15",
+            "baseline": "middle",
+            "align": {
+              "expr": "datum.lalign"
+            },
+            "dx": {
+              "expr": "datum.ldx"
+            },
+            "dy": {
+              "expr": "datum.ldy"
+            }
+          },
+          "encoding": {
+            "longitude": {
+              "field": "glon",
+              "type": "quantitative"
+            },
+            "latitude": {
+              "field": "glat",
+              "type": "quantitative"
+            },
+            "text": {
+              "field": "label"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "spacing": 12,
+      "hconcat": [
+        {
+          "title": {
+            "text": "Born in Europe",
+            "fontSize": 13,
+            "anchor": "start"
+          },
+          "width": 560,
+          "height": 300,
+          "projection": {
+            "type": "conicEqualArea",
+            "parallels": [
+              40,
+              60
+            ],
+            "rotate": [
+              -10,
+              0,
+              0
+            ],
+            "center": [
+              0,
+              49.8
+            ],
+            "scale": 800,
+            "translate": [
+              280.0,
+              150.0
+            ]
+          },
+          "layer": [
+            {
+              "data": {
+                "sphere": true
+              },
+              "mark": {
+                "type": "geoshape",
+                "fill": "#D9E4EC",
+                "stroke": null,
+                "clip": true
+              }
+            },
+            {
+              "data": {
+                "url": "js/ne_110m_admin_0_countries.topojson",
+                "format": {
+                  "type": "topojson",
+                  "feature": "ne_110m_admin_0_countries"
+                }
+              },
+              "mark": {
+                "type": "geoshape",
+                "fill": "#E5DED2",
+                "stroke": "#D9D1C4",
+                "strokeWidth": 0.6,
+                "clip": true
+              }
+            },
+            {
+              "data": {
+                "url": "data/best_film_directors.csv",
+                "format": {
+                  "type": "csv",
+                  "parse": {
+                    "year": "number",
+                    "lon": "number",
+                    "lat": "number"
+                  }
+                }
+              },
+              "transform": [
+                {
+                  "filter": "datum.lon > -30 && datum.lon < 60 && datum.lat > 30"
+                },
+                {
+                  "filter": "isValid(datum.lon) && isValid(datum.lat)"
+                },
+                {
+                  "filter": "decade == 'All' || floor(datum.year / 10) * 10 + 's' == decade"
+                },
+                {
+                  "calculate": "datum.birthplace == 'Richmond' ? 'Melbourne' : (datum.birthplace == 'Paddington' ? 'Sydney' : (datum.birthplace == 'Camden' ? 'Sydney' : (datum.birthplace == 'Gawler' ? 'Adelaide' : (datum.birthplace == 'Strathmore Park' ? 'Wellington' : (datum.birthplace == 'Greytown' ? 'Wellington' : (datum.birthplace == 'Hartley Wintney' ? 'London' : (datum.birthplace == 'Temora' ? 'Griffith' : (datum.birthplace))))))))",
+                  "as": "group"
+                },
+                {
+                  "calculate": "datum.birthplace == datum.group ? 0 : 1",
+                  "as": "member"
+                },
+                {
+                  "joinaggregate": [
+                    {
+                      "op": "count",
+                      "as": "gsize"
+                    }
+                  ],
+                  "groupby": [
+                    "group"
+                  ]
+                },
+                {
+                  "window": [
+                    {
+                      "op": "row_number",
+                      "as": "i"
+                    },
+                    {
+                      "op": "first_value",
+                      "field": "lon",
+                      "as": "glon"
+                    },
+                    {
+                      "op": "first_value",
+                      "field": "lat",
+                      "as": "glat"
+                    }
+                  ],
+                  "groupby": [
+                    "group"
+                  ],
+                  "sort": [
+                    {
+                      "field": "member"
+                    },
+                    {
+                      "field": "birthplace"
+                    },
+                    {
+                      "field": "year"
+                    }
+                  ],
+                  "frame": [
+                    null,
+                    null
+                  ]
+                },
+                {
+                  "calculate": "min(datum.gsize, 3)",
+                  "as": "cols"
+                },
+                {
+                  "calculate": "((datum.i - 1) % 3 - (datum.cols - 1) / 2) * 8",
+                  "as": "px"
+                },
+                {
+                  "calculate": "floor((datum.i - 1) / 3) * 8",
+                  "as": "py"
+                },
+                {
+                  "calculate": "'M' + (datum.px - 3.5) + ',' + datum.py + 'a3.5,3.5 0 1,0 7.0,0a3.5,3.5 0 1,0 -7.0,0Z'",
+                  "as": "dot"
+                }
+              ],
+              "mark": {
+                "type": "point",
+                "filled": true,
+                "size": 4,
+                "opacity": 1,
+                "stroke": "#FFFFFF",
+                "strokeWidth": 0.8
+              },
+              "encoding": {
+                "longitude": {
+                  "field": "glon",
+                  "type": "quantitative"
+                },
+                "latitude": {
+                  "field": "glat",
+                  "type": "quantitative"
+                },
+                "shape": {
+                  "field": "dot",
+                  "type": "nominal",
+                  "scale": null
+                },
+                "color": {
+                  "condition": {
+                    "test": "datum.birth_country == 'Australia'",
+                    "value": "#B8892A"
+                  },
+                  "value": "#2E2A26"
+                },
+                "tooltip": [
+                  {
+                    "field": "director",
+                    "title": "Director"
+                  },
+                  {
+                    "field": "film",
+                    "title": "Film"
+                  },
+                  {
+                    "field": "year",
+                    "title": "Year"
+                  },
+                  {
+                    "field": "birthplace",
+                    "title": "Born"
+                  },
+                  {
+                    "field": "birth_country",
+                    "title": "Country"
+                  }
+                ]
+              }
+            },
+            {
+              "data": {
+                "url": "data/best_film_directors.csv",
+                "format": {
+                  "type": "csv",
+                  "parse": {
+                    "year": "number",
+                    "lon": "number",
+                    "lat": "number"
+                  }
+                }
+              },
+              "transform": [
+                {
+                  "filter": "datum.lon > -30 && datum.lon < 60 && datum.lat > 30"
+                },
+                {
+                  "filter": "isValid(datum.lon) && isValid(datum.lat)"
+                },
+                {
+                  "filter": "decade == 'All' || floor(datum.year / 10) * 10 + 's' == decade"
+                },
+                {
+                  "calculate": "datum.birthplace == 'Richmond' ? 'Melbourne' : (datum.birthplace == 'Paddington' ? 'Sydney' : (datum.birthplace == 'Camden' ? 'Sydney' : (datum.birthplace == 'Gawler' ? 'Adelaide' : (datum.birthplace == 'Strathmore Park' ? 'Wellington' : (datum.birthplace == 'Greytown' ? 'Wellington' : (datum.birthplace == 'Hartley Wintney' ? 'London' : (datum.birthplace == 'Temora' ? 'Griffith' : (datum.birthplace))))))))",
+                  "as": "group"
+                },
+                {
+                  "calculate": "datum.birthplace == datum.group ? 0 : 1",
+                  "as": "member"
+                },
+                {
+                  "joinaggregate": [
+                    {
+                      "op": "count",
+                      "as": "gsize"
+                    }
+                  ],
+                  "groupby": [
+                    "group"
+                  ]
+                },
+                {
+                  "window": [
+                    {
+                      "op": "row_number",
+                      "as": "i"
+                    },
+                    {
+                      "op": "first_value",
+                      "field": "lon",
+                      "as": "glon"
+                    },
+                    {
+                      "op": "first_value",
+                      "field": "lat",
+                      "as": "glat"
+                    }
+                  ],
+                  "groupby": [
+                    "group"
+                  ],
+                  "sort": [
+                    {
+                      "field": "member"
+                    },
+                    {
+                      "field": "birthplace"
+                    },
+                    {
+                      "field": "year"
+                    }
+                  ],
+                  "frame": [
+                    null,
+                    null
+                  ]
+                },
+                {
+                  "calculate": "min(datum.gsize, 3)",
+                  "as": "cols"
+                },
+                {
+                  "aggregate": [
+                    {
+                      "op": "count",
+                      "as": "n"
+                    }
+                  ],
+                  "groupby": [
+                    "birthplace",
+                    "birth_country",
+                    "group",
+                    "member",
+                    "glon",
+                    "glat",
+                    "cols",
+                    "gsize"
+                  ]
+                },
+                {
+                  "window": [
+                    {
+                      "op": "row_number",
+                      "as": "k"
+                    }
+                  ],
+                  "groupby": [
+                    "group"
+                  ],
+                  "sort": [
+                    {
+                      "field": "member"
+                    },
+                    {
+                      "field": "birthplace"
+                    }
+                  ]
+                },
+                {
+                  "filter": "true"
+                },
+                {
+                  "calculate": "datum.birthplace + ' · ' + datum.n",
+                  "as": "label"
+                },
+                {
+                  "calculate": "datum.birthplace == 'Melbourne' ? 'right' : (datum.birthplace == 'Richmond' ? 'right' : (datum.birthplace == 'Adelaide' ? 'right' : (datum.birthplace == 'Gawler' ? 'right' : (datum.birthplace == 'Griffith' ? 'right' : (datum.birthplace == 'London' ? 'right' : (datum.birthplace == 'Hartley Wintney' ? 'right' : (datum.birthplace == 'Peekskill' ? 'right' : (datum.birthplace == 'Temora' ? 'right' : ('left')))))))))",
+                  "as": "lalign"
+                },
+                {
+                  "calculate": "(datum.lalign == 'left' ? 1 : -1) * ((datum.cols - 1) / 2 * 8 + 3.5 + 12) + (datum.birthplace == 'Melbourne' ? 0 : (datum.birthplace == 'Richmond' ? 0 : (datum.birthplace == 'Adelaide' ? 0 : (datum.birthplace == 'Gawler' ? 0 : (datum.birthplace == 'Griffith' ? 0 : (datum.birthplace == 'London' ? 0 : (datum.birthplace == 'Hartley Wintney' ? 0 : (datum.birthplace == 'Peekskill' ? 0 : (datum.birthplace == 'Temora' ? 0 : (0))))))))))",
+                  "as": "ldx"
+                },
+                {
+                  "calculate": "(datum.k - 1) * 13 + (datum.birthplace == 'Melbourne' ? 0 : (datum.birthplace == 'Richmond' ? 0 : (datum.birthplace == 'Adelaide' ? 0 : (datum.birthplace == 'Gawler' ? 0 : (datum.birthplace == 'Griffith' ? -13 : (datum.birthplace == 'London' ? 0 : (datum.birthplace == 'Hartley Wintney' ? 0 : (datum.birthplace == 'Peekskill' ? 0 : (datum.birthplace == 'Temora' ? -13 : (0))))))))))",
+                  "as": "ldy"
+                }
+              ],
+              "mark": {
+                "type": "text",
+                "fontSize": 11,
+                "color": "#1F1A15",
+                "baseline": "middle",
+                "align": {
+                  "expr": "datum.lalign"
+                },
+                "dx": {
+                  "expr": "datum.ldx"
+                },
+                "dy": {
+                  "expr": "datum.ldy"
+                }
+              },
+              "encoding": {
+                "longitude": {
+                  "field": "glon",
+                  "type": "quantitative"
+                },
+                "latitude": {
+                  "field": "glat",
+                  "type": "quantitative"
+                },
+                "text": {
+                  "field": "label"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "title": {
+            "text": "Born in the Americas",
+            "fontSize": 13,
+            "anchor": "start"
+          },
+          "width": 353,
+          "height": 300,
+          "projection": {
+            "type": "conicEqualArea",
+            "parallels": [
+              30,
+              50
+            ],
+            "rotate": [
+              96,
+              0,
+              0
+            ],
+            "center": [
+              0,
+              40
+            ],
+            "scale": 400,
+            "translate": [
+              176.5,
+              150.0
+            ]
+          },
+          "layer": [
+            {
+              "data": {
+                "sphere": true
+              },
+              "mark": {
+                "type": "geoshape",
+                "fill": "#D9E4EC",
+                "stroke": null,
+                "clip": true
+              }
+            },
+            {
+              "data": {
+                "url": "js/ne_110m_admin_0_countries.topojson",
+                "format": {
+                  "type": "topojson",
+                  "feature": "ne_110m_admin_0_countries"
+                }
+              },
+              "mark": {
+                "type": "geoshape",
+                "fill": "#E5DED2",
+                "stroke": "#D9D1C4",
+                "strokeWidth": 0.6,
+                "clip": true
+              }
+            },
+            {
+              "data": {
+                "url": "data/best_film_directors.csv",
+                "format": {
+                  "type": "csv",
+                  "parse": {
+                    "year": "number",
+                    "lon": "number",
+                    "lat": "number"
+                  }
+                }
+              },
+              "transform": [
+                {
+                  "filter": "datum.lon < -30"
+                },
+                {
+                  "filter": "isValid(datum.lon) && isValid(datum.lat)"
+                },
+                {
+                  "filter": "decade == 'All' || floor(datum.year / 10) * 10 + 's' == decade"
+                },
+                {
+                  "calculate": "datum.birthplace == 'Richmond' ? 'Melbourne' : (datum.birthplace == 'Paddington' ? 'Sydney' : (datum.birthplace == 'Camden' ? 'Sydney' : (datum.birthplace == 'Gawler' ? 'Adelaide' : (datum.birthplace == 'Strathmore Park' ? 'Wellington' : (datum.birthplace == 'Greytown' ? 'Wellington' : (datum.birthplace == 'Hartley Wintney' ? 'London' : (datum.birthplace == 'Temora' ? 'Griffith' : (datum.birthplace))))))))",
+                  "as": "group"
+                },
+                {
+                  "calculate": "datum.birthplace == datum.group ? 0 : 1",
+                  "as": "member"
+                },
+                {
+                  "joinaggregate": [
+                    {
+                      "op": "count",
+                      "as": "gsize"
+                    }
+                  ],
+                  "groupby": [
+                    "group"
+                  ]
+                },
+                {
+                  "window": [
+                    {
+                      "op": "row_number",
+                      "as": "i"
+                    },
+                    {
+                      "op": "first_value",
+                      "field": "lon",
+                      "as": "glon"
+                    },
+                    {
+                      "op": "first_value",
+                      "field": "lat",
+                      "as": "glat"
+                    }
+                  ],
+                  "groupby": [
+                    "group"
+                  ],
+                  "sort": [
+                    {
+                      "field": "member"
+                    },
+                    {
+                      "field": "birthplace"
+                    },
+                    {
+                      "field": "year"
+                    }
+                  ],
+                  "frame": [
+                    null,
+                    null
+                  ]
+                },
+                {
+                  "calculate": "min(datum.gsize, 3)",
+                  "as": "cols"
+                },
+                {
+                  "calculate": "((datum.i - 1) % 3 - (datum.cols - 1) / 2) * 8",
+                  "as": "px"
+                },
+                {
+                  "calculate": "floor((datum.i - 1) / 3) * 8",
+                  "as": "py"
+                },
+                {
+                  "calculate": "'M' + (datum.px - 3.5) + ',' + datum.py + 'a3.5,3.5 0 1,0 7.0,0a3.5,3.5 0 1,0 -7.0,0Z'",
+                  "as": "dot"
+                }
+              ],
+              "mark": {
+                "type": "point",
+                "filled": true,
+                "size": 4,
+                "opacity": 1,
+                "stroke": "#FFFFFF",
+                "strokeWidth": 0.8
+              },
+              "encoding": {
+                "longitude": {
+                  "field": "glon",
+                  "type": "quantitative"
+                },
+                "latitude": {
+                  "field": "glat",
+                  "type": "quantitative"
+                },
+                "shape": {
+                  "field": "dot",
+                  "type": "nominal",
+                  "scale": null
+                },
+                "color": {
+                  "condition": {
+                    "test": "datum.birth_country == 'Australia'",
+                    "value": "#B8892A"
+                  },
+                  "value": "#2E2A26"
+                },
+                "tooltip": [
+                  {
+                    "field": "director",
+                    "title": "Director"
+                  },
+                  {
+                    "field": "film",
+                    "title": "Film"
+                  },
+                  {
+                    "field": "year",
+                    "title": "Year"
+                  },
+                  {
+                    "field": "birthplace",
+                    "title": "Born"
+                  },
+                  {
+                    "field": "birth_country",
+                    "title": "Country"
+                  }
+                ]
+              }
+            },
+            {
+              "data": {
+                "url": "data/best_film_directors.csv",
+                "format": {
+                  "type": "csv",
+                  "parse": {
+                    "year": "number",
+                    "lon": "number",
+                    "lat": "number"
+                  }
+                }
+              },
+              "transform": [
+                {
+                  "filter": "datum.lon < -30"
+                },
+                {
+                  "filter": "isValid(datum.lon) && isValid(datum.lat)"
+                },
+                {
+                  "filter": "decade == 'All' || floor(datum.year / 10) * 10 + 's' == decade"
+                },
+                {
+                  "calculate": "datum.birthplace == 'Richmond' ? 'Melbourne' : (datum.birthplace == 'Paddington' ? 'Sydney' : (datum.birthplace == 'Camden' ? 'Sydney' : (datum.birthplace == 'Gawler' ? 'Adelaide' : (datum.birthplace == 'Strathmore Park' ? 'Wellington' : (datum.birthplace == 'Greytown' ? 'Wellington' : (datum.birthplace == 'Hartley Wintney' ? 'London' : (datum.birthplace == 'Temora' ? 'Griffith' : (datum.birthplace))))))))",
+                  "as": "group"
+                },
+                {
+                  "calculate": "datum.birthplace == datum.group ? 0 : 1",
+                  "as": "member"
+                },
+                {
+                  "joinaggregate": [
+                    {
+                      "op": "count",
+                      "as": "gsize"
+                    }
+                  ],
+                  "groupby": [
+                    "group"
+                  ]
+                },
+                {
+                  "window": [
+                    {
+                      "op": "row_number",
+                      "as": "i"
+                    },
+                    {
+                      "op": "first_value",
+                      "field": "lon",
+                      "as": "glon"
+                    },
+                    {
+                      "op": "first_value",
+                      "field": "lat",
+                      "as": "glat"
+                    }
+                  ],
+                  "groupby": [
+                    "group"
+                  ],
+                  "sort": [
+                    {
+                      "field": "member"
+                    },
+                    {
+                      "field": "birthplace"
+                    },
+                    {
+                      "field": "year"
+                    }
+                  ],
+                  "frame": [
+                    null,
+                    null
+                  ]
+                },
+                {
+                  "calculate": "min(datum.gsize, 3)",
+                  "as": "cols"
+                },
+                {
+                  "aggregate": [
+                    {
+                      "op": "count",
+                      "as": "n"
+                    }
+                  ],
+                  "groupby": [
+                    "birthplace",
+                    "birth_country",
+                    "group",
+                    "member",
+                    "glon",
+                    "glat",
+                    "cols",
+                    "gsize"
+                  ]
+                },
+                {
+                  "window": [
+                    {
+                      "op": "row_number",
+                      "as": "k"
+                    }
+                  ],
+                  "groupby": [
+                    "group"
+                  ],
+                  "sort": [
+                    {
+                      "field": "member"
+                    },
+                    {
+                      "field": "birthplace"
+                    }
+                  ]
+                },
+                {
+                  "filter": "true"
+                },
+                {
+                  "calculate": "datum.birthplace + ' · ' + datum.n",
+                  "as": "label"
+                },
+                {
+                  "calculate": "datum.birthplace == 'Melbourne' ? 'right' : (datum.birthplace == 'Richmond' ? 'right' : (datum.birthplace == 'Adelaide' ? 'right' : (datum.birthplace == 'Gawler' ? 'right' : (datum.birthplace == 'Griffith' ? 'right' : (datum.birthplace == 'London' ? 'right' : (datum.birthplace == 'Hartley Wintney' ? 'right' : (datum.birthplace == 'Peekskill' ? 'right' : (datum.birthplace == 'Temora' ? 'right' : ('left')))))))))",
+                  "as": "lalign"
+                },
+                {
+                  "calculate": "(datum.lalign == 'left' ? 1 : -1) * ((datum.cols - 1) / 2 * 8 + 3.5 + 12) + (datum.birthplace == 'Melbourne' ? 0 : (datum.birthplace == 'Richmond' ? 0 : (datum.birthplace == 'Adelaide' ? 0 : (datum.birthplace == 'Gawler' ? 0 : (datum.birthplace == 'Griffith' ? 0 : (datum.birthplace == 'London' ? 0 : (datum.birthplace == 'Hartley Wintney' ? 0 : (datum.birthplace == 'Peekskill' ? 0 : (datum.birthplace == 'Temora' ? 0 : (0))))))))))",
+                  "as": "ldx"
+                },
+                {
+                  "calculate": "(datum.k - 1) * 13 + (datum.birthplace == 'Melbourne' ? 0 : (datum.birthplace == 'Richmond' ? 0 : (datum.birthplace == 'Adelaide' ? 0 : (datum.birthplace == 'Gawler' ? 0 : (datum.birthplace == 'Griffith' ? -13 : (datum.birthplace == 'London' ? 0 : (datum.birthplace == 'Hartley Wintney' ? 0 : (datum.birthplace == 'Peekskill' ? 0 : (datum.birthplace == 'Temora' ? -13 : (0))))))))))",
+                  "as": "ldy"
+                }
+              ],
+              "mark": {
+                "type": "text",
+                "fontSize": 11,
+                "color": "#1F1A15",
+                "baseline": "middle",
+                "align": {
+                  "expr": "datum.lalign"
+                },
+                "dx": {
+                  "expr": "datum.ldx"
+                },
+                "dy": {
+                  "expr": "datum.ldy"
+                }
+              },
+              "encoding": {
+                "longitude": {
+                  "field": "glon",
+                  "type": "quantitative"
+                },
+                "latitude": {
+                  "field": "glat",
+                  "type": "quantitative"
+                },
+                "text": {
+                  "field": "label"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
