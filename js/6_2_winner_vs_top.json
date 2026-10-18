@@ -1,0 +1,177 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "title": {
+    "text": "Best Film is rarely the year's biggest film",
+    "subtitle": "Gold = the Best Film winner's Australian gross in its release year; ink = that year's top-grossing Australian film (winners that appear in the year's top five)"
+  },
+  "width": "container",
+  "height": {
+    "step": 24
+  },
+  "data": {
+    "url": "data/winner_vs_top.csv",
+    "format": {
+      "type": "csv",
+      "parse": {
+        "year": "number",
+        "winner_gross": "number",
+        "winner_rank": "number",
+        "top_gross": "number",
+        "winner_is_top": "number"
+      }
+    }
+  },
+  "transform": [
+    {
+      "calculate": "datum.film + '  (' + datum.year + ')'",
+      "as": "label"
+    },
+    {
+      "calculate": "datum.winner_gross / 1e6",
+      "as": "w"
+    },
+    {
+      "calculate": "datum.top_gross / 1e6",
+      "as": "t"
+    }
+  ],
+  "layer": [
+    {
+      "mark": {
+        "type": "rule",
+        "stroke": "#D9D1C4",
+        "strokeWidth": 3
+      },
+      "encoding": {
+        "y": {
+          "field": "label",
+          "type": "nominal",
+          "sort": {
+            "field": "year",
+            "order": "descending"
+          },
+          "axis": {
+            "title": null
+          }
+        },
+        "x": {
+          "field": "w",
+          "type": "quantitative"
+        },
+        "x2": {
+          "field": "t"
+        }
+      }
+    },
+    {
+      "mark": {
+        "type": "circle",
+        "size": 120,
+        "color": "#2E2A26"
+      },
+      "encoding": {
+        "y": {
+          "field": "label",
+          "type": "nominal",
+          "sort": {
+            "field": "year",
+            "order": "descending"
+          }
+        },
+        "x": {
+          "field": "t",
+          "type": "quantitative",
+          "axis": {
+            "title": "Australian box office in the release year (A$ million)",
+            "format": "$,.0f"
+          }
+        },
+        "tooltip": [
+          {
+            "field": "top_title",
+            "title": "Year's top Australian film"
+          },
+          {
+            "field": "top_gross",
+            "title": "A$",
+            "format": ",.0f"
+          }
+        ]
+      }
+    },
+    {
+      "mark": {
+        "type": "circle",
+        "size": 120,
+        "color": "#B8892A",
+        "stroke": "#FFFFFF",
+        "strokeWidth": 1
+      },
+      "encoding": {
+        "y": {
+          "field": "label",
+          "type": "nominal",
+          "sort": {
+            "field": "year",
+            "order": "descending"
+          }
+        },
+        "x": {
+          "field": "w",
+          "type": "quantitative"
+        },
+        "tooltip": [
+          {
+            "field": "film",
+            "title": "Winner"
+          },
+          {
+            "field": "winner_gross",
+            "title": "A$",
+            "format": ",.0f"
+          },
+          {
+            "field": "winner_rank",
+            "title": "Rank that year"
+          },
+          {
+            "field": "top_title",
+            "title": "Year's top film"
+          }
+        ]
+      }
+    },
+    {
+      "transform": [
+        {
+          "filter": "datum.winner_is_top == 1"
+        }
+      ],
+      "mark": {
+        "type": "text",
+        "align": "left",
+        "dx": 12,
+        "fontSize": 11,
+        "color": "#7A5A14",
+        "fontWeight": 600
+      },
+      "encoding": {
+        "y": {
+          "field": "label",
+          "type": "nominal",
+          "sort": {
+            "field": "year",
+            "order": "descending"
+          }
+        },
+        "x": {
+          "field": "t",
+          "type": "quantitative"
+        },
+        "text": {
+          "value": "the year's #1"
+        }
+      }
+    }
+  ]
+}

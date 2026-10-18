@@ -1,0 +1,30 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "title": {"text": "The winners that also sold tickets", "subtitle": "The 22 Best Film winners in Screen Australia's top 100 Australian films of all time, Australian box office, current dollars (as at April 2025)"},
+  "width": "container",
+  "height": {"step": 22},
+  "data": {"url": "data/top100_box_office.csv", "format": {"type": "csv", "parse": {"rank": "number", "release_year": "number", "box_office_aud": "number", "is_winner": "number"}}},
+  "transform": [
+    {"filter": "datum.is_winner == 1"},
+    {"calculate": "datum.winner_title + '  (' + datum.release_year + ')'", "as": "label"},
+    {"calculate": "datum.box_office_aud / 1e6", "as": "m"}
+  ],
+  "layer": [
+    {
+      "mark": {"type": "bar", "color": "#B8892A", "cornerRadiusEnd": 2},
+      "encoding": {
+        "y": {"field": "label", "type": "nominal", "sort": "-x", "axis": {"title": null}},
+        "x": {"field": "m", "type": "quantitative", "axis": {"title": "Australian box office (A$ million)", "format": "$,.0f"}},
+        "tooltip": [{"field": "winner_title", "title": "Film"}, {"field": "release_year", "title": "Released"}, {"field": "box_office_aud", "title": "Box office (A$)", "format": ",.0f"}, {"field": "rank", "title": "All-time rank"}]
+      }
+    },
+    {
+      "mark": {"type": "text", "align": "left", "dx": 6, "fontSize": 11, "color": "#6B6257"},
+      "encoding": {
+        "y": {"field": "label", "type": "nominal", "sort": "-x"},
+        "x": {"field": "m", "type": "quantitative"},
+        "text": {"field": "rank", "type": "quantitative", "format": "d"}
+      }
+    }
+  ]
+}
