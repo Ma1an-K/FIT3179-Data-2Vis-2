@@ -1,6 +1,6 @@
 {
   "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-  "title": {"text": "Casts have grown", "subtitle": "Credited cast members on Wikidata per Best Film winner, with the median for each decade"},
+  "title": {"text": "Casts grew for four decades", "subtitle": "Credited cast members on Wikidata per Best Film winner, with the median for each decade"},
   "width": "container",
   "height": 320,
   "params": [{"name": "decade", "value": "All"}],
