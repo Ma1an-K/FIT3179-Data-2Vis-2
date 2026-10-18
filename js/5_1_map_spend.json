@@ -2,7 +2,7 @@
   "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
   "title": {
     "text": "Queensland overtook New South Wales in 2024/25",
-    "subtitle": "Share of the $2.7 billion spent on drama production in Australia, by state and territory · * ACT, NT and Tasmania are published as a combined 1%"
+    "subtitle": "Share of the $2.69 billion spent on drama production in Australia, by state and territory · * ACT, NT and Tasmania are published as a combined 0.7%"
   },
   "width": "container",
   "height": 520,

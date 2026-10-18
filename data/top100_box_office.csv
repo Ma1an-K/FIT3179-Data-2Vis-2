@@ -1,0 +1,101 @@
+rank,title,distributor,release_year,box_office_aud,is_winner,winner_title
+1,Crocodile Dundee,Hoyts,1986,47707598,0,
+2,Australia,Fox,2008,37555757,0,
+3,Babe,UIP,1995,36797861,0,
+4,Elvis,Warner Bros.,2022,33613839,1,Elvis
+5,Happy Feet,Roadshow,2006,31786593,0,
+6,Lion,Transmission,2017,29568908,1,Lion
+7,Moulin Rouge!,Fox,2001,27765415,0,
+8,"Great Gatsby, The",Roadshow,2013,27397258,1,The Great Gatsby
+9,Peter Rabbit,Sony,2018,26799594,0,
+10,Crocodile Dundee II,Hoyts,1988,24916805,0,
+11,Peter Rabbit 2: The Runaway,Sony,2021,21971709,0,
+12,Strictly Ballroom,Ronin,1992,21761029,1,Strictly Ballroom
+13,Mad Max: Fury Road,Roadshow,2015,21739572,1,Mad Max: Fury Road
+14,Red Dog,Roadshow,2011,21492896,1,Red Dog
+15,"Dry, The",Roadshow,2021,20754782,0,
+16,"Dressmaker, The",Universal,2015,20296560,0,
+17,"Dish, The",Roadshow,2000,17999473,0,
+18,"Man from Snowy River, The",Hoyts,1982,17229010,0,
+19,"Adventures of Priscilla, Queen of the Desert, The",Roadshow,1994,16478358,0,
+20,"Water Diviner, The",Universal,2014,15869447,1,The Water Diviner
+21,Muriel's Wedding,Roadshow,1994,15765571,1,Muriel's Wedding
+22,Mao's Last Dancer,Roadshow,2009,15441275,0,
+23,"Sapphires, The",eOne,2012,14550561,1,The Sapphires
+24,Tomorrow When The War Began,Paramount,2010,13510580,0,
+25,Young Einstein,Warner Bros.,1988,13383377,0,
+26,Lantana,Palace,2001,12286683,1,Lantana
+27,Ladies in Black,Sony,2018,12144972,0,
+28,Ride Like A Girl,Transmission,2019,11786027,0,
+29,Gallipoli,Roadshow,1981,11740000,1,Gallipoli
+30,"Wog Boy, The",Fox,2000,11460200,0,
+31,"Piano, The",BVI,1993,11240484,1,The Piano
+32,Oddball,Roadshow,2015,11089484,0,
+33,Mad Max 2,Warner Bros.,1981,10847491,0,
+34,Happy Feet 2,Roadshow,2011,10695073,0,
+35,Green Card,Roadshow,1991,10585960,0,
+36,"Castle, The",Roadshow,1997,10326428,0,
+37,Furiosa: A Mad Max Saga,Warner Bros.,2024,10231933,0,
+38,Shine,Ronin,1996,10182539,1,Shine
+39,Paper Planes,Roadshow,2015,9666296,0,
+40,Mortal Kombat,Warner Bros.,2021,9311043,0,
+41,Phar Lap,Hoyts,1983,9258884,0,
+42,"Invisible Man, The",Universal,2020,9088367,0,
+43,Hacksaw Ridge,Icon,2016,8859919,1,Hacksaw Ridge
+44,Crackerjack,Roadshow,2002,8618107,0,
+45,"Man Who Sued God, The",BVI,2001,8546867,0,
+46,Ned Kelly,UIP,2003,8365984,0,
+47,Looking for Alibrandi,Roadshow,2000,8280335,1,Looking for Alibrandi
+48,Babe: Pig in the City,UIP,1998,7824518,0,
+49,Kenny,Madman,2006,7778177,0,
+50,Crocodile Dundee In L.A.,UIP,2001,7759103,0,
+51,Bran Nue Dae,Roadshow,2010,7742545,0,
+52,Knowing,Icon,2009,7588162,0,
+53,Rabbit-Proof Fence,Becker,2002,7562971,1,Rabbit-Proof Fence
+54,Red Dog: True Blue,Roadshow,2016,7542724,0,
+55,Penguin Bloom,Roadshow,2021,7515127,0,
+56,"Man From Snowy River 2, The",Hoyts,1988,7415000,0,
+57,Last Cab to Darwin,Icon,2015,7415310,0,
+58,Force of Nature: The Dry 2,Roadshow,2024,7321049,0,
+59,"Railway Man, The",Transmission,2013,7298229,0,
+60,Lightning Jack,Roadshow,1994,6439819,0,
+61,Runt,Studiocanal,2024,6127246,0,
+62,Kath & Kimderella,Roadshow,2012,6081859,0,
+63,Wolf Creek,Roadshow,2005,6080571,0,
+64,Chopper,Palace,2000,5912119,0,
+65,Kangaroo,Studiocanal,2025,5626725,0,
+66,Two Hands,REP,1999,5478485,1,Two Hands
+67,Reckless Kelly,Roadshow,1993,5444534,0,
+68,Mad Max,Roadshow,1979,5355490,0,
+69,Jindabyne,Roadshow,2006,5302912,0,
+70,"Few Best Men, A",Icon,2012,5296692,0,
+71,Top End Wedding,Independent,2019,5286927,0,
+72,"Craic, The",Roadshow,1999,5265935,0,
+73,Better Man,Roadshow,2024,5261397,1,Better Man
+74,Antarctica,Imax,1996,5183908,0,
+75,Picnic at Hanging Rock,Greater Union,1975,5120000,0,
+76,Dirty Deeds,Hoyts,2002,5083187,0,
+77,Animal Kingdom,Madman,2010,5000658,1,Animal Kingdom
+78,Storm Boy,Sony,2019,4993895,0,
+79,"Kings of Mykonos: Wog Boy 2, The",Paramount,2010,4896315,0,
+80,Strange Bedfellows,Becker,2004,4816495,0,
+81,Legend of the Guardians: The Owls of Ga'Hoole,Roadshow,2010,4783325,0,
+82,Breaker Morant,Roadshow,1980,4735000,1,Breaker Morant
+83,Wolf Creek 2,Roadshow,2014,4732168,0,
+84,Alvin Purple,Roadshow,1973,4720000,0,
+85,Rams,Roadshow,2020,4701757,0,
+86,Breath,Roadshow,2018,4642015,0,
+87,Japanese Story,Palace,2003,4520000,1,Japanese Story
+88,Palm Beach,Universal,2019,4505140,0,
+89,John Farnham: Finding the Voice,Sony,2023,4496883,0,
+90,Talk to Me,Maslow Entertainment,2023,4284077,1,Talk to Me
+91,Mad Max: Beyond Thunderdome,Warner Bros.,1985,4272802,0,
+92,Charlotte Gray,UIP,2002,4188497,0,
+93,Mental,Universal,2012,4080835,0,
+94,Puberty Blues,Roadshow,1981,3918000,0,
+95,"Crocodile Hunter, The",Fox,2002,3892095,0,
+96,James Cameron Presents Sanctum,Universal,2011,3871962,0,
+97,Charlie & Boots,Paramount,2009,3866883,0,
+98,Oranges And Sunshine,Icon,2011,3848781,0,
+99,Little Fish,Icon,2005,3829869,0,
+100,Fat Pizza,Roadshow,2003,3651320,0,

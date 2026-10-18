@@ -1,9 +1,9 @@
 state,share_pct,note
-Queensland,34,
-New South Wales,31,
-Victoria,27,
-South Australia,3,
-Western Australia,3,
-Australian Capital Territory,1,combined ACT + NT + Tasmania
-Northern Territory,1,combined ACT + NT + Tasmania
-Tasmania,1,combined ACT + NT + Tasmania
+New South Wales,30.9,
+Queensland,34.4,
+Victoria,27.2,
+South Australia,3.5,
+Western Australia,3.3,
+Australian Capital Territory,0.7,"combined with ACT, NT and Tasmania"
+Northern Territory,0.7,"combined with ACT, NT and Tasmania"
+Tasmania,0.7,"combined with ACT, NT and Tasmania"

@@ -19,10 +19,26 @@ Twelve winning films are not linked to the award on Wikidata. They are listed in
 - 1969 Jack and Jill: A Postscript; 1970 Three to Go: Michael; 1971 Homesdale; 1972 Stork; 1973 27A; 1973 Libido: The Child (joint winners, two rows for 1973); 1975 Sunday Too Far Away (Wikipedia lists 1974-75; 1975 used); 1991 Proof; 2022 Elvis; 2023 Talk to Me; 2024 Better Man; 2025 Bring Her Back.
 - Libido: the Wikidata item is the whole 1973 omnibus film "Libido", so its three listed directors (John B. Murray; Tim Burstall; Fred Schepisi) are recorded, not just the director of "The Child" segment.
 
-## 2. Screen Australia — Drama Report 2024/25
-Published 4 December 2025. https://www.screenaustralia.gov.au/drama-report-2024-25-2-7-billion-spent-on-drama-production-in-australia-points-to-holistic-industry-growth/
-Retrieved 2026-10-11
-- `spend_by_state_2024_25.csv` — transcribed verbatim from the release (Task 3). ACT, NT and Tasmania are published only as a combined 1%.
+## 2. Screen Australia — Infogram tables
+Accessed 2026-10-12 by `fetch_screen_australia.py` (run from the repo root; it downloads each embed and parses `window.infographicData`, copying the numbers verbatim). Screen Australia publishes these tables only as Infogram charts.
+- Spend by location (drama production, $M and % by state, 1995/96-2024/25): https://www.screenaustralia.gov.au/insights-and-trends/drama-production/spend-by-location/ , Infogram embed `df11c829-3984-48b5-b50c-5ae2358ce92e`
+- Top Australian films of all time (top 100): https://www.screenaustralia.gov.au/insights-and-trends/australian-films/top-australian-films/ , embed `5d694169-0897-48b5-8046-2121b2569dba`
+- Top 5 Australian films each year (1988-2025): https://www.screenaustralia.gov.au/insights-and-trends/australian-films/top-5-each-year/ , embed `95e85f20-c7b4-4f2a-b194-3cfb952a5cff`
+
+Files:
+- `spend_by_state_series.csv` — `year_label, year_start, state, spend_m, share_pct, approx`; 30 years x 6 groups (NSW, Qld, Vic, SA, WA, ACT/Tas/NT) = 180 rows. `approx` = 1 where the source says `<1%` or `<0.1` (stored as half the bound: 0.5 and 0.05); `approx` = 2 for 2010/11, where Screen Australia published WA, ACT, Tasmania and NT as one combined figure ($8M, 1%) for confidentiality, so the WA and ACT/Tas/NT cells are left blank rather than split.
+- `spend_by_state_2024_25.csv` — `state, share_pct, note`; the 2024/25 shares computed from the $M row (total $2,690M), one decimal. ACT, NT and Tasmania are published only as a combined figure, so each carries the combined value and the note.
+- `top100_box_office.csv` — `rank, title, distributor, release_year, box_office_aud, is_winner, winner_title`; `is_winner` = 1 when the title matches an AACTA Best Film winner (case, `The`/`, The`, asterisks and parentheticals ignored) and the release year is the award year or the one before (this rejects the 2019 Storm Boy remake). 22 of the 100 are winners.
+- `top5_each_year.csv` — `year, rank, title, distributor, box_office_aud`; 38 yearly blocks, 1988-2025, 5 films each.
+- `winner_vs_top.csv` — `film, year, winner_gross, winner_rank, top_title, top_gross, winner_is_top`; winners that appear in a yearly top 5, with that year's number-one film. A film appearing in two yearly blocks (Evil Angels, 1988 and 1989) keeps the row with the larger gross.
+
+Cleaning rules: thousands separators, padding spaces, trailing `%`, footnote carets (`^`) and title asterisks are stripped; `*` on a state header and on a title is Screen Australia's footnote marker.
+
+Box office is cumulative Australian gross in current dollars as reported April 2025; the top-5 table gives year-of-release gross and can differ slightly from the all-time list.
+
+Screen Australia states no open licence; used under its site terms with attribution.
+
+Winners not in the top 100 (36): The Devil's Playground; Storm Boy; Newsfront; My Brilliant Career; Lonely Hearts; Careful, He Might Hear You; Annie's Coming Out; Bliss; Malcolm; The Year My Voice Broke; The Navigator: A Medieval Odyssey; Evil Angels; Flirting; Angel Baby; Kiss or Kill; The Interview; Somersault; Look Both Ways; Ten Canoes; Romulus, My Father; The Black Balloon; Samson and Delilah; The Babadook; Sweet Country; The Nightingale; Babyteeth; Nitram; Jack and Jill: A Postscript; Three to Go: Michael; Homesdale; Stork; 27A; Libido: The Child; Sunday Too Far Away; Proof; Bring Her Back.
 
 ## Boundaries
 - `js/au_states.geojson` — Australian states, simplified, from https://github.com/tonywr71/GeoJson-Data (derived from ABS boundaries)

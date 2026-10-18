@@ -11,6 +11,11 @@ HEADERS = {
     "best_film_genres.csv": "film,year,genre,genre_group",
     "best_film_facts.csv": "film,year,cast_size,runtime_min",
     "director_careers.csv": "director,films_directed,best_film_wins,first_win,last_win",
+    "spend_by_state_series.csv": "year_label,year_start,state,spend_m,share_pct,approx",
+    "spend_by_state_2024_25.csv": "state,share_pct,note",
+    "top100_box_office.csv": "rank,title,distributor,release_year,box_office_aud,is_winner,winner_title",
+    "top5_each_year.csv": "year,rank,title,distributor,box_office_aud",
+    "winner_vs_top.csv": "film,year,winner_gross,winner_rank,top_title,top_gross,winner_is_top",
 }
 for name, hdr in HEADERS.items():
     first = (D / name).open().readline().strip()
@@ -73,6 +78,21 @@ careers = list(csv.DictReader((D / "director_careers.csv").open()))
 if len(careers) != len({r["director"] for r in careers}): errors.append("duplicate director in careers")
 if any(int(r["best_film_wins"]) > int(r["films_directed"]) for r in careers): errors.append("wins exceed films directed")
 if sum(int(r["best_film_wins"]) for r in careers) < 58: errors.append("career wins do not cover the winners")
+series = list(csv.DictReader((D / "spend_by_state_series.csv").open()))
+if len(series) != 180: errors.append(f"spend series rows {len(series)}")
+if {r["state"] for r in series} != {"NSW", "Qld", "Vic", "SA", "WA", "ACT/Tas/NT"}: errors.append("spend series states")
+spend24 = list(csv.DictReader((D / "spend_by_state_2024_25.csv").open()))
+if len(spend24) != 8 or any("." not in r["share_pct"] for r in spend24): errors.append("2024/25 shares must be 8 rows with one decimal")
+if abs(sum(float(r["share_pct"]) for r in spend24[:5]) + float(spend24[5]["share_pct"]) - 100) > 0.5: errors.append("2024/25 shares do not sum to 100")
+top100 = list(csv.DictReader((D / "top100_box_office.csv").open()))
+# 22 not 19: the year-aware match finds 22 winners in the top 100 (incl. Elvis, Talk to Me, Better Man); Storm Boy (2019 remake) is rejected
+if len(top100) != 100 or sum(r["is_winner"] == "1" for r in top100) != 22: errors.append("top100 rows / winner matches")
+t5 = list(csv.DictReader((D / "top5_each_year.csv").open()))
+# the Infogram blocks cover 1988-2025 (not 1987-2024): block 0 is Crocodile Dundee II, the last block is Bring Her Back
+if len(t5) != 190 or {r["year"] for r in t5} != {str(y) for y in range(1988, 2026)}: errors.append("top5 rows or years")
+wvt = list(csv.DictReader((D / "winner_vs_top.csv").open()))
+if len(wvt) < 15 or len({r["film"] for r in wvt}) != len(wvt): errors.append("winner_vs_top rows or duplicates")
+if any(int(r["winner_gross"]) > int(r["top_gross"]) for r in wvt): errors.append("winner gross above the year's top gross")
 print("flows", len(flows))
 print("settings", counts)
 print("winners", len(winners), "| locations", len(locs), "| directors w/ coords", len(with_coords))
