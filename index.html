@@ -50,13 +50,13 @@
       <div class="vis" id="vis-2-1" data-spec="js/2_1_map_settings.json"></div>
       <p class="empty" data-for="vis-2-1">No located story settings in Australia for this decade.</p>
     </div>
-    <p class="count" data-csv="data/best_film_locations.csv" data-filter="lon" data-where="level=place" data-noun="have a located story setting or filming location" data-empty="vis-2-1"></p>
+    <p class="count" data-csv="data/best_film_locations.csv" data-filter="lon" data-where="level=place&country=Australia" data-noun="have a located story setting or filming location" data-empty="vis-2-1"></p>
     <p class="caption">Filled circles mark story settings; hollow rings mark filming locations. Where Wikidata records only a whole state as the setting, the circle sits at the state's centre. Only places recorded on Wikidata are shown.</p>
     <h3 class="chart-title"><span class="no">2.2</span>Set in Australia, set overseas, or no setting data</h3>
     <div class="chart">
-      <div class="vis" id="vis-2-2" data-spec="js/2_2_waffle.json"></div>
+      <div class="vis tinted" id="vis-2-2" data-spec="js/2_2_waffle.json"></div>
     </div>
-    <p class="caption">One square per winning film. "No setting data" means Wikidata records no story setting for that film.</p>
+    <p class="caption">One square per winning film. Gold squares are set in Australia, ink squares overseas, dashed outlines have no story setting recorded on Wikidata. Read left to right, top to bottom; the three groups are ordered by year.</p>
   </section>
 
   <section id="s3">
@@ -68,7 +68,7 @@
       <p class="empty" data-for="vis-3-1">No director in this decade has both a located birthplace and a located film setting.</p>
     </div>
     <p class="count" data-csv="data/flows.csv" data-noun="have a director with a located birthplace and a located film setting, so they are drawn as a line" data-empty="vis-3-1"></p>
-    <p class="caption">Each line runs from a director's birthplace to the place their winning film is set. Gold lines start in Australia; cream lines start overseas. Films whose setting is recorded only as a whole country have no line.</p>
+    <p class="caption">Each line starts where a winning film's director was born and ends where that film's story is set. It says nothing about where directors live or work. Gold starts in Australia; ink starts overseas. Films whose setting is recorded only as a whole country have no line.</p>
     <div class="placeholder">Chart 3.2 · World dot map of director birthplaces · coming</div>
     <div class="placeholder">Chart 3.3 · Slope chart · coming</div>
     <div class="placeholder">Chart 3.4 · Director careers · coming</div>

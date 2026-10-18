@@ -30,7 +30,7 @@ document.querySelectorAll(".vis[data-spec]").forEach((el) => {
 
 // Count lines. <p class="count" data-csv="data/flows.csv" data-noun="…" data-empty="vis-3-1">
 // Rows are counted with the same decade rule the specs use; data-filter (optional) names a column that must be non-empty;
-// data-where (optional, "col=value") keeps only rows whose column equals the value.
+// data-where (optional, "col=value&col2=value2") keeps only rows where every listed column equals its value.
 const csvCache = {};
 const loadCsv = (url) => csvCache[url] || (csvCache[url] = fetch(url).then((r) => r.text()).then((t) => vega.read(t, { type: "csv", parse: "auto" })));
 const counts = [...document.querySelectorAll("p.count[data-csv]")];
@@ -40,8 +40,8 @@ function updateCounts(decade) {
   counts.forEach((p) => {
     Promise.all([loadCsv(p.dataset.csv), winners]).then(([rows, win]) => {
       const col = p.dataset.filter;
-      const where = p.dataset.where ? p.dataset.where.split("=") : null;
-      const keep = rows.filter((r) => inLens(+r.year, decade) && (!col || (r[col] !== null && r[col] !== "")) && (!where || String(r[where[0]]) === where[1]));
+      const where = p.dataset.where ? p.dataset.where.split("&").map((c) => c.split("=")) : null;
+      const keep = rows.filter((r) => inLens(+r.year, decade) && (!col || (r[col] !== null && r[col] !== "")) && (!where || where.every(([k, v]) => String(r[k]) === v)));
       const key = p.dataset.key || "film";
       const n = new Set(keep.map((r) => r[key])).size;
       const m = win.filter((r) => inLens(+r.year, decade)).length;

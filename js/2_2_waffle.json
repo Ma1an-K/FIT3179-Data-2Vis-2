@@ -1,102 +1,34 @@
 {
   "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-  "title": {
-    "text": "Set in Australia, set abroad, or no setting data",
-    "subtitle": "One square per winning film"
-  },
-  "width": {
-    "step": 24
-  },
-  "height": {
-    "step": 24
-  },
-  "data": {
-    "url": "data/best_film_settings.csv"
-  },
+  "title": {"text": "Set in Australia, set overseas, or no setting data", "subtitle": "One square per Best Film winner, 1969–2025; ten films per row, ordered by category then year"},
+  "width": {"step": 26},
+  "height": {"step": 26},
+  "data": {"url": "data/best_film_settings.csv"},
   "transform": [
+    {"calculate": "datum.setting == 'Set in Australia' ? 0 : datum.setting == 'Set overseas' ? 1 : 2", "as": "ord"},
+    {"joinaggregate": [{"op": "count", "as": "n_cat"}], "groupby": ["setting"]},
+    {"calculate": "datum.setting + ' · ' + datum.n_cat", "as": "where"},
+    {"window": [{"op": "row_number", "as": "i"}], "sort": [{"field": "ord"}, {"field": "year"}]},
+    {"calculate": "floor((datum.i - 1) / 10)", "as": "row"},
+    {"calculate": "(datum.i - 1) % 10", "as": "col"},
+    {"calculate": "'Row ' + (datum.row + 1)", "as": "row_label"}
+  ],
+  "layer": [
     {
-      "calculate": "datum.setting",
-      "as": "where"
+      "transform": [{"filter": "datum.ord < 2"}],
+      "mark": {"type": "square", "size": 480, "stroke": "#FFFFFF", "strokeWidth": 2},
+      "encoding": {
+        "color": {"field": "where", "type": "nominal", "scale": {"domain": ["Set in Australia · 37", "Set overseas · 7", "No setting data · 14"], "range": ["#B8892A", "#2E2A26", "#F7F3EC"]}, "legend": {"title": "Each square is one film", "orient": "right", "symbolStrokeColor": "#B5AC9E", "symbolStrokeWidth": 1}}
+      }
     },
     {
-      "calculate": "datum.setting == 'Set in Australia' ? 0 : datum.setting == 'Set overseas' ? 1 : 2",
-      "as": "ord"
-    },
-    {
-      "window": [
-        {
-          "op": "row_number",
-          "as": "i"
-        }
-      ],
-      "sort": [
-        {
-          "field": "ord"
-        },
-        {
-          "field": "year"
-        }
-      ]
-    },
-    {
-      "calculate": "floor((datum.i - 1) / 10)",
-      "as": "row"
-    },
-    {
-      "calculate": "(datum.i - 1) % 10",
-      "as": "col"
+      "transform": [{"filter": "datum.ord == 2"}],
+      "mark": {"type": "square", "size": 480, "fill": "#F7F3EC", "stroke": "#B5AC9E", "strokeWidth": 1.5, "strokeDash": [3, 3]}
     }
   ],
-  "mark": {
-    "type": "square",
-    "size": 440,
-    "stroke": "#FFFFFF",
-    "strokeWidth": 2
-  },
   "encoding": {
-    "x": {
-      "field": "col",
-      "type": "ordinal",
-      "axis": null
-    },
-    "y": {
-      "field": "row",
-      "type": "ordinal",
-      "axis": null
-    },
-    "color": {
-      "field": "where",
-      "type": "nominal",
-      "scale": {
-        "domain": [
-          "Set in Australia",
-          "Set overseas",
-          "No setting data"
-        ],
-        "range": [
-          "#B8892A",
-          "#2E2A26",
-          "#F7F3EC"
-        ]
-      },
-      "legend": {
-        "title": null,
-        "orient": "right"
-      }
-    },
-    "tooltip": [
-      {
-        "field": "film",
-        "title": "Film"
-      },
-      {
-        "field": "year",
-        "title": "Year"
-      },
-      {
-        "field": "where",
-        "title": "Setting"
-      }
-    ]
+    "x": {"field": "col", "type": "ordinal", "axis": null},
+    "y": {"field": "row_label", "type": "ordinal", "axis": {"title": "10 films per row", "labels": false, "ticks": false, "domain": false}, "sort": {"field": "row"}},
+    "tooltip": [{"field": "film", "title": "Film"}, {"field": "year", "title": "Year"}, {"field": "setting", "title": "Setting"}]
   }
 }

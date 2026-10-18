@@ -35,6 +35,8 @@ if len(settings) != len(winners): errors.append(f"settings rows {len(settings)} 
 ALLOWED = ("Set in Australia", "Set overseas", "No setting data")
 if any(r["setting"] not in ALLOWED for r in settings): errors.append("bad setting value")
 counts = {k: sum(r["setting"] == k for r in settings) for k in ALLOWED}
+if counts != {"Set in Australia": 37, "Set overseas": 7, "No setting data": 14}:
+    errors.append(f"settings counts changed; update the legend domain in js/2_2_waffle.json: {counts}")
 if counts["Set in Australia"] < 25: errors.append(f"too few Set in Australia: {counts}")
 if counts["No setting data"] > 16: errors.append(f"too many films without setting data (manual films not queried?): {counts}")
 

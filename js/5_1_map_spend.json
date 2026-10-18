@@ -16,27 +16,27 @@
     {
       "mark": {"type": "geoshape", "stroke": "#FFFFFF", "strokeWidth": 1.2},
       "encoding": {
-        "color": {"field": "share_pct", "type": "quantitative", "scale": {"type": "linear", "domain": [0, 35], "range": ["#EFE9DF", "#B8892A"]}, "legend": {"title": "Share of spend (%)", "orient": "bottom-left", "format": "d"}},
+        "color": {"field": "share_pct", "type": "quantitative", "scale": {"type": "linear", "domain": [0, 35], "range": ["#EFE9DF", "#B8892A"]}, "legend": {"title": "Share of spend (%)", "orient": "bottom-left", "format": ".1f"}},
         "tooltip": [
           {"field": "properties.STATE_NAME", "title": "State"},
-          {"field": "share_pct", "title": "Share of spend (%)"},
+          {"field": "share_pct", "title": "Share of spend (%)", "format": ".1f"},
           {"field": "note_text", "title": "Note"}
         ]
       }
     },
     {
       "data": {"values": [
-        {"lon": 147.0, "lat": -32.5, "label": "NSW 31%"}, {"lon": 144.5, "lat": -37.0, "label": "VIC 27%"},
-        {"lon": 144.5, "lat": -23.0, "label": "QLD 34%"}, {"lon": 135.5, "lat": -30.0, "label": "SA 3%"},
-        {"lon": 122.0, "lat": -26.0, "label": "WA 3%"}, {"lon": 133.5, "lat": -19.5, "label": "NT 1%*"},
-        {"lon": 146.8, "lat": -42.2, "label": "TAS 1%*"}
+        {"state": "New South Wales", "abbr": "NSW", "lon": 147.0, "lat": -32.5}, {"state": "Victoria", "abbr": "VIC", "lon": 144.5, "lat": -37.0},
+        {"state": "Queensland", "abbr": "QLD", "lon": 144.5, "lat": -23.0}, {"state": "South Australia", "abbr": "SA", "lon": 135.5, "lat": -30.0},
+        {"state": "Western Australia", "abbr": "WA", "lon": 122.0, "lat": -26.0}, {"state": "Northern Territory", "abbr": "NT", "lon": 133.5, "lat": -19.5},
+        {"state": "Tasmania", "abbr": "TAS", "lon": 146.8, "lat": -42.2}
       ]},
+      "transform": [
+        {"lookup": "state", "from": {"data": {"url": "data/spend_by_state_2024_25.csv"}, "key": "state", "fields": ["share_pct", "note"]}},
+        {"calculate": "datum.abbr + ' ' + format(datum.share_pct, '.1f') + '%' + (datum.note ? '*' : '')", "as": "label"}
+      ],
       "mark": {"type": "text", "fontSize": 13, "fontWeight": 600, "color": "#1F1A15"},
-      "encoding": {
-        "longitude": {"field": "lon", "type": "quantitative"},
-        "latitude": {"field": "lat", "type": "quantitative"},
-        "text": {"field": "label"}
-      }
+      "encoding": {"longitude": {"field": "lon", "type": "quantitative"}, "latitude": {"field": "lat", "type": "quantitative"}, "text": {"field": "label"}}
     }
   ]
 }

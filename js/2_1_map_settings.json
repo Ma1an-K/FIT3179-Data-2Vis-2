@@ -8,7 +8,7 @@
   "layer": [
     {
       "data": {"url": "js/au_states.geojson", "format": {"type": "json", "property": "features"}},
-      "mark": {"type": "geoshape", "fill": "#E5DED2", "stroke": "#D9D1C4", "strokeWidth": 1}
+      "mark": {"type": "geoshape", "fill": "#E5DED2", "stroke": "#FFFFFF", "strokeWidth": 1}
     },
     {
       "data": {"url": "data/best_film_locations.csv"},
@@ -39,7 +39,7 @@
         {"filter": "datum.kind == 'filming'"},
         {"filter": "decade == 'All' || floor(datum.year / 10) * 10 + 's' == decade"}
       ],
-      "mark": {"type": "point", "shape": "circle", "size": 120, "stroke": "#2E2A26", "strokeWidth": 1.2, "fill": null, "opacity": 0.8},
+      "mark": {"type": "point", "shape": "circle", "size": 140, "stroke": "#2E2A26", "strokeWidth": 1.2, "fill": null, "opacity": 0.8},
       "encoding": {
         "longitude": {"field": "lon", "type": "quantitative"},
         "latitude": {"field": "lat", "type": "quantitative"},
@@ -47,8 +47,14 @@
       }
     },
     {
-      "data": {"values": [{"lon": 151.2093, "lat": -33.8688, "label": "Sydney: 5 winning films are set here (all years)"}]},
-      "mark": {"type": "text", "align": "left", "dx": 14, "dy": -6, "fontSize": 12, "color": "#2E2A26"},
+      "data": {"url": "data/best_film_locations.csv"},
+      "transform": [
+        {"filter": "datum.level == 'place' && datum.kind == 'setting' && datum.place == 'Sydney'"},
+        {"filter": "decade == 'All' || floor(datum.year / 10) * 10 + 's' == decade"},
+        {"aggregate": [{"op": "count", "as": "n"}], "groupby": ["place", "lon", "lat"]},
+        {"calculate": "'Sydney: ' + datum.n + (datum.n == 1 ? ' winning film is set here' : ' winning films are set here') + (decade == 'All' ? ' (all years)' : ' (' + decade + ')')", "as": "label"}
+      ],
+      "mark": {"type": "text", "align": "left", "dx": 14, "dy": -6, "fontSize": 12, "fontWeight": 600, "color": "#1F1A15"},
       "encoding": {"longitude": {"field": "lon", "type": "quantitative"}, "latitude": {"field": "lat", "type": "quantitative"}, "text": {"field": "label"}}
     }
   ]

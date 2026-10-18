@@ -8,7 +8,7 @@
   "transform": [
     {"filter": "datum.year != null"},
     {"calculate": "floor(datum.year / 10) * 10 + 's'", "as": "decade_label"},
-    {"calculate": "datum.year >= 2011 ? 'AACTA' : 'AFI'", "as": "era"},
+    {"calculate": "datum.year >= 2011 ? 'AACTA (2011– )' : 'AFI (1969–2010)'", "as": "era"},
     {"calculate": "decade == 'All' || datum.decade_label == decade", "as": "in_lens"},
     {"window": [{"op": "rank", "as": "tie"}], "groupby": ["year"]},
     {"calculate": "(datum.year - 1969) * (2 * PI / 57)", "as": "theta"},
@@ -24,7 +24,7 @@
         "theta2": {"field": "theta2"},
         "radius": {"field": "r_outer", "type": "quantitative", "scale": {"type": "linear", "domain": [0, 240], "range": [0, 240]}},
         "radius2": {"field": "r_inner"},
-        "color": {"field": "era", "type": "nominal", "scale": {"domain": ["AFI", "AACTA"], "range": ["#2E2A26", "#B8892A"]}, "legend": {"title": null, "orient": "top-right", "direction": "vertical"}},
+        "color": {"field": "era", "type": "nominal", "scale": {"domain": ["AFI (1969–2010)", "AACTA (2011– )"], "range": ["#2E2A26", "#B8892A"]}, "legend": {"title": "Awarding body", "orient": "top-right", "direction": "vertical"}},
         "opacity": {"condition": {"test": "datum.in_lens", "value": 0.95}, "value": 0.18},
         "tooltip": [{"field": "film", "title": "Film"}, {"field": "year", "title": "Year"}, {"field": "director", "title": "Director"}]
       }
