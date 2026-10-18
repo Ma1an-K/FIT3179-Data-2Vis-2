@@ -46,8 +46,4 @@ h3.chart-title .no { color: var(--muted); font-family: "Source Sans 3", sans-ser
 .empty.show { display: block; }
 .lens { display: inline-block; color: var(--muted); font-size: 0.95rem; margin: 0 0 12px; }
 .lens select { margin-left: 8px; background: var(--panel); color: var(--text); border: 1px solid var(--border); border-radius: 3px; padding: 4px 8px; font: inherit; }
-.placeholder {
-  border: 1px dashed var(--border); color: var(--muted); border-radius: 6px;
-  padding: 28px 16px; text-align: center; font-size: 0.95rem; margin: 0 0 1.2em;
-}
 footer { margin-top: 48px; }
