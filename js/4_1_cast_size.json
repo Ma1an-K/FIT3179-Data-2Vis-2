@@ -1,0 +1,35 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "title": {"text": "Casts have grown", "subtitle": "Credited cast members on Wikidata per Best Film winner, with the median for each decade"},
+  "width": "container",
+  "height": 320,
+  "params": [{"name": "decade", "value": "All"}],
+  "data": {"url": "data/best_film_facts.csv", "format": {"type": "csv", "parse": {"year": "number", "cast_size": "number", "runtime_min": "number"}}},
+  "transform": [
+    {"filter": "datum.cast_size > 0"},
+    {"calculate": "floor(datum.year / 10) * 10 + 's'", "as": "decade_label"},
+    {"calculate": "datum.decade_label == '1960s' ? '1970s' : datum.decade_label", "as": "decade_bin"},
+    {"calculate": "decade == 'All' || datum.decade_label == decade", "as": "in_lens"}
+  ],
+  "layer": [
+    {
+      "mark": {"type": "circle", "size": 70, "color": "#B8892A", "stroke": "#FFFFFF", "strokeWidth": 0.5},
+      "encoding": {
+        "x": {"field": "decade_bin", "type": "ordinal", "axis": {"title": "Decade of the award", "labelAngle": 0}},
+        "xOffset": {"field": "film", "type": "nominal", "scale": {"range": [-28, 28]}, "sort": {"field": "year"}},
+        "y": {"field": "cast_size", "type": "quantitative", "axis": {"title": "Credited cast members"}},
+        "opacity": {"condition": {"test": "datum.in_lens", "value": 0.9}, "value": 0.2},
+        "tooltip": [{"field": "film"}, {"field": "year"}, {"field": "cast_size", "title": "Cast members"}]
+      }
+    },
+    {
+      "transform": [{"aggregate": [{"op": "median", "field": "cast_size", "as": "med"}], "groupby": ["decade_bin"]}],
+      "mark": {"type": "tick", "thickness": 3, "size": 70, "color": "#2E2A26"},
+      "encoding": {
+        "x": {"field": "decade_bin", "type": "ordinal"},
+        "y": {"field": "med", "type": "quantitative"},
+        "tooltip": [{"field": "decade_bin", "title": "Decade"}, {"field": "med", "title": "Median cast"}]
+      }
+    }
+  ]
+}
