@@ -29,54 +29,77 @@
     <label class="lens">Show decade
       <select id="decade">
         <option value="All" selected>All years</option>
-        <option>1960s</option><option>1970s</option><option>1980s</option><option>1990s</option>
+        <option>1970s</option><option>1980s</option><option>1990s</option>
         <option>2000s</option><option>2010s</option><option>2020s</option>
       </select>
     </label>
-    <div class="vis" id="vis-1-1" data-spec="js/1_1_reel.json"></div>
-    <p class="caption">Every winner on one reel: each wedge is a winning film, reading clockwise from 1969. The decade selector above filters the reel, the settings map and the flow map; the squares and the spending map always show all years.</p>
-    <div class="placeholder">Chart 1.2 · Decade × setting heatmap · coming after the critique</div>
+    <h3 class="chart-title"><span class="no">1.1</span>Every winner on one reel</h3>
+    <div class="chart">
+      <div class="vis" id="vis-1-1" data-spec="js/1_1_reel.json"></div>
+    </div>
+    <p class="caption">Every winner on one reel: each wedge is a winning film, reading clockwise from 1969. The decade selector above filters the reel, the settings map and the flow map; charts without a decade axis of their own show all years.</p>
+    <p class="caption">1969's winner, <em>Jack and Jill: A Postscript</em>, has no location data on Wikidata, so the lens starts at the 1970s. 1973 and 2014 had joint winners: the second film of each pair sits on the outer ring.</p>
+    <div class="placeholder">Chart 1.2 · Decade × genre heatmap · coming</div>
   </section>
 
   <section id="s2">
     <h2><span class="num">2</span> Where the stories are set</h2>
     <p class="narrative">Most winners are set in Australia, but rarely in the same Australia. Outback and regional stories such as <em>Samson and Delilah</em> and <em>Ten Canoes</em> sit alongside Sydney and Melbourne dramas. The map shows where each winning film's story takes place and, where recorded, where it was shot.</p>
-    <div class="vis" id="vis-2-1" data-spec="js/2_1_map_settings.json"></div>
+    <h3 class="chart-title"><span class="no">2.1</span>Where the winning stories are set and shot</h3>
+    <div class="chart">
+      <div class="vis" id="vis-2-1" data-spec="js/2_1_map_settings.json"></div>
+      <p class="empty" data-for="vis-2-1">No located story settings in Australia for this decade.</p>
+    </div>
+    <p class="count" data-csv="data/best_film_locations.csv" data-filter="lon" data-where="level=place" data-noun="have a located story setting or filming location" data-empty="vis-2-1"></p>
     <p class="caption">Filled circles mark story settings; hollow rings mark filming locations. Where Wikidata records only a whole state as the setting, the circle sits at the state's centre. Only places recorded on Wikidata are shown.</p>
-    <div class="vis" id="vis-2-2" data-spec="js/2_2_waffle.json"></div>
+    <h3 class="chart-title"><span class="no">2.2</span>Set in Australia, set overseas, or no setting data</h3>
+    <div class="chart">
+      <div class="vis" id="vis-2-2" data-spec="js/2_2_waffle.json"></div>
+    </div>
     <p class="caption">One square per winning film. "No setting data" means Wikidata records no story setting for that film.</p>
   </section>
 
   <section id="s3">
     <h2><span class="num">3</span> Who made them</h2>
     <p class="narrative">The directors behind Australia's best films were born on three continents. Roughly a third were born overseas, from Hungary to the United States, which says something about who gets to tell Australian stories.</p>
-    <div class="vis" id="vis-3-1" data-spec="js/3_1_map_flows.json"></div>
+    <h3 class="chart-title"><span class="no">3.1</span>Where the director was born, where the film is set</h3>
+    <div class="chart">
+      <div class="vis" id="vis-3-1" data-spec="js/3_1_map_flows.json"></div>
+      <p class="empty" data-for="vis-3-1">No director in this decade has both a located birthplace and a located film setting.</p>
+    </div>
+    <p class="count" data-csv="data/flows.csv" data-noun="have a director with a located birthplace and a located film setting, so they are drawn as a line" data-empty="vis-3-1"></p>
     <p class="caption">Each line runs from a director's birthplace to the place their winning film is set. Gold lines start in Australia; cream lines start overseas. Films whose setting is recorded only as a whole country have no line.</p>
-    <div class="placeholder">Chart 3.2 · World dot map of all winners' birthplaces · coming after the critique</div>
-    <div class="placeholder">Chart 3.3 · Slope chart, Australian-born share · coming after the critique</div>
+    <div class="placeholder">Chart 3.2 · World dot map of director birthplaces · coming</div>
+    <div class="placeholder">Chart 3.3 · Slope chart · coming</div>
+    <div class="placeholder">Chart 3.4 · Director careers · coming</div>
   </section>
 
-  <section id="s4">
-    <h2><span class="num">4</span> Where the money goes</h2>
-    <p class="narrative">Awards follow stories; money follows incentives. In 2024/25 Queensland became the biggest state for drama production spending for the first time, overtaking New South Wales, as foreign productions chased the federal Location Offset.</p>
-    <div class="vis" id="vis-4-1" data-spec="js/4_1_map_spend.json"></div>
-    <p class="caption">Share of the $2.7 billion spent on drama production in Australia, 2024/25. The ACT, Northern Territory and Tasmania are only published as a combined 1%.</p>
-    <div class="placeholder">Chart 4.2 · Streamgraph of spend by state 1995–2025 · coming after the critique</div>
-    <div class="placeholder">Chart 4.3 · Bump chart of state rankings · coming after the critique</div>
-  </section>
+  <section id="s4"><h2><span class="num">4</span> What kind of films win</h2><p class="narrative">Placeholder narrative, replaced in Task 8.</p><div class="placeholder">Chart 4.1 · Cast size by decade · coming</div><div class="placeholder">Chart 4.2 · Runtime by decade · coming</div></section>
 
   <section id="s5">
-    <h2><span class="num">5</span> Do awards pay?</h2>
+    <h2><span class="num">5</span> Where the money goes</h2>
+    <p class="narrative">Awards follow stories; money follows incentives. In 2024/25 Queensland became the biggest state for drama production spending for the first time, overtaking New South Wales, as foreign productions chased the federal Location Offset.</p>
+    <h3 class="chart-title"><span class="no">5.1</span>Queensland overtook New South Wales in 2024/25</h3>
+    <div class="chart">
+      <div class="vis" id="vis-5-1" data-spec="js/5_1_map_spend.json"></div>
+    </div>
+    <p class="caption">Share of the $2.7 billion spent on drama production in Australia, 2024/25. The ACT, Northern Territory and Tasmania are only published as a combined 1%.</p>
+    <div class="placeholder">Chart 5.2 · Streamgraph · coming</div>
+    <div class="placeholder">Chart 5.3 · Bump chart · coming</div>
+  </section>
+
+  <section id="s6">
+    <h2><span class="num">6</span> Do awards pay?</h2>
     <p class="narrative">A Best Film trophy is not a box-office guarantee. This section will compare the Australian cinema takings of the last decade's nominees and winners.</p>
-    <div class="placeholder">Chart 5.1 · Box office strip plot, nominees vs winners · coming after the critique</div>
-    <div class="placeholder">Chart 5.2 · Top-grossing winners · coming after the critique</div>
+    <div class="placeholder">Chart 6.1 · Top-grossing winners · coming</div>
+    <div class="placeholder">Chart 6.2 · Winner vs the year's top film · coming</div>
   </section>
 
   <footer id="about">
     <h2>About this visualisation</h2>
     <p class="narrative small"><strong>Data.</strong> Winning films, their settings, filming locations and directors' birthplaces are from <a href="https://www.wikidata.org/">Wikidata</a> (CC0), exported 11 October 2026. Twelve winners missing from Wikidata's award records were identified from Wikipedia's <a href="https://en.wikipedia.org/wiki/AACTA_Award_for_Best_Film">AACTA Award for Best Film</a> list (CC BY-SA) and then queried on Wikidata by their item IDs, like the other winners. The exact queries are in <a href="data/README.md">data/README.md</a>. Production spending is from Screen Australia, <a href="https://www.screenaustralia.gov.au/drama-report-2024-25-2-7-billion-spent-on-drama-production-in-australia-points-to-holistic-industry-growth/">Drama Report 2024/25</a> (published 4 December 2025). Boundaries: Natural Earth (world) and Australian state boundaries derived from the ABS.</p>
     <p class="narrative small"><strong>Method.</strong> Charts are built with Vega-Lite. Generative AI (Claude) was used to draft chart code and to check the grammar of this text; all design decisions and the hand-drawn sketch are the author's.</p>
-    <p class="narrative small">© Matan Kimchi 2026 · Draft for peer critique, 12 October 2026.</p>
+    <p class="narrative small">© Matan Kimchi 2026 · Submitted 25 October 2026.</p>
   </footer>
 
 </main>

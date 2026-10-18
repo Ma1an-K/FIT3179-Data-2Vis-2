@@ -1,20 +1,21 @@
-// Loads every Vega-Lite spec referenced by a data-spec attribute.
-// Shared config keeps typography and colours consistent across charts.
+// Loads every Vega-Lite spec referenced by a data-spec attribute, drives the global decade lens,
+// and writes the "N of M winners" count lines + empty-state captions from the same CSVs the charts read.
 const sharedConfig = {
   background: "transparent",
   font: "Source Sans 3",
-  title: { font: "Fraunces", fontSize: 18, fontWeight: 600, color: "#EDE6DA", anchor: "start", subtitleColor: "#9C9385", subtitleFontSize: 13 },
-  axis: { labelColor: "#9C9385", titleColor: "#9C9385", gridColor: "#3A332C", domainColor: "#3A332C", tickColor: "#3A332C", labelFontSize: 12, titleFontSize: 12 },
-  legend: { labelColor: "#9C9385", titleColor: "#9C9385", labelFontSize: 12, titleFontSize: 12 },
+  title: { font: "Fraunces", fontSize: 18, fontWeight: 600, color: "#1F1A15", anchor: "start", subtitleColor: "#6B6257", subtitleFontSize: 13 },
+  axis: { labelColor: "#6B6257", titleColor: "#6B6257", gridColor: "#E6DFD3", domainColor: "#D9D1C4", tickColor: "#D9D1C4", labelFontSize: 12, titleFontSize: 12 },
+  legend: { labelColor: "#6B6257", titleColor: "#6B6257", labelFontSize: 12, titleFontSize: 12 },
   view: { stroke: null }
 };
 
 const views = [];
 const sel = document.getElementById("decade");
+const inLens = (year, decade) => decade === "All" || Math.floor(year / 10) * 10 + "s" === decade;
+
 document.querySelectorAll(".vis[data-spec]").forEach((el) => {
   vegaEmbed(el, el.dataset.spec, { actions: false, config: sharedConfig, renderer: "svg" })
     .then((res) => {
-      // Apply the current decade (late-loading charts, browser-restored select value).
       try { res.view.signal("decade", sel.value).run(); } catch (_) { /* chart has no decade param */ }
       views.push(res.view);
     })
@@ -27,9 +28,35 @@ document.querySelectorAll(".vis[data-spec]").forEach((el) => {
     });
 });
 
-// Global decade lens: one <select> drives the "decade" param in every chart that declares it.
+// Count lines. <p class="count" data-csv="data/flows.csv" data-noun="…" data-empty="vis-3-1">
+// Rows are counted with the same decade rule the specs use; data-filter (optional) names a column that must be non-empty;
+// data-where (optional, "col=value") keeps only rows whose column equals the value.
+const csvCache = {};
+const loadCsv = (url) => csvCache[url] || (csvCache[url] = fetch(url).then((r) => r.text()).then((t) => vega.read(t, { type: "csv", parse: "auto" })));
+const counts = [...document.querySelectorAll("p.count[data-csv]")];
+const winners = loadCsv("data/best_film_winners.csv");
+
+function updateCounts(decade) {
+  counts.forEach((p) => {
+    Promise.all([loadCsv(p.dataset.csv), winners]).then(([rows, win]) => {
+      const col = p.dataset.filter;
+      const where = p.dataset.where ? p.dataset.where.split("=") : null;
+      const keep = rows.filter((r) => inLens(+r.year, decade) && (!col || (r[col] !== null && r[col] !== "")) && (!where || String(r[where[0]]) === where[1]));
+      const key = p.dataset.key || "film";
+      const n = new Set(keep.map((r) => r[key])).size;
+      const m = win.filter((r) => inLens(+r.year, decade)).length;
+      const when = decade === "All" ? "across all years" : "in the " + decade;
+      p.innerHTML = "<b>" + n + " of " + m + "</b> winners " + when + " " + p.dataset.noun + ".";
+      const empty = p.dataset.empty && document.querySelector('.empty[data-for="' + p.dataset.empty + '"]');
+      if (empty) empty.classList.toggle("show", n === 0);
+    });
+  });
+}
+
 sel.addEventListener("change", (e) => {
   views.forEach((v) => {
     try { v.signal("decade", e.target.value).run(); } catch (_) { /* chart has no decade param */ }
   });
+  updateCounts(e.target.value);
 });
+updateCounts(sel.value);

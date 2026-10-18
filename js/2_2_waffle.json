@@ -50,7 +50,7 @@
   "mark": {
     "type": "square",
     "size": 440,
-    "stroke": "#14110F",
+    "stroke": "#FFFFFF",
     "strokeWidth": 2
   },
   "encoding": {
@@ -74,9 +74,9 @@
           "No setting data"
         ],
         "range": [
-          "#D4A24C",
-          "#EDE6DA",
-          "#5A5248"
+          "#B8892A",
+          "#2E2A26",
+          "#F7F3EC"
         ]
       },
       "legend": {

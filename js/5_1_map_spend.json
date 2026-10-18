@@ -14,9 +14,9 @@
   ],
   "layer": [
     {
-      "mark": {"type": "geoshape", "stroke": "#14110F", "strokeWidth": 1.2},
+      "mark": {"type": "geoshape", "stroke": "#FFFFFF", "strokeWidth": 1.2},
       "encoding": {
-        "color": {"field": "share_pct", "type": "quantitative", "scale": {"type": "linear", "domain": [0, 35], "range": ["#2A2521", "#D4A24C"]}, "legend": {"title": "Share of spend (%)", "orient": "bottom-left", "format": "d"}},
+        "color": {"field": "share_pct", "type": "quantitative", "scale": {"type": "linear", "domain": [0, 35], "range": ["#EFE9DF", "#B8892A"]}, "legend": {"title": "Share of spend (%)", "orient": "bottom-left", "format": "d"}},
         "tooltip": [
           {"field": "properties.STATE_NAME", "title": "State"},
           {"field": "share_pct", "title": "Share of spend (%)"},
@@ -31,7 +31,7 @@
         {"lon": 122.0, "lat": -26.0, "label": "WA 3%"}, {"lon": 133.5, "lat": -19.5, "label": "NT 1%*"},
         {"lon": 146.8, "lat": -42.2, "label": "TAS 1%*"}
       ]},
-      "mark": {"type": "text", "fontSize": 13, "fontWeight": 600, "color": "#EDE6DA"},
+      "mark": {"type": "text", "fontSize": 13, "fontWeight": 600, "color": "#1F1A15"},
       "encoding": {
         "longitude": {"field": "lon", "type": "quantitative"},
         "latitude": {"field": "lat", "type": "quantitative"},

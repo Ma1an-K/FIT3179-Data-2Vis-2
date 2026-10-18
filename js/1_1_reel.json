@@ -18,20 +18,20 @@
   ],
   "layer": [
     {
-      "mark": {"type": "arc", "stroke": "#14110F", "strokeWidth": 1},
+      "mark": {"type": "arc", "stroke": "#FFFFFF", "strokeWidth": 1},
       "encoding": {
         "theta": {"field": "theta", "type": "quantitative", "scale": {"domain": [0, 6.283185307]}},
         "theta2": {"field": "theta2"},
         "radius": {"field": "r_outer", "type": "quantitative", "scale": {"type": "linear", "domain": [0, 240], "range": [0, 240]}},
         "radius2": {"field": "r_inner"},
-        "color": {"field": "era", "type": "nominal", "scale": {"domain": ["AFI", "AACTA"], "range": ["#9C9385", "#D4A24C"]}, "legend": {"title": null, "orient": "top-right", "direction": "vertical"}},
+        "color": {"field": "era", "type": "nominal", "scale": {"domain": ["AFI", "AACTA"], "range": ["#2E2A26", "#B8892A"]}, "legend": {"title": null, "orient": "top-right", "direction": "vertical"}},
         "opacity": {"condition": {"test": "datum.in_lens", "value": 0.95}, "value": 0.18},
         "tooltip": [{"field": "film", "title": "Film"}, {"field": "year", "title": "Year"}, {"field": "director", "title": "Director"}]
       }
     },
     {
       "transform": [{"filter": "datum.year % 10 == 0 && datum.year != 1970 || datum.year == 1969"}],
-      "mark": {"type": "text", "fontSize": 12, "color": "#9C9385", "radiusOffset": 18},
+      "mark": {"type": "text", "fontSize": 12, "color": "#6B6257", "radiusOffset": 18},
       "encoding": {
         "theta": {"field": "theta", "type": "quantitative", "scale": {"domain": [0, 6.283185307]}},
         "radius": {"value": 205},
@@ -40,7 +40,7 @@
     },
     {
       "data": {"values": [{"t": "58 winners"}]},
-      "mark": {"type": "text", "fontSize": 22, "font": "Fraunces", "fontWeight": 600, "color": "#EDE6DA"},
+      "mark": {"type": "text", "fontSize": 22, "font": "Fraunces", "fontWeight": 600, "color": "#1F1A15"},
       "encoding": {"text": {"field": "t"}}
     }
   ]
