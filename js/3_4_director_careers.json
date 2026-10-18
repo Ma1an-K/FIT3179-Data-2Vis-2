@@ -1,0 +1,45 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "title": {"text": "Prolific, but rarely crowned twice", "subtitle": "Films directed (Wikidata count) against Best Film wins, for the fifteen most prolific winning directors"},
+  "width": "container",
+  "height": 420,
+  "data": {"url": "data/director_careers.csv", "format": {"type": "csv", "parse": {"films_directed": "number", "best_film_wins": "number", "first_win": "number", "last_win": "number"}}},
+  "transform": [
+    {"window": [{"op": "rank", "as": "r"}], "sort": [{"field": "films_directed", "order": "descending"}, {"field": "director"}]},
+    {"filter": "datum.r <= 15"}
+  ],
+  "layer": [
+    {
+      "mark": {"type": "rule", "stroke": "#D9D1C4", "strokeWidth": 3},
+      "encoding": {
+        "y": {"field": "director", "type": "nominal", "sort": {"field": "films_directed", "order": "descending"}, "axis": {"title": "Director"}},
+        "x": {"field": "best_film_wins", "type": "quantitative"},
+        "x2": {"field": "films_directed"}
+      }
+    },
+    {
+      "mark": {"type": "circle", "size": 140, "color": "#2E2A26"},
+      "encoding": {
+        "y": {"field": "director", "type": "nominal", "sort": {"field": "films_directed", "order": "descending"}},
+        "x": {"field": "films_directed", "type": "quantitative", "axis": {"title": "Films (ink = directed, gold = won Best Film)"}},
+        "tooltip": [{"field": "director"}, {"field": "films_directed", "title": "Films directed (Wikidata)"}, {"field": "best_film_wins", "title": "Best Film wins"}, {"field": "first_win", "title": "First win"}, {"field": "last_win", "title": "Last win"}]
+      }
+    },
+    {
+      "mark": {"type": "circle", "size": 140, "color": "#B8892A"},
+      "encoding": {
+        "y": {"field": "director", "type": "nominal", "sort": {"field": "films_directed", "order": "descending"}},
+        "x": {"field": "best_film_wins", "type": "quantitative"},
+        "tooltip": [{"field": "director"}, {"field": "best_film_wins", "title": "Best Film wins"}]
+      }
+    },
+    {
+      "mark": {"type": "text", "align": "left", "dx": 10, "fontSize": 11, "color": "#6B6257"},
+      "encoding": {
+        "y": {"field": "director", "type": "nominal", "sort": {"field": "films_directed", "order": "descending"}},
+        "x": {"field": "films_directed", "type": "quantitative"},
+        "text": {"field": "films_directed"}
+      }
+    }
+  ]
+}

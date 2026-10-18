@@ -1,0 +1,35 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "title": {"text": "Australian-born directors: first half vs second half", "subtitle": "Share of Best Film wins whose director was born in Australia, by period (directors with a located birthplace)"},
+  "width": "container",
+  "height": 300,
+  "data": {"url": "data/best_film_directors.csv"},
+  "transform": [
+    {"filter": "datum.lon != null"},
+    {"calculate": "datum.year <= 1996 ? '1969–1996' : '1997–2025'", "as": "period"},
+    {"calculate": "datum.birth_country == 'Australia' ? 'Born in Australia' : 'Born overseas'", "as": "origin"},
+    {"aggregate": [{"op": "count", "as": "n"}], "groupby": ["period", "origin"]},
+    {"joinaggregate": [{"op": "sum", "field": "n", "as": "total"}], "groupby": ["period"]},
+    {"calculate": "datum.n / datum.total * 100", "as": "pct"}
+  ],
+  "layer": [
+    {
+      "mark": {"type": "line", "strokeWidth": 3, "point": {"size": 90, "filled": true}},
+      "encoding": {
+        "x": {"field": "period", "type": "ordinal", "axis": {"title": "Award years", "labelAngle": 0}, "scale": {"padding": 0.5}},
+        "y": {"field": "pct", "type": "quantitative", "axis": {"title": "Share of wins (%)"}, "scale": {"domain": [0, 100]}},
+        "color": {"field": "origin", "type": "nominal", "scale": {"domain": ["Born in Australia", "Born overseas"], "range": ["#B8892A", "#2E2A26"]}, "legend": {"title": null, "orient": "top-right"}},
+        "tooltip": [{"field": "period"}, {"field": "origin"}, {"field": "n", "title": "Wins"}, {"field": "pct", "title": "Share (%)", "format": ".0f"}]
+      }
+    },
+    {
+      "mark": {"type": "text", "dx": 0, "dy": -14, "fontSize": 12, "fontWeight": 600},
+      "encoding": {
+        "x": {"field": "period", "type": "ordinal"},
+        "y": {"field": "pct", "type": "quantitative"},
+        "text": {"field": "pct", "format": ".0f"},
+        "color": {"field": "origin", "type": "nominal", "scale": {"domain": ["Born in Australia", "Born overseas"], "range": ["#B8892A", "#2E2A26"]}}
+      }
+    }
+  ]
+}
