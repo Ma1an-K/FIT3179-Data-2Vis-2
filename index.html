@@ -73,7 +73,13 @@
     </div>
     <p class="count" data-csv="data/flows.csv" data-noun="have a director with a located birthplace and a located film setting, so they are drawn as a line" data-empty="vis-3-1"></p>
     <p class="caption">Each line starts where a winning film's director was born and ends where that film's story is set. It says nothing about where directors live or work. Gold starts in Australia; ink starts overseas. Films whose setting is recorded only as a whole country have no line.</p>
-    <div class="placeholder">Chart 3.2 · World dot map of director birthplaces · coming</div>
+    <h3 class="chart-title"><span class="no">3.2</span>Where the directors were born</h3>
+    <div class="chart">
+      <div class="vis" id="vis-3-2" data-spec="js/3_2_map_birthplaces.json"></div>
+      <p class="empty" data-for="vis-3-2">No located director birthplaces for this decade.</p>
+    </div>
+    <p class="count" data-csv="data/best_film_directors.csv" data-filter="lon" data-noun="have a director with a located birthplace" data-empty="vis-3-2"></p>
+    <p class="caption">Circles sit at each director's birthplace. Sydney and Melbourne dominate, but the overseas cluster runs from Western Europe to the United States. The decade selector filters by award year.</p>
     <div class="placeholder">Chart 3.3 · Slope chart · coming</div>
     <div class="placeholder">Chart 3.4 · Director careers · coming</div>
   </section>
