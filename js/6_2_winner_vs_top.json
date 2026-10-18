@@ -51,7 +51,7 @@
             "order": "descending"
           },
           "axis": {
-            "title": null
+            "title": "Winning film (release year)"
           }
         },
         "x": {

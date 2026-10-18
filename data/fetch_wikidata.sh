@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Exports the Best Film CSVs from Wikidata. Run from the repo root.
 set -euo pipefail
-UA="FIT3179-student-project/0.1 (contact: info@ormada.com.au)"
+UA="FIT3179-student-project/0.1 (Monash University coursework)"
 # Makes up to 3 attempts in total (sleep 15 between) because the endpoint sometimes returns 504/timeouts.
 Q() {
   local n out

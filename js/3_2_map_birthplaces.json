@@ -13,9 +13,9 @@
       "mark": {"type": "geoshape", "fill": "#E5DED2", "stroke": "#FFFFFF", "strokeWidth": 0.5}
     },
     {
-      "data": {"url": "data/best_film_directors.csv"},
+      "data": {"url": "data/best_film_directors.csv", "format": {"type": "csv", "parse": {"year": "number", "lon": "number", "lat": "number"}}},
       "transform": [
-        {"filter": "datum.lon != null && datum.lat != null"},
+        {"filter": "isValid(datum.lon) && isValid(datum.lat)"},
         {"filter": "decade == 'All' || floor(datum.year / 10) * 10 + 's' == decade"},
         {"calculate": "datum.birth_country == 'Australia' ? 'Born in Australia' : 'Born overseas'", "as": "origin"},
         {"aggregate": [{"op": "count", "as": "wins"}, {"op": "values", "as": "rows"}], "groupby": ["birthplace", "birth_country", "origin", "lon", "lat"]},

@@ -2,8 +2,8 @@
 // and writes the "N of M winners" count lines + empty-state captions from the same CSVs the charts read.
 const sharedConfig = {
   background: "transparent",
-  font: "Source Sans 3",
-  title: { font: "Fraunces", fontSize: 18, fontWeight: 600, color: "#1F1A15", anchor: "start", subtitleColor: "#6B6257", subtitleFontSize: 13 },
+  font: "'Source Sans 3', sans-serif",
+  title: { font: "'Fraunces', serif", fontSize: 18, fontWeight: 600, color: "#1F1A15", anchor: "start", subtitleColor: "#6B6257", subtitleFontSize: 13 },
   axis: { labelColor: "#6B6257", titleColor: "#6B6257", gridColor: "#E6DFD3", domainColor: "#D9D1C4", tickColor: "#D9D1C4", labelFontSize: 12, titleFontSize: 12 },
   legend: { labelColor: "#6B6257", titleColor: "#6B6257", labelFontSize: 12, titleFontSize: 12 },
   view: { stroke: null }
@@ -14,7 +14,10 @@ const sel = document.getElementById("decade");
 const inLens = (year, decade) => decade === "All" || Math.floor(year / 10) * 10 + "s" === decade;
 
 document.querySelectorAll(".vis[data-spec]").forEach((el) => {
-  vegaEmbed(el, el.dataset.spec, { actions: false, config: sharedConfig, renderer: "svg" })
+  const host = document.createElement("div");
+  host.style.width = "100%";
+  el.appendChild(host);
+  vegaEmbed(host, el.dataset.spec, { actions: false, config: sharedConfig, renderer: "svg" })
     .then((res) => {
       try { res.view.signal("decade", sel.value).run(); } catch (_) { /* chart has no decade param */ }
       views.push(res.view);

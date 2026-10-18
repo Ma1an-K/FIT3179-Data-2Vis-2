@@ -11,7 +11,7 @@
   ],
   "layer": [
     {
-      "mark": {"type": "boxplot", "extent": "min-max", "size": 36, "box": {"fill": "#EFE9DF", "stroke": "#B8892A", "strokeWidth": 1.5}, "median": {"stroke": "#B8892A", "strokeWidth": 2.5}, "rule": {"stroke": "#B5AC9E"}, "ticks": {"stroke": "#B5AC9E"}},
+      "mark": {"type": "boxplot", "extent": "min-max", "size": 36, "box": {"fill": "#EFE9DF", "stroke": "#B8892A", "strokeWidth": 1.5}, "median": {"stroke": "#B8892A", "strokeWidth": 2.5}, "rule": {"stroke": "#B5AC9E"}, "ticks": {"stroke": "#B5AC9E", "size": 14}},
       "encoding": {
         "x": {"field": "decade_bin", "type": "ordinal", "axis": {"title": "Decade of the award", "labelAngle": 0}},
         "y": {"field": "runtime_min", "type": "quantitative", "axis": {"title": "Runtime (minutes)"}, "scale": {"zero": false}}

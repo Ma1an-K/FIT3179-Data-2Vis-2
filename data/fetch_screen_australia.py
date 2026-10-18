@@ -14,7 +14,7 @@ EMBEDS = {
     "top100": "5d694169-0897-48b5-8046-2121b2569dba",
     "top5": "95e85f20-c7b4-4f2a-b194-3cfb952a5cff",
 }
-UA = "FIT3179-student-project/0.1 (contact: info@ormada.com.au)"
+UA = "FIT3179-student-project/0.1 (Monash University coursework)"
 
 def infogram(eid):
     req = urllib.request.Request(f"https://e.infogram.com/{eid}?src=embed", headers={"User-Agent": UA})
@@ -130,7 +130,7 @@ with open(D / "winner_vs_top.csv", "w", newline="") as f:
     for r in t5rows:
         win = is_win(r[2], r[0])
         if not win or int(win["year"]) < 1988: continue
-        # a winner's release year can differ from its award year by one; prefer the block whose year matches, else award year - 1
+        # a winner can appear in two yearly blocks; keep the row with the larger gross
         top = [t for t in t5rows if t[0] == r[0] and t[1] == 1][0]
         row = [win["film"], r[0], r[4], r[1], top[2].replace("*", ""), top[4], int(r[1] == 1)]
         if win["film"] not in seen or r[4] > seen[win["film"]][2]: seen[win["film"]] = row

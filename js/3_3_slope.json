@@ -3,9 +3,9 @@
   "title": {"text": "Australian-born directors: first half vs second half", "subtitle": "Share of Best Film wins whose director was born in Australia, by period (directors with a located birthplace)"},
   "width": "container",
   "height": 300,
-  "data": {"url": "data/best_film_directors.csv"},
+  "data": {"url": "data/best_film_directors.csv", "format": {"type": "csv", "parse": {"year": "number", "lon": "number", "lat": "number"}}},
   "transform": [
-    {"filter": "datum.lon != null"},
+    {"filter": "isValid(datum.lon) && isValid(datum.lat)"},
     {"calculate": "datum.year <= 1996 ? '1969–1996' : '1997–2025'", "as": "period"},
     {"calculate": "datum.birth_country == 'Australia' ? 'Born in Australia' : 'Born overseas'", "as": "origin"},
     {"aggregate": [{"op": "count", "as": "n"}], "groupby": ["period", "origin"]},

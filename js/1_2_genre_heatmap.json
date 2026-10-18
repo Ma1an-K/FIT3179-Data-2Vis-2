@@ -22,7 +22,7 @@
       "mark": {"type": "text", "fontSize": 12, "fontWeight": 600},
       "encoding": {
         "text": {"field": "films"},
-        "color": {"condition": {"test": "datum.films >= 5", "value": "#FFFFFF"}, "value": "#1F1A15"}
+        "color": {"condition": {"test": "datum.films >= 7", "value": "#FFFFFF"}, "value": "#1F1A15"}
       }
     }
   ],

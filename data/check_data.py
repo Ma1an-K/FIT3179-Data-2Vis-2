@@ -93,6 +93,10 @@ if len(t5) != 190 or {r["year"] for r in t5} != {str(y) for y in range(1988, 202
 wvt = list(csv.DictReader((D / "winner_vs_top.csv").open()))
 if len(wvt) < 15 or len({r["film"] for r in wvt}) != len(wvt): errors.append("winner_vs_top rows or duplicates")
 if any(int(r["winner_gross"]) > int(r["top_gross"]) for r in wvt): errors.append("winner gross above the year's top gross")
+import json
+for jf in sorted((D.parent / "js").glob("*.json")):
+    txt = json.dumps(json.loads(jf.read_text()))
+    if "data/best_film_directors.csv" in txt and '"parse"' not in txt: errors.append(f"{jf.name} reads the directors CSV without a numeric parse")
 print("flows", len(flows))
 print("settings", counts)
 print("winners", len(winners), "| locations", len(locs), "| directors w/ coords", len(with_coords))
