@@ -6,6 +6,9 @@ Licence CC0. Retrieved 2026-10-11 with `fetch_wikidata.sh` (queries inside).
 - `best_film_locations.csv` — story settings (P840) and filming locations (P915) with coordinates; a `level` column marks country-level places (`country`, centroid only, ignored by the map) versus real places (`place`)
 - `best_film_settings.csv` — derived by `fetch_wikidata.sh`: one row per winner (`film, year, setting`), `Set in Australia` if any recorded setting is in Australia (including country-level), else `Set overseas` if any setting is recorded, else `No setting data`
 - `best_film_directors.csv` — directors with birthplace (P19) coordinates
+- `best_film_genres.csv` — `film, year, genre, genre_group`: one row per film x genre (Wikidata P136, English labels). `genre_group` keeps the 8 most common genres across the 58 winners and folds the rest into `Other`. Retrieved 2026-10-12.
+- `best_film_facts.csv` — `film, year, cast_size, runtime_min`: distinct cast members (P161) and runtime in minutes (P2047, minimum if several; empty if unrecorded). Retrieved 2026-10-12.
+- `director_careers.csv` — `director, films_directed, best_film_wins, first_win, last_win`: `films_directed` counts Wikidata film items with this director (P57), so it undercounts directors with thin Wikidata coverage; `best_film_wins` counts the winners among the 58. Libido counts its three omnibus directors. Retrieved 2026-10-12.
 
 Some recorded settings are region-level (e.g. a whole state); their centroid is used.
 Country-level settings still count in `best_film_settings.csv`, so films such as Mad Max: Fury Road and Gallipoli, whose only recorded setting is "Australia", count as `Set in Australia`.

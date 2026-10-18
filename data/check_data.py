@@ -8,6 +8,9 @@ HEADERS = {
     "best_film_locations.csv": "film,year,kind,place,country,lon,lat,level",
     "best_film_settings.csv": "film,year,setting",
     "best_film_directors.csv": "director,film,year,birthplace,birth_country,lon,lat",
+    "best_film_genres.csv": "film,year,genre,genre_group",
+    "best_film_facts.csv": "film,year,cast_size,runtime_min",
+    "director_careers.csv": "director,films_directed,best_film_wins,first_win,last_win",
 }
 for name, hdr in HEADERS.items():
     first = (D / name).open().readline().strip()
@@ -57,6 +60,19 @@ if any(abs(float(r["lon2"]) - 133.0) < 0.01 and abs(float(r["lat2"]) + 25.0) < 0
 if any(not r[k] for r in flows for k in ("lon1", "lat1", "lon2", "lat2")): errors.append("flow with missing endpoint")
 fp = [(r["director"], r["film"]) for r in flows]
 if len(fp) != len(set(fp)): errors.append("duplicate (director, film) flow rows")
+genres = list(csv.DictReader((D / "best_film_genres.csv").open()))
+if len({r["film"] for r in genres}) < 54: errors.append("fewer than 54 films with a genre")
+groups = {r["genre_group"] for r in genres}
+if len(groups) != 9 or "Other" not in groups: errors.append(f"genre_group should be 8 genres + Other, got {sorted(groups)}")
+facts = list(csv.DictReader((D / "best_film_facts.csv").open()))
+if len(facts) != len(winners): errors.append(f"facts rows {len(facts)} != winners")
+if sum(int(r["cast_size"]) > 0 for r in facts) < 50: errors.append("fewer than 50 films with a cast list")
+if sum(bool(r["runtime_min"]) for r in facts) < 50: errors.append("fewer than 50 films with a runtime")
+if any(r["runtime_min"] and not 40 <= int(r["runtime_min"]) <= 240 for r in facts): errors.append("implausible runtime")
+careers = list(csv.DictReader((D / "director_careers.csv").open()))
+if len(careers) != len({r["director"] for r in careers}): errors.append("duplicate director in careers")
+if any(int(r["best_film_wins"]) > int(r["films_directed"]) for r in careers): errors.append("wins exceed films directed")
+if sum(int(r["best_film_wins"]) for r in careers) < 58: errors.append("career wins do not cover the winners")
 print("flows", len(flows))
 print("settings", counts)
 print("winners", len(winners), "| locations", len(locs), "| directors w/ coords", len(with_coords))

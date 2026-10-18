@@ -163,4 +163,68 @@ Q 'SELECT ?f ?director (SAMPLE(?bp) AS ?birthplace) (SAMPLE(?bc) AS ?birth_count
   BIND(geof:longitude(?c2) AS ?lon2) BIND(geof:latitude(?c2) AS ?lat2)
 } GROUP BY ?f ?director' | append_manual data/flows.csv
 
+# All 58 winners by QID (award-linked + manual), for the film-level queries below.
+ALL_VALUES=$(python3 -c '
+import csv
+print(" ".join("wd:" + r["film_qid"].rsplit("/", 1)[-1] for r in csv.DictReader(open("data/best_film_winners.csv"))))')
+
+# 5. Genres (P136), one row per film x genre; genre_group keeps the 8 most common genres and folds the rest into Other.
+Q 'SELECT ?f ?genre WHERE {
+  VALUES ?f { '"$ALL_VALUES"' }
+  ?f wdt:P136 ?g . ?g rdfs:label ?genre FILTER(LANG(?genre)="en")
+}' > data/_genres_raw.csv
+python3 - <<'PY'
+import csv, collections
+win = {r["film_qid"]: r for r in csv.DictReader(open("data/best_film_winners.csv", newline=""))}
+rows = [r for r in csv.DictReader(open("data/_genres_raw.csv", newline=""))]
+by_genre = collections.Counter(r["genre"] for r in rows)
+top8 = [g for g, _ in by_genre.most_common(8)]
+pretty = lambda g: g.replace(" film", "").capitalize() if g.endswith(" film") else g.capitalize()
+with open("data/best_film_genres.csv", "w", newline="") as f:
+    w = csv.writer(f, lineterminator="\n"); w.writerow(["film", "year", "genre", "genre_group"])
+    for r in sorted(rows, key=lambda r: (int(win[r["f"]]["year"]), win[r["f"]]["film"], r["genre"])):
+        w.writerow([win[r["f"]]["film"], win[r["f"]]["year"], pretty(r["genre"]), pretty(r["genre"]) if r["genre"] in top8 else "Other"])
+PY
+rm data/_genres_raw.csv
+
+# 6. Film facts: credited cast size (distinct P161) and runtime in minutes (P2047, minimum if several).
+Q 'SELECT ?f (COUNT(DISTINCT ?a) AS ?cast_size) (MIN(?rt) AS ?runtime_min) WHERE {
+  VALUES ?f { '"$ALL_VALUES"' }
+  OPTIONAL { ?f wdt:P161 ?a }
+  OPTIONAL { ?f wdt:P2047 ?rt }
+} GROUP BY ?f' > data/_facts_raw.csv
+python3 - <<'PY'
+import csv
+win = {r["film_qid"]: r for r in csv.DictReader(open("data/best_film_winners.csv", newline=""))}
+raw = {r["f"]: r for r in csv.DictReader(open("data/_facts_raw.csv", newline=""))}
+with open("data/best_film_facts.csv", "w", newline="") as f:
+    w = csv.writer(f, lineterminator="\n"); w.writerow(["film", "year", "cast_size", "runtime_min"])
+    for q, r in sorted(win.items(), key=lambda kv: (int(kv[1]["year"]), kv[1]["film"])):
+        x = raw.get(q, {})
+        rt = x.get("runtime_min", "")
+        w.writerow([r["film"], r["year"], x.get("cast_size", "0"), str(int(float(rt))) if rt else ""])
+PY
+rm data/_facts_raw.csv
+
+# 7. Director careers: films directed on Wikidata (any film item with P57 = director) vs Best Film wins among the 58.
+Q 'SELECT ?director (COUNT(DISTINCT ?x) AS ?films_directed) (COUNT(DISTINCT ?f) AS ?best_film_wins) WHERE {
+  VALUES ?f { '"$ALL_VALUES"' }
+  ?f wdt:P57 ?d . ?d rdfs:label ?director FILTER(LANG(?director)="en")
+  ?x wdt:P57 ?d . ?x wdt:P31/wdt:P279* wd:Q11424 .
+} GROUP BY ?director ORDER BY DESC(?films_directed)' > data/_careers_raw.csv
+python3 - <<'PY'
+import csv
+win = list(csv.DictReader(open("data/best_film_winners.csv", newline="")))
+years = {}
+for r in win:
+    for d in r["director"].split("; "):
+        if d: years.setdefault(d, []).append(int(r["year"]))
+with open("data/director_careers.csv", "w", newline="") as f:
+    w = csv.writer(f, lineterminator="\n"); w.writerow(["director", "films_directed", "best_film_wins", "first_win", "last_win"])
+    for r in csv.DictReader(open("data/_careers_raw.csv", newline="")):
+        ys = years.get(r["director"], [])
+        w.writerow([r["director"], r["films_directed"], r["best_film_wins"], min(ys) if ys else "", max(ys) if ys else ""])
+PY
+rm data/_careers_raw.csv
+
 wc -l data/best_film_*.csv data/flows.csv
