@@ -1,61 +1,1090 @@
 {
   "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-  "title": {"text": "Where the winning stories are set and shot", "subtitle": "Places recorded on Wikidata for Best Film winners, 1969–2025 (Australia only)"},
+  "title": {
+    "text": "Where the winning stories are set and shot",
+    "subtitle": "Places recorded on Wikidata for Best Film winners, 1969–2025 (Australia only)"
+  },
   "width": "container",
   "height": 520,
-  "params": [{"name": "decade", "value": "All"}],
-  "projection": {"type": "conicEqualArea", "parallels": [-18, -36], "rotate": [-134, 0, 0], "center": [0, -27]},
+  "params": [
+    {
+      "name": "decade",
+      "value": "All"
+    }
+  ],
+  "projection": {
+    "type": "conicEqualArea",
+    "parallels": [
+      -18,
+      -36
+    ],
+    "rotate": [
+      -134,
+      0,
+      0
+    ],
+    "center": [
+      0,
+      -27
+    ]
+  },
   "layer": [
     {
-      "data": {"url": "js/au_states.geojson", "format": {"type": "json", "property": "features"}},
-      "mark": {"type": "geoshape", "fill": "#E5DED2", "stroke": "#FFFFFF", "strokeWidth": 1}
-    },
-    {
-      "data": {"url": "data/best_film_locations.csv"},
-      "transform": [
-        {"filter": "datum.level == 'place'"},
-        {"filter": "datum.lon != null && datum.lat != null"},
-        {"filter": "datum.country == 'Australia'"},
-        {"filter": "datum.kind == 'setting'"},
-        {"filter": "decade == 'All' || floor(datum.year / 10) * 10 + 's' == decade"},
-        {"aggregate": [{"op": "count", "as": "films"}, {"op": "values", "as": "rows"}], "groupby": ["place", "lon", "lat"]},
-        {"calculate": "join(pluck(datum.rows, 'film'), ', ')", "as": "titles"}
-      ],
-      "mark": {"type": "circle", "opacity": 0.85, "stroke": "#FFFFFF", "strokeWidth": 0.5},
-      "encoding": {
-        "longitude": {"field": "lon", "type": "quantitative"},
-        "latitude": {"field": "lat", "type": "quantitative"},
-        "size": {"field": "films", "type": "quantitative", "scale": {"domain": [1, 5], "range": [60, 900]}, "legend": {"title": "Films set here", "orient": "bottom-left", "values": [1, 2, 3, 4, 5]}},
-        "color": {"value": "#B8892A"},
-        "tooltip": [{"field": "place", "title": "Place"}, {"field": "films", "title": "Films set here"}, {"field": "titles", "title": "Titles"}]
+      "data": {
+        "url": "js/au_states.geojson",
+        "format": {
+          "type": "json",
+          "property": "features"
+        }
+      },
+      "mark": {
+        "type": "geoshape",
+        "fill": "#E5DED2",
+        "stroke": "#FFFFFF",
+        "strokeWidth": 1
       }
     },
     {
-      "data": {"url": "data/best_film_locations.csv"},
+      "data": {
+        "url": "data/best_film_locations.csv",
+        "format": {
+          "type": "csv",
+          "parse": {
+            "year": "number",
+            "lon": "number",
+            "lat": "number"
+          }
+        }
+      },
       "transform": [
-        {"filter": "datum.level == 'place'"},
-        {"filter": "datum.lon != null && datum.lat != null"},
-        {"filter": "datum.country == 'Australia'"},
-        {"filter": "datum.kind == 'filming'"},
-        {"filter": "decade == 'All' || floor(datum.year / 10) * 10 + 's' == decade"}
+        {
+          "filter": "datum.level == 'place' && datum.country == 'Australia' && isValid(datum.lon) && isValid(datum.lat)"
+        },
+        {
+          "filter": "decade == 'All' || floor(datum.year / 10) * 10 + 's' == decade"
+        },
+        {
+          "calculate": "datum.place == 'Docklands Studios Melbourne' ? 'Melbourne' : (datum.place == 'Disney Studios Australia' || datum.place == 'Centennial Park Cemetery') ? 'Sydney' : datum.place",
+          "as": "place2"
+        },
+        {
+          "calculate": "datum.place2 == 'Melbourne' ? 144.963 : datum.place2 == 'Sydney' ? 151.21 : datum.place2 == 'Tasmania' ? 146.4 : datum.lon",
+          "as": "plon"
+        },
+        {
+          "calculate": "datum.place2 == 'Melbourne' ? -37.814 : datum.place2 == 'Sydney' ? -33.868 : datum.lat",
+          "as": "plat"
+        },
+        {
+          "aggregate": [
+            {
+              "op": "count",
+              "as": "n"
+            }
+          ],
+          "groupby": [
+            "place2",
+            "plon",
+            "plat",
+            "kind",
+            "film",
+            "year"
+          ]
+        },
+        {
+          "calculate": "datum.kind == 'setting' ? 1 : 0",
+          "as": "isSet"
+        },
+        {
+          "calculate": "datum.kind == 'filming' ? 1 : 0",
+          "as": "isShot"
+        },
+        {
+          "calculate": "(datum.kind == 'setting' ? 'set: ' : 'shot: ') + datum.film + ' (' + datum.year + ')'",
+          "as": "tag"
+        },
+        {
+          "aggregate": [
+            {
+              "op": "sum",
+              "field": "isSet",
+              "as": "set"
+            },
+            {
+              "op": "sum",
+              "field": "isShot",
+              "as": "shot"
+            },
+            {
+              "op": "values",
+              "as": "rows"
+            }
+          ],
+          "groupby": [
+            "place2",
+            "plon",
+            "plat"
+          ]
+        },
+        {
+          "calculate": "join(pluck(datum.rows, 'tag'), '; ')",
+          "as": "titles"
+        },
+        {
+          "calculate": "indexof(['New South Wales', 'South Australia', 'Northern Territory', 'Queensland', 'Western Australia', 'Tasmania', 'Victoria'], datum.place2) >= 0",
+          "as": "isState"
+        },
+        {
+          "calculate": "indexof(['Hobart'], datum.place2) >= 0",
+          "as": "side"
+        },
+        {
+          "calculate": "'M0,0L0,' + (-datum.set * 14)",
+          "as": "setPath"
+        },
+        {
+          "calculate": "datum.set > 0 && datum.shot > 0 ? 7 : 0",
+          "as": "sx"
+        },
+        {
+          "calculate": "'M' + datum.sx + ',0L' + datum.sx + ',' + (-datum.shot * 14)",
+          "as": "shotPath"
+        },
+        {
+          "filter": "datum.set > 0"
+        }
       ],
-      "mark": {"type": "point", "shape": "circle", "size": 140, "stroke": "#2E2A26", "strokeWidth": 1.2, "fill": null, "opacity": 0.8},
+      "mark": {
+        "type": "point",
+        "filled": false,
+        "size": 4,
+        "opacity": 1,
+        "stroke": "#B8892A",
+        "strokeWidth": 5,
+        "strokeCap": "butt"
+      },
       "encoding": {
-        "longitude": {"field": "lon", "type": "quantitative"},
-        "latitude": {"field": "lat", "type": "quantitative"},
-        "tooltip": [{"field": "place", "title": "Filmed at"}, {"field": "film", "title": "Film"}, {"field": "year", "title": "Year"}]
+        "longitude": {
+          "field": "plon",
+          "type": "quantitative"
+        },
+        "latitude": {
+          "field": "plat",
+          "type": "quantitative"
+        },
+        "shape": {
+          "field": "setPath",
+          "type": "nominal",
+          "scale": null
+        },
+        "opacity": {
+          "condition": {
+            "test": "datum.isState",
+            "value": 0.5
+          },
+          "value": 1
+        },
+        "tooltip": [
+          {
+            "field": "place2",
+            "title": "Place"
+          },
+          {
+            "field": "set",
+            "title": "Films set here"
+          },
+          {
+            "field": "shot",
+            "title": "Films shot here"
+          },
+          {
+            "field": "titles",
+            "title": "Titles"
+          }
+        ]
       }
     },
     {
-      "data": {"url": "data/best_film_locations.csv"},
+      "data": {
+        "url": "data/best_film_locations.csv",
+        "format": {
+          "type": "csv",
+          "parse": {
+            "year": "number",
+            "lon": "number",
+            "lat": "number"
+          }
+        }
+      },
       "transform": [
-        {"filter": "datum.level == 'place' && datum.kind == 'setting' && datum.place == 'Sydney'"},
-        {"filter": "decade == 'All' || floor(datum.year / 10) * 10 + 's' == decade"},
-        {"aggregate": [{"op": "count", "as": "n"}], "groupby": ["place", "lon", "lat"]},
-        {"calculate": "'Sydney: ' + datum.n + (datum.n == 1 ? ' winning film is set here' : ' winning films are set here') + (decade == 'All' ? ' (all years)' : ' (' + decade + ')')", "as": "label"}
+        {
+          "filter": "datum.level == 'place' && datum.country == 'Australia' && isValid(datum.lon) && isValid(datum.lat)"
+        },
+        {
+          "filter": "decade == 'All' || floor(datum.year / 10) * 10 + 's' == decade"
+        },
+        {
+          "calculate": "datum.place == 'Docklands Studios Melbourne' ? 'Melbourne' : (datum.place == 'Disney Studios Australia' || datum.place == 'Centennial Park Cemetery') ? 'Sydney' : datum.place",
+          "as": "place2"
+        },
+        {
+          "calculate": "datum.place2 == 'Melbourne' ? 144.963 : datum.place2 == 'Sydney' ? 151.21 : datum.place2 == 'Tasmania' ? 146.4 : datum.lon",
+          "as": "plon"
+        },
+        {
+          "calculate": "datum.place2 == 'Melbourne' ? -37.814 : datum.place2 == 'Sydney' ? -33.868 : datum.lat",
+          "as": "plat"
+        },
+        {
+          "aggregate": [
+            {
+              "op": "count",
+              "as": "n"
+            }
+          ],
+          "groupby": [
+            "place2",
+            "plon",
+            "plat",
+            "kind",
+            "film",
+            "year"
+          ]
+        },
+        {
+          "calculate": "datum.kind == 'setting' ? 1 : 0",
+          "as": "isSet"
+        },
+        {
+          "calculate": "datum.kind == 'filming' ? 1 : 0",
+          "as": "isShot"
+        },
+        {
+          "calculate": "(datum.kind == 'setting' ? 'set: ' : 'shot: ') + datum.film + ' (' + datum.year + ')'",
+          "as": "tag"
+        },
+        {
+          "aggregate": [
+            {
+              "op": "sum",
+              "field": "isSet",
+              "as": "set"
+            },
+            {
+              "op": "sum",
+              "field": "isShot",
+              "as": "shot"
+            },
+            {
+              "op": "values",
+              "as": "rows"
+            }
+          ],
+          "groupby": [
+            "place2",
+            "plon",
+            "plat"
+          ]
+        },
+        {
+          "calculate": "join(pluck(datum.rows, 'tag'), '; ')",
+          "as": "titles"
+        },
+        {
+          "calculate": "indexof(['New South Wales', 'South Australia', 'Northern Territory', 'Queensland', 'Western Australia', 'Tasmania', 'Victoria'], datum.place2) >= 0",
+          "as": "isState"
+        },
+        {
+          "calculate": "indexof(['Hobart'], datum.place2) >= 0",
+          "as": "side"
+        },
+        {
+          "calculate": "'M0,0L0,' + (-datum.set * 14)",
+          "as": "setPath"
+        },
+        {
+          "calculate": "datum.set > 0 && datum.shot > 0 ? 7 : 0",
+          "as": "sx"
+        },
+        {
+          "calculate": "'M' + datum.sx + ',0L' + datum.sx + ',' + (-datum.shot * 14)",
+          "as": "shotPath"
+        },
+        {
+          "filter": "datum.shot > 0"
+        }
       ],
-      "mark": {"type": "text", "align": "left", "dx": 14, "dy": -6, "fontSize": 12, "fontWeight": 600, "color": "#1F1A15"},
-      "encoding": {"longitude": {"field": "lon", "type": "quantitative"}, "latitude": {"field": "lat", "type": "quantitative"}, "text": {"field": "label"}}
+      "mark": {
+        "type": "point",
+        "filled": false,
+        "size": 4,
+        "opacity": 1,
+        "stroke": "#2E2A26",
+        "strokeWidth": 5,
+        "strokeCap": "butt"
+      },
+      "encoding": {
+        "longitude": {
+          "field": "plon",
+          "type": "quantitative"
+        },
+        "latitude": {
+          "field": "plat",
+          "type": "quantitative"
+        },
+        "shape": {
+          "field": "shotPath",
+          "type": "nominal",
+          "scale": null
+        },
+        "opacity": {
+          "condition": {
+            "test": "datum.isState",
+            "value": 0.5
+          },
+          "value": 1
+        },
+        "tooltip": [
+          {
+            "field": "place2",
+            "title": "Place"
+          },
+          {
+            "field": "set",
+            "title": "Films set here"
+          },
+          {
+            "field": "shot",
+            "title": "Films shot here"
+          },
+          {
+            "field": "titles",
+            "title": "Titles"
+          }
+        ]
+      }
+    },
+    {
+      "data": {
+        "url": "data/best_film_locations.csv",
+        "format": {
+          "type": "csv",
+          "parse": {
+            "year": "number",
+            "lon": "number",
+            "lat": "number"
+          }
+        }
+      },
+      "transform": [
+        {
+          "filter": "datum.level == 'place' && datum.country == 'Australia' && isValid(datum.lon) && isValid(datum.lat)"
+        },
+        {
+          "filter": "decade == 'All' || floor(datum.year / 10) * 10 + 's' == decade"
+        },
+        {
+          "calculate": "datum.place == 'Docklands Studios Melbourne' ? 'Melbourne' : (datum.place == 'Disney Studios Australia' || datum.place == 'Centennial Park Cemetery') ? 'Sydney' : datum.place",
+          "as": "place2"
+        },
+        {
+          "calculate": "datum.place2 == 'Melbourne' ? 144.963 : datum.place2 == 'Sydney' ? 151.21 : datum.place2 == 'Tasmania' ? 146.4 : datum.lon",
+          "as": "plon"
+        },
+        {
+          "calculate": "datum.place2 == 'Melbourne' ? -37.814 : datum.place2 == 'Sydney' ? -33.868 : datum.lat",
+          "as": "plat"
+        },
+        {
+          "aggregate": [
+            {
+              "op": "count",
+              "as": "n"
+            }
+          ],
+          "groupby": [
+            "place2",
+            "plon",
+            "plat",
+            "kind",
+            "film",
+            "year"
+          ]
+        },
+        {
+          "calculate": "datum.kind == 'setting' ? 1 : 0",
+          "as": "isSet"
+        },
+        {
+          "calculate": "datum.kind == 'filming' ? 1 : 0",
+          "as": "isShot"
+        },
+        {
+          "calculate": "(datum.kind == 'setting' ? 'set: ' : 'shot: ') + datum.film + ' (' + datum.year + ')'",
+          "as": "tag"
+        },
+        {
+          "aggregate": [
+            {
+              "op": "sum",
+              "field": "isSet",
+              "as": "set"
+            },
+            {
+              "op": "sum",
+              "field": "isShot",
+              "as": "shot"
+            },
+            {
+              "op": "values",
+              "as": "rows"
+            }
+          ],
+          "groupby": [
+            "place2",
+            "plon",
+            "plat"
+          ]
+        },
+        {
+          "calculate": "join(pluck(datum.rows, 'tag'), '; ')",
+          "as": "titles"
+        },
+        {
+          "calculate": "indexof(['New South Wales', 'South Australia', 'Northern Territory', 'Queensland', 'Western Australia', 'Tasmania', 'Victoria'], datum.place2) >= 0",
+          "as": "isState"
+        },
+        {
+          "calculate": "indexof(['Hobart'], datum.place2) >= 0",
+          "as": "side"
+        },
+        {
+          "calculate": "'M0,0L0,' + (-datum.set * 14)",
+          "as": "setPath"
+        },
+        {
+          "calculate": "datum.set > 0 && datum.shot > 0 ? 7 : 0",
+          "as": "sx"
+        },
+        {
+          "calculate": "'M' + datum.sx + ',0L' + datum.sx + ',' + (-datum.shot * 14)",
+          "as": "shotPath"
+        }
+      ],
+      "mark": {
+        "type": "circle",
+        "size": 22,
+        "color": "#2E2A26",
+        "opacity": 0.9
+      },
+      "encoding": {
+        "longitude": {
+          "field": "plon",
+          "type": "quantitative"
+        },
+        "latitude": {
+          "field": "plat",
+          "type": "quantitative"
+        },
+        "tooltip": [
+          {
+            "field": "place2",
+            "title": "Place"
+          },
+          {
+            "field": "set",
+            "title": "Films set here"
+          },
+          {
+            "field": "shot",
+            "title": "Films shot here"
+          },
+          {
+            "field": "titles",
+            "title": "Titles"
+          }
+        ]
+      }
+    },
+    {
+      "data": {
+        "url": "data/best_film_locations.csv",
+        "format": {
+          "type": "csv",
+          "parse": {
+            "year": "number",
+            "lon": "number",
+            "lat": "number"
+          }
+        }
+      },
+      "transform": [
+        {
+          "filter": "datum.level == 'place' && datum.country == 'Australia' && isValid(datum.lon) && isValid(datum.lat)"
+        },
+        {
+          "filter": "decade == 'All' || floor(datum.year / 10) * 10 + 's' == decade"
+        },
+        {
+          "calculate": "datum.place == 'Docklands Studios Melbourne' ? 'Melbourne' : (datum.place == 'Disney Studios Australia' || datum.place == 'Centennial Park Cemetery') ? 'Sydney' : datum.place",
+          "as": "place2"
+        },
+        {
+          "calculate": "datum.place2 == 'Melbourne' ? 144.963 : datum.place2 == 'Sydney' ? 151.21 : datum.place2 == 'Tasmania' ? 146.4 : datum.lon",
+          "as": "plon"
+        },
+        {
+          "calculate": "datum.place2 == 'Melbourne' ? -37.814 : datum.place2 == 'Sydney' ? -33.868 : datum.lat",
+          "as": "plat"
+        },
+        {
+          "aggregate": [
+            {
+              "op": "count",
+              "as": "n"
+            }
+          ],
+          "groupby": [
+            "place2",
+            "plon",
+            "plat",
+            "kind",
+            "film",
+            "year"
+          ]
+        },
+        {
+          "calculate": "datum.kind == 'setting' ? 1 : 0",
+          "as": "isSet"
+        },
+        {
+          "calculate": "datum.kind == 'filming' ? 1 : 0",
+          "as": "isShot"
+        },
+        {
+          "calculate": "(datum.kind == 'setting' ? 'set: ' : 'shot: ') + datum.film + ' (' + datum.year + ')'",
+          "as": "tag"
+        },
+        {
+          "aggregate": [
+            {
+              "op": "sum",
+              "field": "isSet",
+              "as": "set"
+            },
+            {
+              "op": "sum",
+              "field": "isShot",
+              "as": "shot"
+            },
+            {
+              "op": "values",
+              "as": "rows"
+            }
+          ],
+          "groupby": [
+            "place2",
+            "plon",
+            "plat"
+          ]
+        },
+        {
+          "calculate": "join(pluck(datum.rows, 'tag'), '; ')",
+          "as": "titles"
+        },
+        {
+          "calculate": "indexof(['New South Wales', 'South Australia', 'Northern Territory', 'Queensland', 'Western Australia', 'Tasmania', 'Victoria'], datum.place2) >= 0",
+          "as": "isState"
+        },
+        {
+          "calculate": "indexof(['Hobart'], datum.place2) >= 0",
+          "as": "side"
+        },
+        {
+          "calculate": "'M0,0L0,' + (-datum.set * 14)",
+          "as": "setPath"
+        },
+        {
+          "calculate": "datum.set > 0 && datum.shot > 0 ? 7 : 0",
+          "as": "sx"
+        },
+        {
+          "calculate": "'M' + datum.sx + ',0L' + datum.sx + ',' + (-datum.shot * 14)",
+          "as": "shotPath"
+        },
+        {
+          "filter": "datum.set > 0"
+        }
+      ],
+      "mark": {
+        "type": "text",
+        "fontSize": 11,
+        "color": "#6B6257",
+        "align": "right",
+        "dx": {
+          "expr": "datum.side ? -4 : 2"
+        },
+        "dy": {
+          "expr": "datum.side ? -7 : -datum.set * 14 - 6"
+        },
+        "baseline": {
+          "expr": "datum.side ? 'middle' : 'alphabetic'"
+        }
+      },
+      "encoding": {
+        "longitude": {
+          "field": "plon",
+          "type": "quantitative"
+        },
+        "latitude": {
+          "field": "plat",
+          "type": "quantitative"
+        },
+        "text": {
+          "field": "set"
+        }
+      }
+    },
+    {
+      "data": {
+        "url": "data/best_film_locations.csv",
+        "format": {
+          "type": "csv",
+          "parse": {
+            "year": "number",
+            "lon": "number",
+            "lat": "number"
+          }
+        }
+      },
+      "transform": [
+        {
+          "filter": "datum.level == 'place' && datum.country == 'Australia' && isValid(datum.lon) && isValid(datum.lat)"
+        },
+        {
+          "filter": "decade == 'All' || floor(datum.year / 10) * 10 + 's' == decade"
+        },
+        {
+          "calculate": "datum.place == 'Docklands Studios Melbourne' ? 'Melbourne' : (datum.place == 'Disney Studios Australia' || datum.place == 'Centennial Park Cemetery') ? 'Sydney' : datum.place",
+          "as": "place2"
+        },
+        {
+          "calculate": "datum.place2 == 'Melbourne' ? 144.963 : datum.place2 == 'Sydney' ? 151.21 : datum.place2 == 'Tasmania' ? 146.4 : datum.lon",
+          "as": "plon"
+        },
+        {
+          "calculate": "datum.place2 == 'Melbourne' ? -37.814 : datum.place2 == 'Sydney' ? -33.868 : datum.lat",
+          "as": "plat"
+        },
+        {
+          "aggregate": [
+            {
+              "op": "count",
+              "as": "n"
+            }
+          ],
+          "groupby": [
+            "place2",
+            "plon",
+            "plat",
+            "kind",
+            "film",
+            "year"
+          ]
+        },
+        {
+          "calculate": "datum.kind == 'setting' ? 1 : 0",
+          "as": "isSet"
+        },
+        {
+          "calculate": "datum.kind == 'filming' ? 1 : 0",
+          "as": "isShot"
+        },
+        {
+          "calculate": "(datum.kind == 'setting' ? 'set: ' : 'shot: ') + datum.film + ' (' + datum.year + ')'",
+          "as": "tag"
+        },
+        {
+          "aggregate": [
+            {
+              "op": "sum",
+              "field": "isSet",
+              "as": "set"
+            },
+            {
+              "op": "sum",
+              "field": "isShot",
+              "as": "shot"
+            },
+            {
+              "op": "values",
+              "as": "rows"
+            }
+          ],
+          "groupby": [
+            "place2",
+            "plon",
+            "plat"
+          ]
+        },
+        {
+          "calculate": "join(pluck(datum.rows, 'tag'), '; ')",
+          "as": "titles"
+        },
+        {
+          "calculate": "indexof(['New South Wales', 'South Australia', 'Northern Territory', 'Queensland', 'Western Australia', 'Tasmania', 'Victoria'], datum.place2) >= 0",
+          "as": "isState"
+        },
+        {
+          "calculate": "indexof(['Hobart'], datum.place2) >= 0",
+          "as": "side"
+        },
+        {
+          "calculate": "'M0,0L0,' + (-datum.set * 14)",
+          "as": "setPath"
+        },
+        {
+          "calculate": "datum.set > 0 && datum.shot > 0 ? 7 : 0",
+          "as": "sx"
+        },
+        {
+          "calculate": "'M' + datum.sx + ',0L' + datum.sx + ',' + (-datum.shot * 14)",
+          "as": "shotPath"
+        },
+        {
+          "filter": "datum.shot > 0"
+        }
+      ],
+      "mark": {
+        "type": "text",
+        "fontSize": 11,
+        "color": "#6B6257",
+        "align": "left",
+        "dx": {
+          "expr": "datum.side ? datum.sx + 4 : datum.sx - 2"
+        },
+        "dy": {
+          "expr": "datum.side ? -7 : -datum.shot * 14 - 6"
+        },
+        "baseline": {
+          "expr": "datum.side ? 'middle' : 'alphabetic'"
+        }
+      },
+      "encoding": {
+        "longitude": {
+          "field": "plon",
+          "type": "quantitative"
+        },
+        "latitude": {
+          "field": "plat",
+          "type": "quantitative"
+        },
+        "text": {
+          "field": "shot"
+        }
+      }
+    },
+    {
+      "data": {
+        "url": "data/best_film_locations.csv",
+        "format": {
+          "type": "csv",
+          "parse": {
+            "year": "number",
+            "lon": "number",
+            "lat": "number"
+          }
+        }
+      },
+      "transform": [
+        {
+          "filter": "datum.level == 'place' && datum.country == 'Australia' && isValid(datum.lon) && isValid(datum.lat)"
+        },
+        {
+          "filter": "decade == 'All' || floor(datum.year / 10) * 10 + 's' == decade"
+        },
+        {
+          "calculate": "datum.place == 'Docklands Studios Melbourne' ? 'Melbourne' : (datum.place == 'Disney Studios Australia' || datum.place == 'Centennial Park Cemetery') ? 'Sydney' : datum.place",
+          "as": "place2"
+        },
+        {
+          "calculate": "datum.place2 == 'Melbourne' ? 144.963 : datum.place2 == 'Sydney' ? 151.21 : datum.place2 == 'Tasmania' ? 146.4 : datum.lon",
+          "as": "plon"
+        },
+        {
+          "calculate": "datum.place2 == 'Melbourne' ? -37.814 : datum.place2 == 'Sydney' ? -33.868 : datum.lat",
+          "as": "plat"
+        },
+        {
+          "aggregate": [
+            {
+              "op": "count",
+              "as": "n"
+            }
+          ],
+          "groupby": [
+            "place2",
+            "plon",
+            "plat",
+            "kind",
+            "film",
+            "year"
+          ]
+        },
+        {
+          "calculate": "datum.kind == 'setting' ? 1 : 0",
+          "as": "isSet"
+        },
+        {
+          "calculate": "datum.kind == 'filming' ? 1 : 0",
+          "as": "isShot"
+        },
+        {
+          "calculate": "(datum.kind == 'setting' ? 'set: ' : 'shot: ') + datum.film + ' (' + datum.year + ')'",
+          "as": "tag"
+        },
+        {
+          "aggregate": [
+            {
+              "op": "sum",
+              "field": "isSet",
+              "as": "set"
+            },
+            {
+              "op": "sum",
+              "field": "isShot",
+              "as": "shot"
+            },
+            {
+              "op": "values",
+              "as": "rows"
+            }
+          ],
+          "groupby": [
+            "place2",
+            "plon",
+            "plat"
+          ]
+        },
+        {
+          "calculate": "join(pluck(datum.rows, 'tag'), '; ')",
+          "as": "titles"
+        },
+        {
+          "calculate": "indexof(['New South Wales', 'South Australia', 'Northern Territory', 'Queensland', 'Western Australia', 'Tasmania', 'Victoria'], datum.place2) >= 0",
+          "as": "isState"
+        },
+        {
+          "calculate": "indexof(['Hobart'], datum.place2) >= 0",
+          "as": "side"
+        },
+        {
+          "calculate": "'M0,0L0,' + (-datum.set * 14)",
+          "as": "setPath"
+        },
+        {
+          "calculate": "datum.set > 0 && datum.shot > 0 ? 7 : 0",
+          "as": "sx"
+        },
+        {
+          "calculate": "'M' + datum.sx + ',0L' + datum.sx + ',' + (-datum.shot * 14)",
+          "as": "shotPath"
+        },
+        {
+          "calculate": "datum.isState ? datum.place2 + ' (whole state)' : datum.place2",
+          "as": "label"
+        },
+        {
+          "calculate": "datum.place2 == 'Bendigo' ? 'right' : (datum.place2 == 'Hobart' ? 'center' : (datum.place2 == 'Tasmania' ? 'right' : (datum.place2 == 'Jindabyne' ? 'left' : (datum.place2 == 'New South Wales' ? 'right' : ('center')))))",
+          "as": "lalign"
+        },
+        {
+          "calculate": "datum.place2 == 'Bendigo' ? -10 : (datum.place2 == 'Hobart' ? 3.5 : (datum.place2 == 'Tasmania' ? -10 : (datum.place2 == 'Jindabyne' ? 10 : (datum.place2 == 'New South Wales' ? -8 : (datum.sx / 2)))))",
+          "as": "ldx"
+        },
+        {
+          "calculate": "datum.place2 == 'Bendigo' ? 0 : (datum.place2 == 'Hobart' ? 12 : (datum.place2 == 'Tasmania' ? -7 : (datum.place2 == 'Jindabyne' ? 0 : (datum.place2 == 'New South Wales' ? -12 : (12)))))",
+          "as": "ldy"
+        }
+      ],
+      "mark": {
+        "type": "text",
+        "fontSize": 11,
+        "baseline": "middle",
+        "align": {
+          "expr": "datum.lalign"
+        },
+        "dx": {
+          "expr": "datum.ldx"
+        },
+        "dy": {
+          "expr": "datum.ldy"
+        },
+        "color": {
+          "expr": "datum.isState ? '#6B6257' : '#1F1A15'"
+        }
+      },
+      "encoding": {
+        "longitude": {
+          "field": "plon",
+          "type": "quantitative"
+        },
+        "latitude": {
+          "field": "plat",
+          "type": "quantitative"
+        },
+        "text": {
+          "field": "label"
+        },
+        "tooltip": [
+          {
+            "field": "place2",
+            "title": "Place"
+          },
+          {
+            "field": "set",
+            "title": "Films set here"
+          },
+          {
+            "field": "shot",
+            "title": "Films shot here"
+          },
+          {
+            "field": "titles",
+            "title": "Titles"
+          }
+        ]
+      }
+    },
+    {
+      "data": {
+        "values": [
+          {
+            "lon": 114.0,
+            "lat": -40.5,
+            "setPath": "M0,0L0,-42",
+            "shotPath": "M7,0L7,-42"
+          }
+        ]
+      },
+      "mark": {
+        "type": "point",
+        "filled": false,
+        "size": 4,
+        "opacity": 1,
+        "stroke": "#B8892A",
+        "strokeWidth": 5,
+        "strokeCap": "butt"
+      },
+      "encoding": {
+        "longitude": {
+          "field": "lon",
+          "type": "quantitative"
+        },
+        "latitude": {
+          "field": "lat",
+          "type": "quantitative"
+        },
+        "shape": {
+          "field": "setPath",
+          "type": "nominal",
+          "scale": null
+        }
+      }
+    },
+    {
+      "data": {
+        "values": [
+          {
+            "lon": 114.0,
+            "lat": -40.5,
+            "setPath": "M0,0L0,-42",
+            "shotPath": "M7,0L7,-42"
+          }
+        ]
+      },
+      "mark": {
+        "type": "point",
+        "filled": false,
+        "size": 4,
+        "opacity": 1,
+        "stroke": "#2E2A26",
+        "strokeWidth": 5,
+        "strokeCap": "butt"
+      },
+      "encoding": {
+        "longitude": {
+          "field": "lon",
+          "type": "quantitative"
+        },
+        "latitude": {
+          "field": "lat",
+          "type": "quantitative"
+        },
+        "shape": {
+          "field": "shotPath",
+          "type": "nominal",
+          "scale": null
+        }
+      }
+    },
+    {
+      "data": {
+        "values": [
+          {
+            "lon": 114.0,
+            "lat": -40.5,
+            "t": "set here",
+            "a": "right",
+            "dx": -6,
+            "dy": -21
+          },
+          {
+            "lon": 114.0,
+            "lat": -40.5,
+            "t": "shot here",
+            "a": "left",
+            "dx": 13,
+            "dy": -21
+          },
+          {
+            "lon": 114.0,
+            "lat": -40.5,
+            "t": "spike height = number of winning films (3 shown)",
+            "a": "left",
+            "dx": -40,
+            "dy": 14
+          }
+        ]
+      },
+      "mark": {
+        "type": "text",
+        "fontSize": 11,
+        "color": "#6B6257",
+        "baseline": "middle",
+        "align": {
+          "expr": "datum.a"
+        },
+        "dx": {
+          "expr": "datum.dx"
+        },
+        "dy": {
+          "expr": "datum.dy"
+        }
+      },
+      "encoding": {
+        "longitude": {
+          "field": "lon",
+          "type": "quantitative"
+        },
+        "latitude": {
+          "field": "lat",
+          "type": "quantitative"
+        },
+        "text": {
+          "field": "t"
+        }
+      }
     }
   ]
 }
