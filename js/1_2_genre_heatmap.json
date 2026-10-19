@@ -15,14 +15,14 @@
     {
       "mark": {"type": "rect", "stroke": "#FFFFFF", "strokeWidth": 2},
       "encoding": {
-        "color": {"field": "films", "type": "quantitative", "scale": {"domain": [0, 9], "range": ["#EFE9DF", "#B8892A", "#7A5A14"]}, "legend": {"title": "Films", "orient": "right"}}
+        "color": {"field": "films", "type": "quantitative", "scale": {"domain": [0, 9], "range": ["#F3EBE0", "#C7643F", "#5E2110"]}, "legend": {"title": "Films", "orient": "right"}}
       }
     },
     {
       "mark": {"type": "text", "fontSize": 12, "fontWeight": 600},
       "encoding": {
         "text": {"field": "films"},
-        "color": {"condition": {"test": "datum.films >= 7", "value": "#FFFFFF"}, "value": "#1F1A15"}
+        "color": {"condition": {"test": "datum.films >= 5", "value": "#FFFFFF"}, "value": "#1E1A14"}
       }
     }
   ],

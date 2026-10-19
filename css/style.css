@@ -1,13 +1,13 @@
 :root {
-  --ground: #F7F3EC;
+  --ground: #FBF7F0;
   --panel: #FFFFFF;
-  --panel2: #EFE9DF;
-  --text: #1F1A15;
-  --muted: #6B6257;
-  --gold: #B8892A;
-  --gold-dk: #7A5A14;
-  --ink: #2E2A26;
-  --border: #D9D1C4;
+  --panel2: #F3EBE0;
+  --text: #1E1A14;
+  --muted: #6A5F55;
+  --primary: #B5431F;
+  --primary-dark: #5E2110;
+  --secondary: #2F5D50;
+  --border: #DDD3C6;
 }
 html { background: var(--ground); }
 body {
@@ -22,16 +22,16 @@ body {
 h1, h2, h3 { font-family: Fraunces, Georgia, serif; font-weight: 600; letter-spacing: -0.01em; }
 h1 { font-size: clamp(2.4rem, 6vw, 4rem); line-height: 1.05; margin: 0.2em 0 0.4em; }
 h2 { font-size: 1.9rem; margin: 1.6em 0 0.5em; border-top: 1px solid var(--border); padding-top: 0.9em; }
-h2 .num { color: var(--gold); margin-right: 0.4em; }
+h2 .num { color: var(--primary); margin-right: 0.4em; }
 h3.chart-title { font-size: 1.25rem; margin: 1.4em 0 0.4em; }
 h3.chart-title .no { color: var(--muted); font-family: "Source Sans 3", sans-serif; font-weight: 600; font-size: 0.85rem; margin-right: 0.6em; letter-spacing: 0.06em; }
 .hero { padding: 72px 0 16px; }
-.kicker { color: var(--gold-dk); text-transform: uppercase; letter-spacing: 0.14em; font-size: 0.85rem; font-weight: 600; margin: 0; }
+.kicker { color: var(--primary-dark); text-transform: uppercase; letter-spacing: 0.14em; font-size: 0.85rem; font-weight: 600; margin: 0; }
 .deck { font-size: 1.3rem; max-width: 36ch; color: var(--text); margin: 0 0 1em; }
 .byline { color: var(--muted); font-size: 0.95rem; margin: 0; }
 .narrative { max-width: 62ch; margin: 0 0 1.1em; }
 .narrative.small { font-size: 0.95rem; color: var(--muted); }
-.narrative a { color: var(--gold-dk); }
+.narrative a { color: var(--primary-dark); }
 .caption { color: var(--muted); font-size: 0.9rem; max-width: 62ch; margin: 0.4em 0 1.2em; }
 .chart { position: relative; }
 .vis { width: 100%; background: var(--panel); border: 1px solid var(--border); border-radius: 6px; padding: 12px; box-sizing: border-box; box-shadow: 0 1px 2px rgba(0,0,0,0.04); }

@@ -10,7 +10,7 @@
   ],
   "layer": [
     {
-      "mark": {"type": "rule", "stroke": "#D9D1C4", "strokeWidth": 3},
+      "mark": {"type": "rule", "stroke": "#DDD3C6", "strokeWidth": 3},
       "encoding": {
         "y": {"field": "director", "type": "nominal", "sort": {"field": "films_directed", "order": "descending"}, "axis": {"title": "Director"}},
         "x": {"field": "best_film_wins", "type": "quantitative"},
@@ -18,15 +18,15 @@
       }
     },
     {
-      "mark": {"type": "circle", "size": 140, "color": "#2E2A26"},
+      "mark": {"type": "circle", "size": 140, "color": "#2F5D50"},
       "encoding": {
         "y": {"field": "director", "type": "nominal", "sort": {"field": "films_directed", "order": "descending"}},
-        "x": {"field": "films_directed", "type": "quantitative", "axis": {"title": "Films (ink = directed, gold = won Best Film)"}},
+        "x": {"field": "films_directed", "type": "quantitative", "axis": {"title": "Films (green = directed, ochre = won Best Film)"}},
         "tooltip": [{"field": "director"}, {"field": "films_directed", "title": "Films directed (Wikidata)"}, {"field": "best_film_wins", "title": "Best Film wins"}, {"field": "first_win", "title": "First win"}, {"field": "last_win", "title": "Last win"}]
       }
     },
     {
-      "mark": {"type": "circle", "size": 140, "color": "#B8892A"},
+      "mark": {"type": "circle", "size": 140, "color": "#B5431F"},
       "encoding": {
         "y": {"field": "director", "type": "nominal", "sort": {"field": "films_directed", "order": "descending"}},
         "x": {"field": "best_film_wins", "type": "quantitative"},
@@ -34,7 +34,7 @@
       }
     },
     {
-      "mark": {"type": "text", "align": "left", "dx": 10, "fontSize": 11, "color": "#6B6257"},
+      "mark": {"type": "text", "align": "left", "dx": 10, "fontSize": 11, "color": "#6A5F55"},
       "encoding": {
         "y": {"field": "director", "type": "nominal", "sort": {"field": "films_directed", "order": "descending"}},
         "x": {"field": "films_directed", "type": "quantitative"},

@@ -9,7 +9,7 @@
   "encoding": {
     "x": {"field": "year_start", "type": "quantitative", "axis": {"title": "Financial year starting", "format": "d", "tickCount": 10, "grid": false}, "scale": {"domain": [1995, 2024], "nice": false}},
     "y": {"field": "spend_m", "type": "quantitative", "aggregate": "sum", "stack": "center", "axis": null},
-    "color": {"field": "state", "type": "nominal", "scale": {"domain": ["NSW", "Qld", "Vic", "SA", "WA", "ACT/Tas/NT"], "range": ["#B8892A", "#C0552F", "#6E8E6A", "#4F78A8", "#8E6393", "#9A8A5E"]}, "legend": {"title": null, "orient": "top-left", "direction": "horizontal"}},
+    "color": {"field": "state", "type": "nominal", "scale": {"domain": ["NSW", "Qld", "Vic", "SA", "WA", "ACT/Tas/NT"], "range": ["#B5431F", "#2F5D50", "#C08B26", "#3B6EA5", "#8C4A7A", "#7D7A3A"]}, "legend": {"title": null, "orient": "top-left", "direction": "horizontal"}},
     "tooltip": [{"field": "year_label", "title": "Year"}, {"field": "state", "title": "State"}, {"field": "spend_m", "title": "A$ million", "format": ",.0f"}]
   }
 }

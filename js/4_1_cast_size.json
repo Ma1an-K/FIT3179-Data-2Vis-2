@@ -16,7 +16,7 @@
   ],
   "layer": [
     {
-      "mark": {"type": "circle", "size": 70, "color": "#B8892A", "stroke": "#FFFFFF", "strokeWidth": 0.5},
+      "mark": {"type": "circle", "size": 70, "color": "#B5431F", "stroke": "#FFFFFF", "strokeWidth": 0.5},
       "encoding": {
         "x": {"field": "decade_bin", "type": "ordinal", "axis": {"title": "Decade of the award", "labelAngle": 0}},
         "xOffset": {"field": "jit", "type": "quantitative", "scale": {"domain": [-0.5, 0.5], "range": [-30, 30]}},
@@ -27,7 +27,7 @@
     },
     {
       "transform": [{"aggregate": [{"op": "median", "field": "cast_size", "as": "med"}], "groupby": ["decade_bin"]}],
-      "mark": {"type": "tick", "thickness": 3, "size": 70, "color": "#2E2A26"},
+      "mark": {"type": "tick", "thickness": 3, "size": 70, "color": "#2F5D50"},
       "encoding": {
         "x": {"field": "decade_bin", "type": "ordinal"},
         "y": {"field": "med", "type": "quantitative"},

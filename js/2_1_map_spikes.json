@@ -39,7 +39,7 @@
       },
       "mark": {
         "type": "geoshape",
-        "fill": "#E5DED2",
+        "fill": "#EDE3D3",
         "stroke": "#FFFFFF",
         "strokeWidth": 1
       }
@@ -159,7 +159,7 @@
         "filled": false,
         "size": 4,
         "opacity": 1,
-        "stroke": "#B8892A",
+        "stroke": "#B5431F",
         "strokeWidth": 5,
         "strokeCap": "butt"
       },
@@ -319,7 +319,7 @@
         "filled": false,
         "size": 4,
         "opacity": 1,
-        "stroke": "#2E2A26",
+        "stroke": "#2F5D50",
         "strokeWidth": 5,
         "strokeCap": "butt"
       },
@@ -474,7 +474,7 @@
       "mark": {
         "type": "circle",
         "size": 22,
-        "color": "#2E2A26",
+        "color": "#2F5D50",
         "opacity": 0.9
       },
       "encoding": {
@@ -619,7 +619,7 @@
       "mark": {
         "type": "text",
         "fontSize": 11,
-        "color": "#6B6257",
+        "color": "#6A5F55",
         "align": "right",
         "dx": {
           "expr": "datum.side ? -4 : 2"
@@ -758,7 +758,7 @@
       "mark": {
         "type": "text",
         "fontSize": 11,
-        "color": "#6B6257",
+        "color": "#6A5F55",
         "align": "left",
         "dx": {
           "expr": "datum.side ? datum.sx + 4 : datum.sx - 2"
@@ -921,7 +921,7 @@
           "expr": "datum.ldy"
         },
         "color": {
-          "expr": "datum.isState ? '#6B6257' : '#1F1A15'"
+          "expr": "datum.isState ? '#6A5F55' : '#1E1A14'"
         }
       },
       "encoding": {
@@ -972,7 +972,7 @@
         "filled": false,
         "size": 4,
         "opacity": 1,
-        "stroke": "#B8892A",
+        "stroke": "#B5431F",
         "strokeWidth": 5,
         "strokeCap": "butt"
       },
@@ -1008,7 +1008,7 @@
         "filled": false,
         "size": 4,
         "opacity": 1,
-        "stroke": "#2E2A26",
+        "stroke": "#2F5D50",
         "strokeWidth": 5,
         "strokeCap": "butt"
       },
@@ -1060,7 +1060,7 @@
       "mark": {
         "type": "text",
         "fontSize": 11,
-        "color": "#6B6257",
+        "color": "#6A5F55",
         "baseline": "middle",
         "align": {
           "expr": "datum.a"

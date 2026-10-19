@@ -18,7 +18,7 @@
       "encoding": {
         "x": {"field": "period", "type": "ordinal", "axis": {"title": "Award years", "labelAngle": 0}, "scale": {"padding": 0.5}},
         "y": {"field": "pct", "type": "quantitative", "axis": {"title": "Share of wins (%)"}, "scale": {"domain": [0, 100]}},
-        "color": {"field": "origin", "type": "nominal", "scale": {"domain": ["Born in Australia", "Born overseas"], "range": ["#B8892A", "#2E2A26"]}, "legend": {"title": null, "orient": "top-right"}},
+        "color": {"field": "origin", "type": "nominal", "scale": {"domain": ["Born in Australia", "Born overseas"], "range": ["#B5431F", "#2F5D50"]}, "legend": {"title": null, "orient": "top-right"}},
         "tooltip": [{"field": "period"}, {"field": "origin"}, {"field": "n", "title": "Wins"}, {"field": "pct", "title": "Share (%)", "format": ".0f"}]
       }
     },
@@ -28,7 +28,7 @@
         "x": {"field": "period", "type": "ordinal"},
         "y": {"field": "pct", "type": "quantitative"},
         "text": {"field": "pct", "format": ".0f"},
-        "color": {"field": "origin", "type": "nominal", "scale": {"domain": ["Born in Australia", "Born overseas"], "range": ["#B8892A", "#2E2A26"]}}
+        "color": {"field": "origin", "type": "nominal", "scale": {"domain": ["Born in Australia", "Born overseas"], "range": ["#B5431F", "#2F5D50"]}}
       }
     }
   ]

@@ -11,7 +11,7 @@
   ],
   "layer": [
     {
-      "mark": {"type": "bar", "color": "#B8892A", "cornerRadiusEnd": 2},
+      "mark": {"type": "bar", "color": "#B5431F", "cornerRadiusEnd": 2},
       "encoding": {
         "y": {"field": "label", "type": "nominal", "sort": "-x", "axis": {"title": "Winning film (release year)"}},
         "x": {"field": "m", "type": "quantitative", "axis": {"title": "Australian box office (A$ million)", "format": "$,.0f"}},
@@ -19,7 +19,7 @@
       }
     },
     {
-      "mark": {"type": "text", "align": "left", "dx": 6, "fontSize": 11, "color": "#6B6257"},
+      "mark": {"type": "text", "align": "left", "dx": 6, "fontSize": 11, "color": "#6A5F55"},
       "encoding": {
         "y": {"field": "label", "type": "nominal", "sort": "-x"},
         "x": {"field": "m", "type": "quantitative"},

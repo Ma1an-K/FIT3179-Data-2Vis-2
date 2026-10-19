@@ -16,7 +16,7 @@
     {
       "mark": {"type": "geoshape", "stroke": "#FFFFFF", "strokeWidth": 1.2},
       "encoding": {
-        "color": {"field": "share_pct", "type": "quantitative", "scale": {"type": "linear", "domain": [0, 35], "range": ["#EFE9DF", "#B8892A"]}, "legend": {"title": "Share of spend (%)", "orient": "bottom-left", "format": ".1f"}},
+        "color": {"field": "share_pct", "type": "quantitative", "scale": {"type": "linear", "domain": [0, 35], "range": ["#F3EBE0", "#5E2110"]}, "legend": {"title": "Share of spend (%)", "orient": "bottom-left", "format": ".1f"}},
         "tooltip": [
           {"field": "properties.STATE_NAME", "title": "State"},
           {"field": "share_pct", "title": "Share of spend (%)", "format": ".1f"},
@@ -35,7 +35,7 @@
         {"lookup": "state", "from": {"data": {"url": "data/spend_by_state_2024_25.csv"}, "key": "state", "fields": ["share_pct", "note"]}},
         {"calculate": "datum.abbr + ' ' + format(datum.share_pct, '.1f') + '%' + (datum.note ? '*' : '')", "as": "label"}
       ],
-      "mark": {"type": "text", "fontSize": 13, "fontWeight": 600, "color": "#1F1A15"},
+      "mark": {"type": "text", "fontSize": 13, "fontWeight": 600, "color": {"expr": "datum.share_pct >= 20.7 ? '#FFFFFF' : '#1E1A14'"}},
       "encoding": {"longitude": {"field": "lon", "type": "quantitative"}, "latitude": {"field": "lat", "type": "quantitative"}, "text": {"field": "label"}}
     }
   ]

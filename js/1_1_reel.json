@@ -24,14 +24,14 @@
         "theta2": {"field": "theta2"},
         "radius": {"field": "r_outer", "type": "quantitative", "scale": {"type": "linear", "domain": [0, 240], "range": [0, 240]}},
         "radius2": {"field": "r_inner"},
-        "color": {"field": "era", "type": "nominal", "scale": {"domain": ["AFI (1969–2010)", "AACTA (2011– )"], "range": ["#2E2A26", "#B8892A"]}, "legend": {"title": "Awarding body", "orient": "top-right", "direction": "vertical"}},
+        "color": {"field": "era", "type": "nominal", "scale": {"domain": ["AFI (1969–2010)", "AACTA (2011– )"], "range": ["#2F5D50", "#B5431F"]}, "legend": {"title": "Awarding body", "orient": "top-right", "direction": "vertical"}},
         "opacity": {"condition": {"test": "datum.in_lens", "value": 0.95}, "value": 0.18},
         "tooltip": [{"field": "film", "title": "Film"}, {"field": "year", "title": "Year"}, {"field": "director", "title": "Director"}]
       }
     },
     {
       "transform": [{"filter": "datum.year % 10 == 0 && datum.year != 1970 || datum.year == 1969"}],
-      "mark": {"type": "text", "fontSize": 12, "color": "#6B6257", "radiusOffset": 18},
+      "mark": {"type": "text", "fontSize": 12, "color": "#6A5F55", "radiusOffset": 18},
       "encoding": {
         "theta": {"field": "theta", "type": "quantitative", "scale": {"domain": [0, 6.283185307]}},
         "radius": {"value": 205},
@@ -40,7 +40,7 @@
     },
     {
       "data": {"values": [{"t": "58 winners"}]},
-      "mark": {"type": "text", "fontSize": 22, "font": "Fraunces", "fontWeight": 600, "color": "#1F1A15"},
+      "mark": {"type": "text", "fontSize": 22, "font": "Fraunces", "fontWeight": 600, "color": "#1E1A14"},
       "encoding": {"text": {"field": "t"}}
     }
   ]

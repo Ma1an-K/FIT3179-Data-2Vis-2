@@ -18,12 +18,12 @@
       "transform": [{"filter": "datum.ord < 2"}],
       "mark": {"type": "square", "size": 480, "stroke": "#FFFFFF", "strokeWidth": 2},
       "encoding": {
-        "color": {"field": "where", "type": "nominal", "scale": {"domain": ["Set in Australia · 37", "Set overseas · 7", "No setting data · 14"], "range": ["#B8892A", "#2E2A26", "#F7F3EC"]}, "legend": {"title": "Each square is one film", "orient": "right", "symbolStrokeColor": "#B5AC9E", "symbolStrokeWidth": 1}}
+        "color": {"field": "where", "type": "nominal", "scale": {"domain": ["Set in Australia · 37", "Set overseas · 7", "No setting data · 14"], "range": ["#B5431F", "#2F5D50", "#FBF7F0"]}, "legend": {"title": "Each square is one film", "orient": "right", "symbolStrokeColor": "#AFA496", "symbolStrokeWidth": 1}}
       }
     },
     {
       "transform": [{"filter": "datum.ord == 2"}],
-      "mark": {"type": "square", "size": 480, "fill": "#F7F3EC", "stroke": "#B5AC9E", "strokeWidth": 1.5, "strokeDash": [3, 3]}
+      "mark": {"type": "square", "size": 480, "fill": "#FBF7F0", "stroke": "#AFA496", "strokeWidth": 1.5, "strokeDash": [3, 3]}
     }
   ],
   "encoding": {

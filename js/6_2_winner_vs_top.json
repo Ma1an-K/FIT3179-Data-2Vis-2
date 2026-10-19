@@ -2,7 +2,7 @@
   "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
   "title": {
     "text": "Best Film is rarely the year's biggest film",
-    "subtitle": "Gold = the Best Film winner's Australian gross in its release year; ink = that year's top-grossing Australian film (winners that appear in the year's top five)"
+    "subtitle": "Ochre = the Best Film winner's Australian gross in its release year; green = that year's top-grossing Australian film (winners that appear in the year's top five)"
   },
   "width": "container",
   "height": {
@@ -39,7 +39,7 @@
     {
       "mark": {
         "type": "rule",
-        "stroke": "#D9D1C4",
+        "stroke": "#DDD3C6",
         "strokeWidth": 3
       },
       "encoding": {
@@ -67,7 +67,7 @@
       "mark": {
         "type": "circle",
         "size": 120,
-        "color": "#2E2A26"
+        "color": "#2F5D50"
       },
       "encoding": {
         "y": {
@@ -103,7 +103,7 @@
       "mark": {
         "type": "circle",
         "size": 120,
-        "color": "#B8892A",
+        "color": "#B5431F",
         "stroke": "#FFFFFF",
         "strokeWidth": 1
       },
@@ -152,7 +152,7 @@
         "align": "left",
         "dx": 12,
         "fontSize": 11,
-        "color": "#7A5A14",
+        "color": "#5E2110",
         "fontWeight": 600
       },
       "encoding": {
