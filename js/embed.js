@@ -56,10 +56,24 @@ function updateCounts(decade) {
   });
 }
 
+// Charts that follow the selector (.chart.lens) carry a badge naming the decade shown; the selector is outlined when not All.
+function updateLensUi(decade) {
+  document.querySelectorAll(".lens-badge").forEach((b) => {
+    if (decade === "All") { b.textContent = "Changes with the decade selector"; return; }
+    const d = document.createElement("span");
+    d.className = "decade";
+    d.textContent = decade; // keep "1980s", not "1980S", under the badge's uppercase
+    b.replaceChildren("Showing the ", d);
+  });
+  document.querySelectorAll(".lens select").forEach((s) => s.classList.toggle("active", decade !== "All"));
+}
+
 sel.addEventListener("change", (e) => {
   views.forEach((v) => {
     try { v.signal("decade", e.target.value).run(); } catch (_) { /* chart has no decade param */ }
   });
   updateCounts(e.target.value);
+  updateLensUi(e.target.value);
 });
 updateCounts(sel.value);
+updateLensUi(sel.value);
