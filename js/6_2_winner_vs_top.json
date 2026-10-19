@@ -2,7 +2,7 @@
   "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
   "title": {
     "text": "Best Film is rarely the year's biggest film",
-    "subtitle": "Ochre = the Best Film winner's Australian gross in its release year; green = that year's top-grossing Australian film (winners that appear in the year's top five)"
+    "subtitle": "Ochre = the winner's Australian gross in its release year; green = that year's top-grossing Australian film. Winners in their year's top five only."
   },
   "width": "container",
   "height": {
@@ -84,6 +84,9 @@
           "axis": {
             "title": "Australian box office in the release year (A$ million)",
             "format": "$,.0f"
+          },
+          "scale": {
+            "domainMax": 38
           }
         },
         "tooltip": [
