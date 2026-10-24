@@ -2,41 +2,265 @@
   "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
   "title": {
     "text": "Queensland overtook New South Wales in 2024/25",
-    "subtitle": "Share of the $2.69 billion spent on drama production in Australia, by state and territory · * ACT, NT and Tasmania are published as a combined 0.7%"
+    "subtitle": "Share of the $2.69 billion spent on drama production in Australia, by state and territory, 2024/25"
   },
   "width": "container",
   "height": 520,
-  "projection": {"type": "conicEqualArea", "parallels": [-18, -36], "rotate": [-134, 0, 0], "center": [0, -27]},
-  "data": {"url": "js/au_states.geojson", "format": {"type": "json", "property": "features"}},
+  "projection": {
+    "type": "conicEqualArea",
+    "parallels": [
+      -18,
+      -36
+    ],
+    "rotate": [
+      -134,
+      0,
+      0
+    ],
+    "center": [
+      0,
+      -27
+    ]
+  },
+  "data": {
+    "url": "js/au_states.geojson",
+    "format": {
+      "type": "json",
+      "property": "features"
+    }
+  },
   "transform": [
-    {"lookup": "properties.STATE_NAME", "from": {"data": {"url": "data/spend_by_state_2024_25.csv"}, "key": "state", "fields": ["share_pct", "note"]}},
-    {"calculate": "datum.note ? datum.note : 'published separately'", "as": "note_text"}
-  ],
-  "layer": [
     {
-      "mark": {"type": "geoshape", "stroke": "#FFFFFF", "strokeWidth": 1.2},
-      "encoding": {
-        "color": {"field": "share_pct", "type": "quantitative", "scale": {"type": "linear", "domain": [0, 35], "range": ["#F3EBE0", "#5E2110"]}, "legend": {"title": "Share of spend (%)", "orient": "bottom-left", "format": ".1f"}},
-        "tooltip": [
-          {"field": "properties.STATE_NAME", "title": "State"},
-          {"field": "share_pct", "title": "Share of spend (%)", "format": ".1f"},
-          {"field": "note_text", "title": "Note"}
+      "lookup": "properties.STATE_NAME",
+      "from": {
+        "data": {
+          "url": "data/spend_by_state_2024_25.csv"
+        },
+        "key": "state",
+        "fields": [
+          "share_pct",
+          "note"
         ]
       }
     },
     {
-      "data": {"values": [
-        {"state": "New South Wales", "abbr": "NSW", "lon": 147.0, "lat": -32.5}, {"state": "Victoria", "abbr": "VIC", "lon": 144.5, "lat": -37.0},
-        {"state": "Queensland", "abbr": "QLD", "lon": 144.5, "lat": -23.0}, {"state": "South Australia", "abbr": "SA", "lon": 135.5, "lat": -30.0},
-        {"state": "Western Australia", "abbr": "WA", "lon": 122.0, "lat": -26.0}, {"state": "Northern Territory", "abbr": "NT", "lon": 133.5, "lat": -19.5},
-        {"state": "Tasmania", "abbr": "TAS", "lon": 146.8, "lat": -42.2}
-      ]},
+      "calculate": "datum.note ? datum.note : 'published separately'",
+      "as": "note_text"
+    }
+  ],
+  "layer": [
+    {
+      "mark": {
+        "type": "geoshape",
+        "stroke": "#FFFFFF",
+        "strokeWidth": 1.2
+      },
+      "encoding": {
+        "color": {
+          "field": "share_pct",
+          "type": "quantitative",
+          "scale": {
+            "type": "linear",
+            "domain": [
+              0,
+              35
+            ],
+            "range": [
+              "#F2CDB5",
+              "#5E2110"
+            ]
+          },
+          "legend": {
+            "title": "Share of spend (%)",
+            "orient": "bottom-left",
+            "format": ".1f"
+          }
+        },
+        "tooltip": [
+          {
+            "field": "properties.STATE_NAME",
+            "title": "State"
+          },
+          {
+            "field": "share_pct",
+            "title": "Share of spend (%)",
+            "format": ".1f"
+          },
+          {
+            "field": "note_text",
+            "title": "Note"
+          }
+        ]
+      },
       "transform": [
-        {"lookup": "state", "from": {"data": {"url": "data/spend_by_state_2024_25.csv"}, "key": "state", "fields": ["share_pct", "note"]}},
-        {"calculate": "datum.abbr + ' ' + format(datum.share_pct, '.1f') + '%' + (datum.note ? '*' : '')", "as": "label"}
+        {
+          "filter": "!datum.note"
+        }
+      ]
+    },
+    {
+      "transform": [
+        {
+          "filter": "datum.note"
+        },
+        {
+          "calculate": "'ACT + NT + Tas: 0.7% combined'",
+          "as": "group"
+        }
       ],
-      "mark": {"type": "text", "fontSize": 13, "fontWeight": 600, "color": {"expr": "datum.share_pct >= 20.7 ? '#FFFFFF' : '#1E1A14'"}},
-      "encoding": {"longitude": {"field": "lon", "type": "quantitative"}, "latitude": {"field": "lat", "type": "quantitative"}, "text": {"field": "label"}}
+      "mark": {
+        "type": "geoshape",
+        "stroke": "#AFA496",
+        "strokeWidth": 1.2,
+        "strokeDash": [
+          4,
+          3
+        ]
+      },
+      "encoding": {
+        "fill": {
+          "field": "group",
+          "type": "nominal",
+          "scale": {
+            "range": [
+              "#E9E0D4"
+            ]
+          },
+          "legend": {
+            "title": null,
+            "orient": "bottom-left",
+            "symbolType": "square",
+            "symbolSize": 180,
+            "symbolStrokeColor": "#AFA496",
+            "symbolStrokeWidth": 1.2,
+            "symbolDash": [
+              4,
+              3
+            ],
+            "labelExpr": "'ACT, NT and Tas: published only as one combined 0.7%'",
+            "labelLimit": 360
+          }
+        },
+        "tooltip": [
+          {
+            "field": "properties.STATE_NAME",
+            "title": "State"
+          },
+          {
+            "field": "note",
+            "title": "Share of spend"
+          },
+          {
+            "field": "group",
+            "title": "Published as"
+          }
+        ]
+      }
+    },
+    {
+      "data": {
+        "values": [
+          {
+            "state": "New South Wales",
+            "abbr": "NSW",
+            "lon": 147.0,
+            "lat": -32.5
+          },
+          {
+            "state": "Victoria",
+            "abbr": "VIC",
+            "lon": 144.5,
+            "lat": -37.0
+          },
+          {
+            "state": "Queensland",
+            "abbr": "QLD",
+            "lon": 144.5,
+            "lat": -23.0
+          },
+          {
+            "state": "South Australia",
+            "abbr": "SA",
+            "lon": 135.5,
+            "lat": -30.0
+          },
+          {
+            "state": "Western Australia",
+            "abbr": "WA",
+            "lon": 122.0,
+            "lat": -26.0
+          }
+        ]
+      },
+      "transform": [
+        {
+          "lookup": "state",
+          "from": {
+            "data": {
+              "url": "data/spend_by_state_2024_25.csv"
+            },
+            "key": "state",
+            "fields": [
+              "share_pct",
+              "note"
+            ]
+          }
+        },
+        {
+          "calculate": "datum.abbr + ' ' + format(datum.share_pct, '.1f') + '%'",
+          "as": "label"
+        }
+      ],
+      "mark": {
+        "type": "text",
+        "fontSize": 13,
+        "fontWeight": 600,
+        "color": {
+          "expr": "datum.share_pct >= 20.7 ? '#FFFFFF' : '#1E1A14'"
+        }
+      },
+      "encoding": {
+        "longitude": {
+          "field": "lon",
+          "type": "quantitative"
+        },
+        "latitude": {
+          "field": "lat",
+          "type": "quantitative"
+        },
+        "text": {
+          "field": "label"
+        }
+      }
+    },
+    {
+      "data": {
+        "values": [
+          {
+            "lon": 149.3,
+            "lat": -42.3
+          }
+        ]
+      },
+      "mark": {
+        "type": "text",
+        "align": "left",
+        "baseline": "middle",
+        "fontSize": 13,
+        "fontWeight": 600,
+        "color": "#6A5F55",
+        "text": "ACT + NT + Tas: 0.7% combined"
+      },
+      "encoding": {
+        "longitude": {
+          "field": "lon",
+          "type": "quantitative"
+        },
+        "latitude": {
+          "field": "lat",
+          "type": "quantitative"
+        }
+      }
     }
   ]
 }
