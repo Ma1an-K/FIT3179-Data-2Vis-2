@@ -231,12 +231,17 @@ rm data/_careers_raw.csv
 #    the ceremony date, so year = ceremony year - 1 (the film year honoured, matching the AACTA year). Honoured years
 #    1969-2025. Producers who hold the award are dropped by the film-class filter. Labels fall back to "mul" (Forrest
 #    Gump has no "en" label). Runtime: best-rank P2047 values converted to minutes (some are stored in seconds,
-#    Q11574), shortest if several (same rule as best_film_facts.csv), rounded to the minute.
-Q 'SELECT ?f (SAMPLE(?lbl) AS ?film) (YEAR(MIN(?t)) - 1 AS ?year) (GROUP_CONCAT(DISTINCT CONCAT(STR(?amt), " ", STRAFTER(STR(?unit), "entity/")); separator="|") AS ?runtimes) WHERE {
+#    Q11574), rounded to the minute. If several are recorded, a value qualified "applies to part" (P518) = theatrical
+#    version (Q26225765) wins; otherwise the LONGEST is kept (unlike best_film_facts.csv): for these films the shorter
+#    unqualified values are usually TV or alternate cuts (The Godfather Part II has 165 and 202; the theatrical release
+#    is 202). The theatrical qualifier stops director's/extended cuts winning (Dances with Wolves 181, not 236; The
+#    Return of the King 200, not 263; Crash 112, not 115).
+Q 'SELECT ?f (SAMPLE(?lbl) AS ?film) (YEAR(MIN(?t)) - 1 AS ?year) (GROUP_CONCAT(DISTINCT CONCAT(STR(?amt), " ", STRAFTER(STR(?unit), "entity/"), " ", IF(BOUND(?th), "T", "-")); separator="|") AS ?runtimes) WHERE {
   ?f p:P166 ?st . ?st ps:P166 wd:Q102427 ; pq:P585 ?t .
   ?f wdt:P31/wdt:P279* wd:Q11424 .
   ?f rdfs:label ?lbl FILTER(LANG(?lbl) IN ("en", "mul"))
-  OPTIONAL { ?f p:P2047 ?rs . ?rs a wikibase:BestRank ; psv:P2047 [ wikibase:quantityAmount ?amt ; wikibase:quantityUnit ?unit ] }
+  OPTIONAL { ?f p:P2047 ?rs . ?rs a wikibase:BestRank ; psv:P2047 [ wikibase:quantityAmount ?amt ; wikibase:quantityUnit ?unit ] .
+              OPTIONAL { ?rs pq:P518 ?th FILTER(?th = wd:Q26225765) } }
 } GROUP BY ?f HAVING (YEAR(MIN(?t)) - 1 >= 1969 && YEAR(MIN(?t)) - 1 <= 2025) ORDER BY ?year' > data/_oscar_raw.csv
 python3 - <<'PY'
 import csv
@@ -244,8 +249,10 @@ TO_MIN = {"Q7727": 1, "Q11574": 1 / 60}  # minute, second
 with open("data/oscar_best_picture.csv", "w", newline="") as f:
     w = csv.writer(f, lineterminator="\n"); w.writerow(["film", "year", "runtime_min"])
     for r in csv.DictReader(open("data/_oscar_raw.csv", newline="")):
-        vals = [float(a) * TO_MIN[u] for a, u in (x.split(" ") for x in r["runtimes"].split("|") if x)]
-        w.writerow([r["film"], r["year"], str(round(min(vals))) if vals else ""])
+        vals = [(float(a) * TO_MIN[u], th == "T") for a, u, th in (x.split(" ") for x in r["runtimes"].split("|") if x)]
+        theatrical = [v for v, th in vals if th]
+        best = theatrical[0] if theatrical else max((v for v, _ in vals), default=None)
+        w.writerow([r["film"], r["year"], str(round(best)) if best is not None else ""])
 PY
 rm data/_oscar_raw.csv
 
