@@ -1,15 +1,157 @@
 {
   "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-  "title": {"text": "Thirty years of drama spend, state by state", "subtitle": "Drama production spend in Australia by state and territory, A$ million, 1995/96 to 2024/25 (Screen Australia)"},
+  "title": {
+    "text": "Thirty years of drama spend, state by state",
+    "subtitle": "Drama production spend in Australia by state and territory, A$ million, 1995/96 to 2024/25 (Screen Australia)"
+  },
   "width": "container",
   "height": 360,
-  "data": {"url": "data/spend_by_state_series.csv", "format": {"type": "csv", "parse": {"year_start": "number", "spend_m": "number"}}},
-  "transform": [{"filter": "datum.spend_m != null && !isNaN(datum.spend_m)"}],
-  "mark": {"type": "area", "interpolate": "monotone", "stroke": "#FFFFFF", "strokeWidth": 0.6},
-  "encoding": {
-    "x": {"field": "year_start", "type": "quantitative", "axis": {"title": "Financial year starting", "format": "d", "tickCount": 10, "grid": false}, "scale": {"domain": [1995, 2024], "nice": false}},
-    "y": {"field": "spend_m", "type": "quantitative", "aggregate": "sum", "stack": "center", "axis": null},
-    "color": {"field": "state", "type": "nominal", "scale": {"domain": ["NSW", "Qld", "Vic", "SA", "WA", "ACT/Tas/NT"], "range": ["#B5431F", "#2F5D50", "#C08B26", "#3B6EA5", "#8C4A7A", "#7D7A3A"]}, "legend": {"title": null, "orient": "top-left", "direction": "horizontal"}},
-    "tooltip": [{"field": "year_label", "title": "Year"}, {"field": "state", "title": "State"}, {"field": "spend_m", "title": "A$ million", "format": ",.0f"}]
-  }
+  "data": {
+    "url": "data/spend_by_state_series.csv",
+    "format": {
+      "type": "csv",
+      "parse": {
+        "year_start": "number",
+        "spend_m": "number"
+      }
+    }
+  },
+  "transform": [
+    {
+      "filter": "datum.spend_m != null && !isNaN(datum.spend_m)"
+    }
+  ],
+  "layer": [
+    {
+      "mark": {
+        "type": "area",
+        "interpolate": "monotone",
+        "stroke": "#FFFFFF",
+        "strokeWidth": 0.6
+      },
+      "encoding": {
+        "x": {
+          "field": "year_start",
+          "type": "quantitative",
+          "axis": {
+            "title": "Financial year starting",
+            "format": "d",
+            "tickCount": 10,
+            "grid": false
+          },
+          "scale": {
+            "domain": [
+              1995,
+              2024
+            ],
+            "nice": false
+          }
+        },
+        "y": {
+          "field": "spend_m",
+          "type": "quantitative",
+          "aggregate": "sum",
+          "stack": "center",
+          "axis": null
+        },
+        "color": {
+          "field": "state",
+          "type": "nominal",
+          "scale": {
+            "domain": [
+              "NSW",
+              "Qld",
+              "Vic",
+              "SA",
+              "WA",
+              "ACT/Tas/NT"
+            ],
+            "range": [
+              "#B5431F",
+              "#2F5D50",
+              "#C08B26",
+              "#3B6EA5",
+              "#8C4A7A",
+              "#7D7A3A"
+            ]
+          },
+          "legend": {
+            "title": null,
+            "orient": "top-left",
+            "direction": "horizontal"
+          }
+        },
+        "tooltip": [
+          {
+            "field": "year_label",
+            "title": "Year"
+          },
+          {
+            "field": "state",
+            "title": "State"
+          },
+          {
+            "field": "spend_m",
+            "title": "A$ million",
+            "format": ",.0f"
+          }
+        ]
+      }
+    },
+    {
+      "transform": [
+        {
+          "stack": "spend_m",
+          "groupby": [
+            "year_start"
+          ],
+          "offset": "center",
+          "sort": [
+            {
+              "field": "state",
+              "order": "descending"
+            }
+          ],
+          "as": [
+            "y0",
+            "y1"
+          ]
+        },
+        {
+          "filter": "datum.state == 'Qld' && datum.year_start == 2024"
+        },
+        {
+          "calculate": "(datum.y0 + datum.y1) / 2",
+          "as": "ymid"
+        },
+        {
+          "calculate": "['Queensland 2024/25:', 'A$' + format(datum.spend_m, ',.0f') + ' M']",
+          "as": "note"
+        }
+      ],
+      "mark": {
+        "type": "text",
+        "align": "right",
+        "dx": -8,
+        "dy": 18,
+        "fontSize": 12,
+        "fontWeight": 600,
+        "color": "#FFFFFF",
+        "lineHeight": 15
+      },
+      "encoding": {
+        "x": {
+          "field": "year_start",
+          "type": "quantitative"
+        },
+        "y": {
+          "field": "ymid",
+          "type": "quantitative"
+        },
+        "text": {
+          "field": "note"
+        }
+      }
+    }
+  ]
 }

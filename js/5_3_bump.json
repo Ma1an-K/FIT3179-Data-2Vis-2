@@ -234,6 +234,33 @@
           "legend": null
         }
       }
+    },
+    {
+      "transform": [
+        {
+          "filter": "datum.state == 'Qld' && datum.rank == 1"
+        }
+      ],
+      "mark": {
+        "type": "text",
+        "dy": -12,
+        "fontSize": 11,
+        "fontWeight": 600,
+        "color": "#2F5D50"
+      },
+      "encoding": {
+        "x": {
+          "field": "year_start",
+          "type": "quantitative"
+        },
+        "y": {
+          "field": "rank",
+          "type": "quantitative"
+        },
+        "text": {
+          "field": "year_label"
+        }
+      }
     }
   ]
 }
