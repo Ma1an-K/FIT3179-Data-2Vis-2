@@ -34,7 +34,7 @@ h3.chart-title .no { color: var(--muted); font-family: "Source Sans 3", sans-ser
 .narrative a { color: var(--primary-dark); }
 .caption { color: var(--muted); font-size: 0.9rem; max-width: 62ch; margin: 0.4em 0 1.2em; }
 .chart { position: relative; }
-.vis { width: 100%; background: var(--panel); border: 1px solid var(--border); border-radius: 6px; padding: 12px; box-sizing: border-box; box-shadow: 0 1px 2px rgba(0,0,0,0.04); }
+.vis { width: 100%; overflow-x: auto; background: var(--panel); border: 1px solid var(--border); border-radius: 6px; padding: 12px; box-sizing: border-box; box-shadow: 0 1px 2px rgba(0,0,0,0.04); }
 .vis.tinted { background: var(--panel2); }
 .vis .vega-embed { width: 100%; }
 .vis .vega-embed summary { display: none; }
@@ -55,3 +55,16 @@ label.lens select.active { border: 2px solid var(--primary); padding: 3px 7px; c
   border-radius: 999px; padding: 2px 10px; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; line-height: 1.5; }
 .lens-badge .decade { text-transform: none; }
 footer { margin-top: 48px; }
+/* Section intros: narrative left, key numbers right. Two-column chart rows. Both collapse under 760 px. */
+.intro { display: grid; grid-template-columns: minmax(0, 1fr) 260px; gap: 24px; align-items: start; margin: 0 0 1.1em; }
+.intro .narrative { margin: 0; }
+.callout { border-left: 3px solid var(--primary); padding: 2px 0 2px 16px; }
+.callout p { margin: 0 0 14px; color: var(--muted); font-size: 0.9rem; line-height: 1.3; }
+.callout p:last-child { margin-bottom: 0; }
+.callout .big { display: block; font-family: Fraunces, Georgia, serif; font-weight: 600; font-size: 2.1rem; line-height: 1.1; color: var(--primary-dark); }
+.row2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; align-items: start; }
+.row2 > * { min-width: 0; }
+.row2-text .narrative { margin-top: 0; }
+@media (max-width: 759px) {
+  .intro, .row2 { grid-template-columns: minmax(0, 1fr); }
+}

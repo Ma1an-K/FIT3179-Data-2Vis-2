@@ -25,7 +25,13 @@
 
   <section id="s1">
     <h2><span class="num">1</span> Half a century of winners</h2>
+    <div class="intro">
     <p class="narrative">Since 1969 the Australian Film Institute, and from 2011 its successor the Australian Academy of Cinema and Television Arts (AACTA), has named one feature film almost every year as the country's best. The winners run from <em>Jack and Jill: A Postscript</em> to <em>Bring Her Back</em>, with joint winners in 1973 and 2014.</p>
+    <aside class="callout" aria-label="Key numbers">
+      <p><span class="big">58</span>winners, 1969–2025</p>
+      <p><span class="big">2</span>years with joint winners (1973 and 2014)</p>
+    </aside>
+  </div>
     <label class="lens">Show decade
       <select id="decade">
         <option value="All" selected>All years</option>
@@ -33,19 +39,25 @@
         <option>2000s</option><option>2010s</option><option>2020s</option>
       </select>
     </label>
-    <h3 class="chart-title"><span class="no">1.1</span>Every winner on one reel</h3>
+    <h3 class="chart-title"><span class="no">1.1</span>Every winner, year by year</h3>
     <div class="chart lens">
       <span class="lens-badge">Changes with the decade selector</span>
       <div class="vis" id="vis-1-1" data-spec="js/1_1_reel.json"></div>
     </div>
-    <p class="caption">Every winner on one reel: each wedge is a winning film, reading clockwise from 1969. The decade selector filters the reel and the two maps of places (2.1 and 3.1) and highlights that decade in 4.2; the other charts always show all years.</p>
+    <p class="caption">Every winner on one reel: each wedge is a winning film, reading clockwise from 1969. The decade selector highlights that decade on the reel and in 4.2, and filters the two maps of places (2.1 and 3.1); the other charts always show all years.</p>
     <p class="caption">1969's winner, <em>Jack and Jill: A Postscript</em>, has no location data on Wikidata, so the lens starts at the 1970s. 1973 and 2014 had joint winners: the second film of each pair sits on the outer ring.</p>
   </section>
 
   <section id="s2">
     <h2><span class="num">2</span> Where the stories are set</h2>
+    <div class="intro">
     <p class="narrative">Of the 58 winners, 37 are set in Australia, 7 overseas, and 14 have no setting recorded on Wikidata. Outback and regional stories such as <em>Samson and Delilah</em> and <em>Ten Canoes</em> sit alongside Sydney and Melbourne dramas. The map shows where each winning film's story takes place and, where recorded, where it was shot.</p>
-    <h3 class="chart-title"><span class="no">2.1</span>Where the winning stories are set and shot</h3>
+    <aside class="callout" aria-label="Key numbers">
+      <p><span class="big">37</span>of 58 winners are set in Australia</p>
+      <p><span class="big">7</span>are set overseas; 14 have no setting recorded</p>
+    </aside>
+  </div>
+    <h3 class="chart-title"><span class="no">2.1</span>Story settings and filming locations</h3>
     <div class="chart lens">
       <span class="lens-badge">Changes with the decade selector</span>
       <div class="vis" id="vis-2-1" data-spec="js/2_1_map_spikes.json"></div>
@@ -53,17 +65,28 @@
     </div>
     <p class="count" data-csv="data/best_film_locations.csv" data-filter="lon" data-where="level=place&country=Australia" data-noun="have a located story setting or filming location" data-empty="vis-2-1"></p>
     <p class="caption">Each ochre spike counts the winning films whose story is set at that place; each green spike counts the winners shot there. Where Wikidata records only a whole state, the spike stands at the state's centre and is drawn paler. Studio lots are counted with their city (Disney Studios Australia with Sydney, Docklands Studios with Melbourne). Only places recorded on Wikidata are shown.</p>
-    <h3 class="chart-title"><span class="no">2.2</span>Set in Australia, set overseas, or no setting data</h3>
-    <div class="chart">
-      <div class="vis tinted" id="vis-2-2" data-spec="js/2_2_waffle.json"></div>
+    <h3 class="chart-title"><span class="no">2.2</span>Home or overseas</h3>
+    <div class="row2">
+      <div class="chart">
+        <div class="vis tinted" id="vis-2-2" data-spec="js/2_2_waffle.json"></div>
+      </div>
+      <div class="row2-text">
+        <p class="narrative">Counted film by film, the home settings win clearly. Only seven winners are set overseas, from <em>Breaker Morant</em> (1980) to <em>Better Man</em> (2024), among them <em>The Piano</em> and <em>Elvis</em>. Wikidata records no setting for another 14, so the split could shift as its records fill in.</p>
+        <p class="caption">One square per winning film. Ochre squares are set in Australia, green squares overseas, dashed outlines have no story setting recorded on Wikidata. Read left to right, top to bottom; the three groups are ordered by year.</p>
+      </div>
     </div>
-    <p class="caption">One square per winning film. Ochre squares are set in Australia, green squares overseas, dashed outlines have no story setting recorded on Wikidata. Read left to right, top to bottom; the three groups are ordered by year.</p>
   </section>
 
   <section id="s3">
     <h2><span class="num">3</span> Who made them</h2>
+    <div class="intro">
     <p class="narrative">The directors behind Australia's best films were born on three continents. Of the 57 director credits on winning films with a located birthplace, 17 (about 30%) belong to overseas-born directors, from Hungary to the United States.</p>
-    <h3 class="chart-title"><span class="no">3.1</span>Where the directors were born</h3>
+    <aside class="callout" aria-label="Key numbers">
+      <p><span class="big">40</span>of 57 director credits went to Australian-born directors</p>
+      <p><span class="big">20</span>to directors born in Greater Sydney or Greater Melbourne</p>
+    </aside>
+  </div>
+    <h3 class="chart-title"><span class="no">3.1</span>Directors' birthplaces</h3>
     <div class="chart lens">
       <span class="lens-badge">Changes with the decade selector</span>
       <div class="vis" id="vis-3-1" data-spec="js/3_1_map_birthplaces.json"></div>
@@ -71,12 +94,17 @@
     </div>
     <p class="count" data-csv="data/best_film_directors.csv" data-filter="lon" data-noun="have a director with a located birthplace" data-empty="vis-3-1"></p>
     <p class="caption">A dot map: each dot is one Best Film win, packed in a small grid at the winning director's birthplace; where a film has two directors both are counted. Richmond is merged into Greater Melbourne, Camden and Paddington into Greater Sydney, Gawler into Greater Adelaide and Strathmore Park into Wellington, with the dots placed at the main city. Greater Sydney and Greater Melbourne lead the Australian panel with ten wins each; Britain supplies most of the overseas-born winners, and the Americas just one (Peekskill, New York). The decade selector filters by award year.</p>
-    <h3 class="chart-title"><span class="no">3.2</span>Australian-born directors, first half and second half</h3>
-    <div class="chart">
-      <div class="vis" id="vis-3-2" data-spec="js/3_2_slope.json"></div>
+    <h3 class="chart-title"><span class="no">3.2</span>Australian-born directors, 1969–1996 and 1997–2025</h3>
+    <div class="row2">
+      <div class="chart">
+        <div class="vis" id="vis-3-2" data-spec="js/3_2_slope.json"></div>
+      </div>
+      <div class="row2-text">
+        <p class="narrative">Splitting the award's history in half shows the trophy staying at home more often. In 1969–1996, 17 of 29 wins went to a director born in Australia; in 1997–2025, 23 of 28. The overseas-born share fell from 41% to 18%, but it never reached zero.</p>
+        <p class="caption">The share of wins going to Australian-born directors rose from 59% (17 of 29 wins) in 1969–1996 to 82% (23 of 28 wins) in 1997–2025. Only wins whose director has a located birthplace are counted.</p>
+      </div>
     </div>
-    <p class="caption">The share of wins going to Australian-born directors rose from 59% (17 of 29 wins) in 1969–1996 to 82% (23 of 28 wins) in 1997–2025. Only wins whose director has a located birthplace are counted.</p>
-    <h3 class="chart-title"><span class="no">3.3</span>Directors' careers against their wins</h3>
+    <h3 class="chart-title"><span class="no">3.3</span>Films directed and Best Film wins</h3>
     <div class="chart">
       <div class="vis" id="vis-3-3" data-spec="js/3_3_director_careers.json"></div>
     </div>
@@ -85,13 +113,19 @@
 
   <section id="s4">
     <h2><span class="num">4</span> What kind of films win</h2>
+    <div class="intro">
     <p class="narrative">What does a Best Film look like on paper? Drama is the genre Wikidata records most often for the winners, and it has won in every decade. The winners have also grown longer: their middle runtime rose from 96 minutes in the 1970s to 116 in the 2020s. Yet the Oscar winners for Best Picture ran longer still in every decade.</p>
-    <h3 class="chart-title"><span class="no">4.1</span>What the winners are about</h3>
+    <aside class="callout" aria-label="Key numbers">
+      <p><span class="big">35</span>of 58 winners are tagged drama</p>
+      <p><span class="big">104 v 130</span>minutes: middle runtime, Australia's winners against Oscar winners</p>
+    </aside>
+  </div>
+    <h3 class="chart-title"><span class="no">4.1</span>Genres by decade</h3>
     <div class="chart">
       <div class="vis tinted" id="vis-4-1" data-spec="js/4_1_genre_heatmap.json"></div>
     </div>
     <p class="caption">Each cell counts winning films tagged with that genre on Wikidata. Thirty-one genres appear across the 58 winners; the eight most common have their own row and the rest are grouped as Other. Three winners have no genre recorded.</p>
-    <h3 class="chart-title"><span class="no">4.2</span>How long they run</h3>
+    <h3 class="chart-title"><span class="no">4.2</span>Runtimes against Oscar Best Picture winners</h3>
     <div class="chart lens">
       <span class="lens-badge">Changes with the decade selector</span>
       <div class="vis" id="vis-4-2" data-spec="js/4_2_runtime.json"></div>
@@ -101,18 +135,24 @@
 
   <section id="s5">
     <h2><span class="num">5</span> Where the money goes</h2>
+    <div class="intro">
     <p class="narrative">Awards follow stories; money follows incentives. In 2024/25 Queensland (34.4% of the A$2.69 billion total) overtook New South Wales (30.9%) as the biggest state for drama production spending; it had led only twice before, in 1995/96 and 2002/03.</p>
-    <h3 class="chart-title"><span class="no">5.1</span>Queensland overtook New South Wales in 2024/25</h3>
+    <aside class="callout" aria-label="Key numbers">
+      <p><span class="big">34.4%</span>Queensland's share of drama spend in 2024/25</p>
+      <p><span class="big">A$2.69 bn</span>spent on drama production in Australia that year</p>
+    </aside>
+  </div>
+    <h3 class="chart-title"><span class="no">5.1</span>Drama spend by state, 2024/25</h3>
     <div class="chart">
       <div class="vis" id="vis-5-1" data-spec="js/5_1_map_spend.json"></div>
     </div>
     <p class="caption">Share of the $2.69 billion spent on drama production in Australia in 2024/25, to one decimal place. The ACT, the Northern Territory and Tasmania are published only as one combined figure (0.7% of spend), so the three share one neutral fill with a dashed outline instead of being shaded as 0.7% each.</p>
-    <h3 class="chart-title"><span class="no">5.2</span>Thirty years of spend</h3>
+    <h3 class="chart-title"><span class="no">5.2</span>Drama spend by state, 1995/96 to 2024/25</h3>
     <div class="chart">
       <div class="vis" id="vis-5-2" data-spec="js/5_2_streamgraph.json"></div>
     </div>
     <p class="caption">A streamgraph stacks the states around a centre line so the total width shows the whole industry's size. Values marked &lt;0.1 in the source are drawn as 0.05. Spend is in current dollars. Western Australia and the ACT/NT/Tasmania group have no separate 2010/11 figure, so their bands narrow to zero there (no separate figure).</p>
-    <h3 class="chart-title"><span class="no">5.3</span>Who is on top each year</h3>
+    <h3 class="chart-title"><span class="no">5.3</span>Each year's ranking by spend</h3>
     <div class="chart">
       <div class="vis" id="vis-5-3" data-spec="js/5_3_bump.json"></div>
     </div>
@@ -126,24 +166,37 @@
 
   <section id="s6">
     <h2><span class="num">6</span> Do awards pay?</h2>
+    <div class="intro">
     <p class="narrative">A Best Film trophy is not a box-office guarantee. Of the 39 winners since 1988, 29 made the top five Australian films of their release year and 11 were the year's biggest Australian film.</p>
-    <h3 class="chart-title"><span class="no">6.1</span>The winners that also sold tickets</h3>
+    <aside class="callout" aria-label="Key numbers">
+      <p><span class="big">22</span>of 58 winners are in the all-time top 100</p>
+      <p><span class="big">11</span>of 39 winners since 1988 were their year's biggest Australian film</p>
+    </aside>
+  </div>
+    <h3 class="chart-title"><span class="no">6.1</span>Winners in the all-time top 100</h3>
     <div class="chart">
       <div class="vis" id="vis-6-1" data-spec="js/6_1_top_grossing.json"></div>
     </div>
     <p class="caption">Twenty-two winners are in the all-time top 100; the number beside each bar is its rank. 36 winners earned less than the top-100 cut-off (about A$3.65 million), including <em>Samson and Delilah</em>, <em>The Babadook</em> and <em>Nitram</em>; hover a bar for its gross. Box office is cumulative and in current dollars.</p>
-    <h3 class="chart-title"><span class="no">6.2</span>Winner versus the year's biggest film</h3>
+    <h3 class="chart-title"><span class="no">6.2</span>Each winner against its year's biggest film</h3>
     <div class="chart">
       <div class="vis" id="vis-6-2" data-spec="js/6_2_winner_vs_top.json"></div>
     </div>
     <p class="caption">Year-of-release grosses from Screen Australia's top-five lists (1988–2025), so winners outside their year's top five are not shown. The thin line is the gap to the year's biggest Australian film.</p>
   </section>
 
+  <section id="s7">
+    <h2><span class="num">7</span> So where do Australia's best films come from?</h2>
+    <p class="narrative">Mostly from home, and mostly from the south-east. Thirty-seven of the 58 winners are set in Australia, and 12 of the 22 located Australian settings are in New South Wales or Victoria; three Northern Territory stories, <em>Evil Angels</em>, <em>Ten Canoes</em> and <em>Samson and Delilah</em>, take the award to the outback of the Centre and the Top End. The directors follow the same map: 40 of the 57 director credits with a located birthplace belong to Australian-born directors, 20 of them born in Greater Sydney or Greater Melbourne. A steady overseas share remains, though it fell from 41% of wins before 1997 to 18% since.</p>
+    <p class="narrative">They are not long films by Oscar standards. The winners' middle runtime grew from 96 minutes in the 1970s to 116 in the 2020s, but across all years it is 104 minutes against 130 for the Oscar Best Picture winners, and 45 of the 52 Australian winners with a recorded runtime ran shorter than that year's Oscar winner.</p>
+    <p class="narrative">The money has moved away from the stories. In 2024/25 Queensland took 34.4% of the A$2.69 billion spent on drama production, more than any other state, yet only one located winner, <em>Bliss</em>, is set there, while Tasmania and the territories hold 22.7% of the located settings and averaged 0.9% of the spend. Nor do the awards follow the box office: 22 of the 58 winners are in the all-time top 100, and since 1988 only 11 of 39 were their year's biggest Australian film.</p>
+  </section>
+
   <footer id="about">
     <h2>About this visualisation</h2>
-    <p class="narrative small"><strong>Data.</strong> Winning films, their settings, filming locations, directors' birthplaces, genres, cast sizes, runtimes and directors' filmographies are from <a href="https://www.wikidata.org/">Wikidata</a> (CC0). Winners, locations, settings, directors and flows were exported on 11 October 2026; genres, facts and careers on 12 October 2026. Twelve winners missing from Wikidata's award records were identified from Wikipedia's <a href="https://en.wikipedia.org/wiki/AACTA_Award_for_Best_Film">AACTA Award for Best Film</a> list (CC BY-SA) and then queried on Wikidata by their item IDs, like the other winners. The SPARQL queries are in <a href="data/fetch_wikidata.sh">data/fetch_wikidata.sh</a> and the Screen Australia transcription in <a href="data/fetch_screen_australia.py">data/fetch_screen_australia.py</a>; sources and notes are in <a href="data/README.md">data/README.md</a>. Production spending, box-office rankings and yearly top fives are from Screen Australia, accessed 12 October 2026: <a href="https://www.screenaustralia.gov.au/insights-and-trends/drama-production/spend-by-location/">spend by location</a>, <a href="https://www.screenaustralia.gov.au/insights-and-trends/australian-films/top-australian-films/">top Australian films of all time (top 100)</a> and <a href="https://www.screenaustralia.gov.au/insights-and-trends/australian-films/top-5-each-year/">top 5 Australian films each year</a>, plus the <a href="https://www.screenaustralia.gov.au/drama-report-2024-25-2-7-billion-spent-on-drama-production-in-australia-points-to-holistic-industry-growth/">Drama Report 2024/25</a> (published 4 December 2025) for context. World feature-film runtimes are from the <a href="https://developer.imdb.com/non-commercial-datasets/">IMDb non-commercial datasets</a> (title.basics, personal and non-commercial use), accessed 24 October 2026. Boundaries: Natural Earth (world) and Australian state boundaries derived from the ABS.</p>
-    <p class="narrative small"><strong>Method.</strong> Charts are built with Vega-Lite 5 and embedded with vega-embed; the decade selector drives a shared signal. Screen Australia tables were transcribed from the charts on its website by a script (<code>data/fetch_screen_australia.py</code>). The world median runtime per year is computed from IMDb's title.basics file by <code>data/fetch_imdb_runtimes.py</code>.</p>
-    <p class="narrative small"><strong>AI declaration.</strong> I acknowledge the use of generative AI (Claude, Anthropic) in preparing this visualisation. It was used to write and debug the Vega-Lite chart specifications, the page's HTML, CSS and JavaScript, and the data-collection scripts (the Wikidata SPARQL queries and the Screen Australia transcription script); to draft and proofread the narrative text and captions; and to brainstorm and mock up alternative chart designs after the peer critique. The topic, the story, the choice of data sources and charts, the colour scheme, the critique responses and the hand-drawn sketch are my own decisions, and I checked every figure quoted on this page against the data files in the repository. No AI-generated content is presented as data.</p>
+    <p class="narrative small"><strong>Data.</strong> Winning films, their story settings and filming locations, directors' birthplaces, genres, runtimes and directors' filmographies are from <a href="https://www.wikidata.org/">Wikidata</a> (CC0). Winners, locations, settings and directors were exported on 11 October 2026; genres, runtimes and careers on 12 October 2026. Twelve winners missing from Wikidata's award records were identified from Wikipedia's <a href="https://en.wikipedia.org/wiki/AACTA_Award_for_Best_Film">AACTA Award for Best Film</a> list (CC BY-SA) and then queried on Wikidata by their item IDs, like the other winners. The Oscar comparison in 4.2 uses the Academy Award for Best Picture winners and their runtimes, also from Wikidata (query 8), accessed 24 October 2026. The SPARQL queries are in <a href="data/fetch_wikidata.sh">data/fetch_wikidata.sh</a> and the Screen Australia transcription in <a href="data/fetch_screen_australia.py">data/fetch_screen_australia.py</a>; sources and notes are in <a href="data/README.md">data/README.md</a>. Production spending, box-office rankings and yearly top fives are from Screen Australia, accessed 12 October 2026: <a href="https://www.screenaustralia.gov.au/insights-and-trends/drama-production/spend-by-location/">spend by location</a>, <a href="https://www.screenaustralia.gov.au/insights-and-trends/australian-films/top-australian-films/">top Australian films of all time (top 100)</a> and <a href="https://www.screenaustralia.gov.au/insights-and-trends/australian-films/top-5-each-year/">top 5 Australian films each year</a>, plus the <a href="https://www.screenaustralia.gov.au/drama-report-2024-25-2-7-billion-spent-on-drama-production-in-australia-points-to-holistic-industry-growth/">Drama Report 2024/25</a> (published 4 December 2025) for context. Boundaries: Natural Earth (world) and Australian state boundaries derived from the ABS.</p>
+    <p class="narrative small"><strong>Method.</strong> Charts are built with Vega-Lite 5 and embedded with vega-embed; the decade selector drives a shared signal. Screen Australia tables were transcribed from the charts on its website by a script (<code>data/fetch_screen_australia.py</code>). The Oscar series comes from query 8 in <code>data/fetch_wikidata.sh</code>; where Wikidata records several runtimes for a film, the theatrical version is used, or else the longest.</p>
+    <p class="narrative small"><strong>AI declaration.</strong> I acknowledge the use of generative AI (Claude, Anthropic) in preparing this visualisation. It was used to write and debug the Vega-Lite chart specifications, the page's HTML, CSS and JavaScript, and the data-collection scripts (the Wikidata SPARQL queries and the Screen Australia transcription script) and the Oscar comparison; to draft and proofread the narrative text and captions; and to brainstorm and mock up alternative chart designs after the peer critique. The topic, the story, the choice of data sources and charts, the colour scheme, the critique responses and the hand-drawn sketch are my own decisions, and I checked every figure quoted on this page against the data files in the repository. No AI-generated content is presented as data.</p>
     <p class="narrative small">© Matan Kimchi 2026 · Submitted 25 October 2026.</p>
   </footer>
 
