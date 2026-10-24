@@ -1,7 +1,7 @@
 {
   "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
   "title": {
-    "text": "Who is on top each year",
+    "text": "New South Wales led in 24 of 30 years",
     "subtitle": "States ranked by drama production spend, 1995/96 to 2024/25"
   },
   "width": "container",
@@ -70,9 +70,18 @@
           "field": "rank",
           "type": "quantitative",
           "axis": {
-            "title": "Rank by spend",
-            "tickCount": 6,
-            "format": "d"
+            "title": "Rank by spend (1 = most)",
+            "values": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6
+            ],
+            "format": "d",
+            "labelOverlap": false,
+            "grid": true
           },
           "scale": {
             "domain": [
