@@ -1,35 +1,37 @@
 {
   "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-  "title": {"text": "Australian-born directors: first half vs second half", "subtitle": "Share of Best Film wins whose director was born in Australia, by period (directors with a located birthplace)"},
+  "title": {"text": "Australian-born directors: first half vs second half", "subtitle": "Share of Best Film wins whose director was born in Australia, by period (directors with a located birthplace); the rest were born overseas"},
   "width": "container",
   "height": 300,
   "data": {"url": "data/best_film_directors.csv", "format": {"type": "csv", "parse": {"year": "number", "lon": "number", "lat": "number"}}},
   "transform": [
     {"filter": "isValid(datum.lon) && isValid(datum.lat)"},
     {"calculate": "datum.year <= 1996 ? '1969–1996' : '1997–2025'", "as": "period"},
-    {"calculate": "datum.birth_country == 'Australia' ? 'Born in Australia' : 'Born overseas'", "as": "origin"},
-    {"aggregate": [{"op": "count", "as": "n"}], "groupby": ["period", "origin"]},
-    {"joinaggregate": [{"op": "sum", "field": "n", "as": "total"}], "groupby": ["period"]},
-    {"calculate": "datum.n / datum.total * 100", "as": "pct"}
+    {"calculate": "datum.birth_country == 'Australia' ? 1 : 0", "as": "au"},
+    {"aggregate": [{"op": "sum", "field": "au", "as": "n"}, {"op": "count", "as": "total"}], "groupby": ["period"]},
+    {"calculate": "datum.n / datum.total * 100", "as": "pct"},
+    {"calculate": "100 - datum.pct", "as": "pct_overseas"},
+    {"calculate": "format(datum.pct, '.0f') + '% born in Australia'", "as": "label"},
+    {"calculate": "format(datum.pct_overseas, '.0f') + '% born overseas'", "as": "label_overseas"}
   ],
+  "encoding": {
+    "x": {"field": "period", "type": "ordinal", "axis": {"title": "Award years", "labelAngle": 0}, "scale": {"padding": 0.5}},
+    "y": {"field": "pct", "type": "quantitative", "axis": {"title": "Share of wins with an Australian-born director (%)"}, "scale": {"domain": [0, 100]}}
+  },
   "layer": [
     {
-      "mark": {"type": "line", "strokeWidth": 3, "point": {"size": 90, "filled": true}},
+      "mark": {"type": "line", "strokeWidth": 3, "color": "#B5431F", "point": {"size": 90, "filled": true, "color": "#B5431F"}},
       "encoding": {
-        "x": {"field": "period", "type": "ordinal", "axis": {"title": "Award years", "labelAngle": 0}, "scale": {"padding": 0.5}},
-        "y": {"field": "pct", "type": "quantitative", "axis": {"title": "Share of wins (%)"}, "scale": {"domain": [0, 100]}},
-        "color": {"field": "origin", "type": "nominal", "scale": {"domain": ["Born in Australia", "Born overseas"], "range": ["#B5431F", "#2F5D50"]}, "legend": {"title": null, "orient": "top-right"}},
-        "tooltip": [{"field": "period"}, {"field": "origin"}, {"field": "n", "title": "Wins"}, {"field": "pct", "title": "Share (%)", "format": ".0f"}]
+        "tooltip": [{"field": "period", "title": "Award years"}, {"field": "n", "title": "Wins, Australian-born director"}, {"field": "total", "title": "Wins with a located birthplace"}, {"field": "pct", "title": "Share (%)", "format": ".0f"}]
       }
     },
     {
-      "mark": {"type": "text", "dx": 0, "dy": -14, "fontSize": 12, "fontWeight": 600},
-      "encoding": {
-        "x": {"field": "period", "type": "ordinal"},
-        "y": {"field": "pct", "type": "quantitative"},
-        "text": {"field": "pct", "format": ".0f"},
-        "color": {"field": "origin", "type": "nominal", "scale": {"domain": ["Born in Australia", "Born overseas"], "range": ["#B5431F", "#2F5D50"]}}
-      }
+      "mark": {"type": "text", "dy": -16, "fontSize": 13, "fontWeight": 600, "color": "#B5431F"},
+      "encoding": {"text": {"field": "label"}}
+    },
+    {
+      "mark": {"type": "text", "dy": 20, "fontSize": 12, "color": "#6A5F55"},
+      "encoding": {"text": {"field": "label_overseas"}}
     }
   ]
 }

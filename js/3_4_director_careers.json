@@ -1,45 +1,230 @@
 {
   "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-  "title": {"text": "Prolific, but rarely crowned twice", "subtitle": "Films directed (Wikidata count) against Best Film wins, for the fifteen most prolific winning directors"},
-  "width": "container",
-  "height": 420,
-  "data": {"url": "data/director_careers.csv", "format": {"type": "csv", "parse": {"films_directed": "number", "best_film_wins": "number", "first_win": "number", "last_win": "number"}}},
+  "title": {
+    "text": "Making many films rarely means winning many",
+    "subtitle": "The fifteen winning directors with the most films on Wikidata: films directed (left) and Best Film wins (right, own scale)"
+  },
+  "data": {
+    "url": "data/director_careers.csv",
+    "format": {
+      "type": "csv",
+      "parse": {
+        "films_directed": "number",
+        "best_film_wins": "number",
+        "first_win": "number",
+        "last_win": "number"
+      }
+    }
+  },
   "transform": [
-    {"window": [{"op": "rank", "as": "r"}], "sort": [{"field": "films_directed", "order": "descending"}, {"field": "director"}]},
-    {"filter": "datum.r <= 15"}
+    {
+      "window": [
+        {
+          "op": "rank",
+          "as": "r"
+        }
+      ],
+      "sort": [
+        {
+          "field": "films_directed",
+          "order": "descending"
+        },
+        {
+          "field": "director"
+        }
+      ]
+    },
+    {
+      "filter": "datum.r <= 15"
+    }
   ],
-  "layer": [
+  "spacing": 28,
+  "resolve": {
+    "scale": {
+      "y": "shared"
+    }
+  },
+  "hconcat": [
     {
-      "mark": {"type": "rule", "stroke": "#DDD3C6", "strokeWidth": 3},
+      "width": 600,
+      "height": 420,
       "encoding": {
-        "y": {"field": "director", "type": "nominal", "sort": {"field": "films_directed", "order": "descending"}, "axis": {"title": "Director"}},
-        "x": {"field": "best_film_wins", "type": "quantitative"},
-        "x2": {"field": "films_directed"}
-      }
+        "y": {
+          "field": "director",
+          "type": "nominal",
+          "sort": {
+            "field": "films_directed",
+            "order": "descending"
+          },
+          "axis": {
+            "title": null
+          }
+        }
+      },
+      "layer": [
+        {
+          "mark": {
+            "type": "rule",
+            "stroke": "#DDD3C6",
+            "strokeWidth": 3
+          },
+          "encoding": {
+            "x": {
+              "field": "films_directed",
+              "type": "quantitative"
+            },
+            "x2": {
+              "datum": 0
+            }
+          }
+        },
+        {
+          "mark": {
+            "type": "circle",
+            "size": 140,
+            "color": "#2F5D50",
+            "opacity": 1
+          },
+          "encoding": {
+            "x": {
+              "field": "films_directed",
+              "type": "quantitative",
+              "scale": {
+                "domain": [
+                  0,
+                  42
+                ],
+                "nice": false
+              },
+              "axis": {
+                "title": "Films directed (Wikidata count)"
+              }
+            },
+            "tooltip": [
+              {
+                "field": "director",
+                "title": "Director"
+              },
+              {
+                "field": "films_directed",
+                "title": "Films directed (Wikidata)"
+              },
+              {
+                "field": "best_film_wins",
+                "title": "Best Film wins"
+              },
+              {
+                "field": "first_win",
+                "title": "First win"
+              },
+              {
+                "field": "last_win",
+                "title": "Last win"
+              }
+            ]
+          }
+        },
+        {
+          "mark": {
+            "type": "text",
+            "align": "left",
+            "dx": 10,
+            "fontSize": 11,
+            "color": "#6A5F55"
+          },
+          "encoding": {
+            "x": {
+              "field": "films_directed",
+              "type": "quantitative"
+            },
+            "text": {
+              "field": "films_directed"
+            }
+          }
+        }
+      ]
     },
     {
-      "mark": {"type": "circle", "size": 140, "color": "#2F5D50"},
+      "width": 120,
+      "height": 420,
       "encoding": {
-        "y": {"field": "director", "type": "nominal", "sort": {"field": "films_directed", "order": "descending"}},
-        "x": {"field": "films_directed", "type": "quantitative", "axis": {"title": "Films (green = directed, ochre = won Best Film)"}},
-        "tooltip": [{"field": "director"}, {"field": "films_directed", "title": "Films directed (Wikidata)"}, {"field": "best_film_wins", "title": "Best Film wins"}, {"field": "first_win", "title": "First win"}, {"field": "last_win", "title": "Last win"}]
-      }
-    },
-    {
-      "mark": {"type": "circle", "size": 140, "color": "#B5431F"},
-      "encoding": {
-        "y": {"field": "director", "type": "nominal", "sort": {"field": "films_directed", "order": "descending"}},
-        "x": {"field": "best_film_wins", "type": "quantitative"},
-        "tooltip": [{"field": "director"}, {"field": "best_film_wins", "title": "Best Film wins"}]
-      }
-    },
-    {
-      "mark": {"type": "text", "align": "left", "dx": 10, "fontSize": 11, "color": "#6A5F55"},
-      "encoding": {
-        "y": {"field": "director", "type": "nominal", "sort": {"field": "films_directed", "order": "descending"}},
-        "x": {"field": "films_directed", "type": "quantitative"},
-        "text": {"field": "films_directed"}
-      }
+        "y": {
+          "field": "director",
+          "type": "nominal",
+          "sort": {
+            "field": "films_directed",
+            "order": "descending"
+          },
+          "axis": null
+        }
+      },
+      "layer": [
+        {
+          "mark": {
+            "type": "rule",
+            "stroke": "#E9D3C8",
+            "strokeWidth": 3
+          },
+          "encoding": {
+            "x": {
+              "field": "best_film_wins",
+              "type": "quantitative"
+            },
+            "x2": {
+              "datum": 0
+            }
+          }
+        },
+        {
+          "mark": {
+            "type": "square",
+            "size": 120,
+            "color": "#B5431F",
+            "opacity": 1
+          },
+          "encoding": {
+            "x": {
+              "field": "best_film_wins",
+              "type": "quantitative",
+              "scale": {
+                "domain": [
+                  0,
+                  3
+                ]
+              },
+              "axis": {
+                "title": "Best Film wins",
+                "values": [
+                  0,
+                  1,
+                  2,
+                  3
+                ],
+                "tickCount": 4,
+                "format": "d"
+              }
+            },
+            "tooltip": [
+              {
+                "field": "director",
+                "title": "Director"
+              },
+              {
+                "field": "best_film_wins",
+                "title": "Best Film wins"
+              },
+              {
+                "field": "first_win",
+                "title": "First win"
+              },
+              {
+                "field": "last_win",
+                "title": "Last win"
+              }
+            ]
+          }
+        }
+      ]
     }
   ]
 }
