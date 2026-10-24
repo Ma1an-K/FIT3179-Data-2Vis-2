@@ -103,6 +103,28 @@ import json
 for jf in sorted((D.parent / "js").glob("*.json")):
     txt = json.dumps(json.loads(jf.read_text()))
     if "data/best_film_directors.csv" in txt and '"parse"' not in txt: errors.append(f"{jf.name} reads the directors CSV without a numeric parse")
+# 5.4 dumbbell: the setting -> state mapping in js/5_4_stories_vs_money.json must cover every located Australian setting,
+# and its inline connecting rules must match the two shares computed from the CSVs.
+STATE_OF = {"Sydney": "NSW", "Jindabyne": "NSW", "New South Wales": "NSW", "Melbourne": "Vic", "Queensland": "Qld",
+            "South Australia": "SA", "Western Australia": "WA", "Hobart": "ACT/Tas/NT", "Tasmania": "ACT/Tas/NT",
+            "Northern Territory": "ACT/Tas/NT", "Uluru": "ACT/Tas/NT", "Arafura Swamp": "ACT/Tas/NT"}
+au_set = [r for r in locs if r["kind"] == "setting" and r["country"] == "Australia" and r["level"] == "place"]
+unmapped = {r["place"] for r in au_set} - STATE_OF.keys()
+if unmapped: errors.append(f"5.4: setting places without a state: {sorted(unmapped)}")
+pairs54 = {(r["film"], r["year"], STATE_OF.get(r["place"])) for r in au_set}
+story = {g: 100 * sum(p[2] == g for p in pairs54) / len(pairs54) for g in {p[2] for p in pairs54}}
+ytot = {}
+for r in series:
+    if r["spend_m"]: ytot[r["year_start"]] = ytot.get(r["year_start"], 0) + float(r["spend_m"])
+shares = {}
+for r in series:
+    if r["spend_m"]: shares.setdefault(r["state"], []).append(float(r["spend_m"]) / ytot[r["year_start"]] * 100)
+spend = {g: sum(v) / len(v) for g, v in shares.items()}
+spec54 = json.loads((D.parent / "js" / "5_4_stories_vs_money.json").read_text())
+for v in spec54["layer"][0]["data"]["values"]:
+    g = v["grp"]; want = sorted([round(story.get(g, 0), 1), round(spend[g], 1)])
+    if [v["lo"], v["hi"]] != want: errors.append(f"5.4 rule for {g} is {[v['lo'], v['hi']]}, data gives {want}")
+print("5.4 stories", {g: round(x, 1) for g, x in sorted(story.items())}, "| spend", {g: round(x, 1) for g, x in sorted(spend.items())})
 print("flows", len(flows))
 print("settings", counts)
 print("winners", len(winners), "| locations", len(locs), "| directors w/ coords", len(with_coords))

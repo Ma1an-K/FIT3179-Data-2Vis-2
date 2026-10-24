@@ -1,0 +1,338 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "title": {
+    "text": "Tasmania and the territories host over a fifth of the stories but get about 1% of the spend",
+    "subtitle": "Per state: share of winners set there (ochre) against average share of drama production spend, 1995/96 to 2024/25 (green)"
+  },
+  "width": "container",
+  "height": 300,
+  "encoding": {
+    "y": {
+      "field": "grp",
+      "type": "nominal",
+      "sort": [
+        "NSW",
+        "Vic",
+        "Qld",
+        "SA",
+        "WA",
+        "ACT/Tas/NT"
+      ],
+      "axis": {
+        "title": null,
+        "labelFontWeight": 600,
+        "labelExpr": "datum.value == 'ACT/Tas/NT' ? 'ACT, Tas and NT' : datum.value",
+        "domain": false,
+        "ticks": false
+      }
+    },
+    "x": {
+      "type": "quantitative",
+      "scale": {
+        "domain": [
+          0,
+          50
+        ]
+      },
+      "axis": {
+        "title": "Share (%)",
+        "tickCount": 5
+      }
+    },
+    "color": {
+      "field": "series",
+      "type": "nominal",
+      "scale": {
+        "domain": [
+          "Share of winners set there",
+          "Average share of drama spend"
+        ],
+        "range": [
+          "#B5431F",
+          "#2F5D50"
+        ]
+      },
+      "legend": {
+        "title": null,
+        "orient": "top",
+        "direction": "horizontal",
+        "labelLimit": 320
+      }
+    }
+  },
+  "layer": [
+    {
+      "data": {
+        "values": [
+          {
+            "grp": "NSW",
+            "lo": 31.8,
+            "hi": 46.0
+          },
+          {
+            "grp": "Vic",
+            "lo": 22.7,
+            "hi": 26.4
+          },
+          {
+            "grp": "Qld",
+            "lo": 4.5,
+            "hi": 19.9
+          },
+          {
+            "grp": "SA",
+            "lo": 4.6,
+            "hi": 13.6
+          },
+          {
+            "grp": "WA",
+            "lo": 2.3,
+            "hi": 4.5
+          },
+          {
+            "grp": "ACT/Tas/NT",
+            "lo": 0.9,
+            "hi": 22.7
+          }
+        ]
+      },
+      "description": "Connecting rules only: the two values per state as computed by the layers below (data/check_data.py checks they still match the CSVs).",
+      "mark": {
+        "type": "rule",
+        "stroke": "#DDD3C6",
+        "strokeWidth": 3
+      },
+      "encoding": {
+        "x": {
+          "field": "lo"
+        },
+        "x2": {
+          "field": "hi"
+        },
+        "color": {
+          "value": "#DDD3C6"
+        }
+      }
+    },
+    {
+      "data": {
+        "url": "data/best_film_locations.csv",
+        "format": {
+          "type": "csv",
+          "parse": {
+            "year": "number"
+          }
+        }
+      },
+      "transform": [
+        {
+          "filter": "datum.kind == 'setting' && datum.country == 'Australia' && datum.level == 'place'"
+        },
+        {
+          "calculate": "indexof(['Sydney', 'Jindabyne', 'New South Wales'], datum.place) >= 0 ? 'NSW' : datum.place == 'Melbourne' ? 'Vic' : datum.place == 'Queensland' ? 'Qld' : datum.place == 'South Australia' ? 'SA' : datum.place == 'Western Australia' ? 'WA' : indexof(['Hobart', 'Tasmania', 'Northern Territory', 'Uluru', 'Arafura Swamp'], datum.place) >= 0 ? 'ACT/Tas/NT' : 'Unmapped'",
+          "as": "grp"
+        },
+        {
+          "aggregate": [
+            {
+              "op": "count",
+              "as": "rows"
+            }
+          ],
+          "groupby": [
+            "film",
+            "year",
+            "grp"
+          ]
+        },
+        {
+          "aggregate": [
+            {
+              "op": "count",
+              "as": "n"
+            }
+          ],
+          "groupby": [
+            "grp"
+          ]
+        },
+        {
+          "joinaggregate": [
+            {
+              "op": "sum",
+              "field": "n",
+              "as": "total"
+            }
+          ]
+        },
+        {
+          "calculate": "datum.n / datum.total * 100",
+          "as": "pct"
+        },
+        {
+          "calculate": "'Share of winners set there'",
+          "as": "series"
+        },
+        {
+          "calculate": "format(datum.pct, '.1f') + '%'",
+          "as": "pct_label"
+        }
+      ],
+      "layer": [
+        {
+          "mark": {
+            "type": "circle",
+            "size": 160,
+            "opacity": 1
+          },
+          "encoding": {
+            "x": {
+              "field": "pct"
+            },
+            "tooltip": [
+              {
+                "field": "grp",
+                "title": "State"
+              },
+              {
+                "field": "n",
+                "title": "Winners set there"
+              },
+              {
+                "field": "total",
+                "title": "Winners with a located Australian setting"
+              },
+              {
+                "field": "pct",
+                "title": "Share (%)",
+                "format": ".1f"
+              }
+            ]
+          }
+        },
+        {
+          "mark": {
+            "type": "text",
+            "dy": -15,
+            "fontSize": 12,
+            "fontWeight": 600
+          },
+          "encoding": {
+            "x": {
+              "field": "pct"
+            },
+            "text": {
+              "field": "pct_label"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "data": {
+        "url": "data/spend_by_state_series.csv",
+        "format": {
+          "type": "csv",
+          "parse": {
+            "year_start": "number",
+            "spend_m": "number"
+          }
+        }
+      },
+      "transform": [
+        {
+          "filter": "isValid(datum.spend_m) && !isNaN(datum.spend_m)"
+        },
+        {
+          "joinaggregate": [
+            {
+              "op": "sum",
+              "field": "spend_m",
+              "as": "year_total"
+            }
+          ],
+          "groupby": [
+            "year_start"
+          ]
+        },
+        {
+          "calculate": "datum.spend_m / datum.year_total * 100",
+          "as": "share"
+        },
+        {
+          "aggregate": [
+            {
+              "op": "mean",
+              "field": "share",
+              "as": "pct"
+            },
+            {
+              "op": "count",
+              "as": "years"
+            }
+          ],
+          "groupby": [
+            "state"
+          ]
+        },
+        {
+          "calculate": "datum.state",
+          "as": "grp"
+        },
+        {
+          "calculate": "'Average share of drama spend'",
+          "as": "series"
+        },
+        {
+          "calculate": "format(datum.pct, '.1f') + '%'",
+          "as": "pct_label"
+        }
+      ],
+      "layer": [
+        {
+          "mark": {
+            "type": "circle",
+            "size": 160,
+            "opacity": 1
+          },
+          "encoding": {
+            "x": {
+              "field": "pct"
+            },
+            "tooltip": [
+              {
+                "field": "grp",
+                "title": "State"
+              },
+              {
+                "field": "pct",
+                "title": "Average yearly share of spend (%)",
+                "format": ".1f"
+              },
+              {
+                "field": "years",
+                "title": "Years with a figure"
+              }
+            ]
+          }
+        },
+        {
+          "mark": {
+            "type": "text",
+            "dy": 17,
+            "fontSize": 12,
+            "fontWeight": 600
+          },
+          "encoding": {
+            "x": {
+              "field": "pct"
+            },
+            "text": {
+              "field": "pct_label"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
