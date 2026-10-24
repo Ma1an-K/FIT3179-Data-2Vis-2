@@ -1,7 +1,7 @@
 {
   "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
   "title": {
-    "text": "Best Film is rarely the year's biggest film",
+    "text": "Since 1988, Best Film was the year's biggest Australian film only 11 times",
     "subtitle": "Ochre = the winner's Australian gross in its release year; green = that year's top-grossing Australian film. Winners in their year's top five only."
   },
   "width": "container",

@@ -1,7 +1,7 @@
 {
   "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
   "title": {
-    "text": "Where the winning stories are set and shot",
+    "text": "Sydney and Melbourne hold the most stories; Sydney hosts the most shoots",
     "subtitle": "Places recorded on Wikidata for Best Film winners, 1969–2025 (Australia only)"
   },
   "width": "container",

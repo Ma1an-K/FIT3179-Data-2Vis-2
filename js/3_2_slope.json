@@ -1,6 +1,6 @@
 {
   "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-  "title": {"text": "Australian-born directors: first half vs second half", "subtitle": "Share of Best Film wins whose director was born in Australia, by period (directors with a located birthplace); the rest were born overseas"},
+  "title": {"text": ["The Australian-born share", "rose from 59% to 82%"], "subtitle": ["Share of Best Film wins whose director was born", "in Australia (directors with a located birthplace)"]},
   "width": "container",
   "height": 300,
   "data": {"url": "data/best_film_directors.csv", "format": {"type": "csv", "parse": {"year": "number", "lon": "number", "lat": "number"}}},
@@ -26,11 +26,23 @@
       }
     },
     {
-      "mark": {"type": "text", "dy": -16, "fontSize": 13, "fontWeight": 600, "color": "#B5431F"},
+      "transform": [{"filter": "datum.period == '1997–2025'"}],
+      "mark": {"type": "text", "dy": -34, "fontSize": 13, "fontWeight": 600, "color": "#B5431F"},
       "encoding": {"text": {"field": "label"}}
     },
     {
-      "mark": {"type": "text", "dy": 20, "fontSize": 12, "color": "#6A5F55"},
+      "transform": [{"filter": "datum.period == '1997–2025'"}],
+      "mark": {"type": "text", "dy": -16, "fontSize": 12, "color": "#6A5F55"},
+      "encoding": {"text": {"field": "label_overseas"}}
+    },
+    {
+      "transform": [{"filter": "datum.period == '1969–1996'"}],
+      "mark": {"type": "text", "dy": 20, "fontSize": 13, "fontWeight": 600, "color": "#B5431F"},
+      "encoding": {"text": {"field": "label"}}
+    },
+    {
+      "transform": [{"filter": "datum.period == '1969–1996'"}],
+      "mark": {"type": "text", "dy": 38, "fontSize": 12, "color": "#6A5F55"},
       "encoding": {"text": {"field": "label_overseas"}}
     }
   ]

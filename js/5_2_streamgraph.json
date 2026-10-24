@@ -1,7 +1,7 @@
 {
   "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
   "title": {
-    "text": "Thirty years of drama spend, state by state",
+    "text": "Drama spend grew almost sevenfold, from A$387 M to A$2.69 billion",
     "subtitle": "Drama production spend in Australia by state and territory, A$ million, 1995/96 to 2024/25 (Screen Australia)"
   },
   "width": "container",
@@ -132,8 +132,8 @@
       "mark": {
         "type": "text",
         "align": "right",
-        "dx": -8,
-        "dy": 18,
+        "dx": -20,
+        "dy": 26,
         "fontSize": 12,
         "fontWeight": 600,
         "color": "#FFFFFF",

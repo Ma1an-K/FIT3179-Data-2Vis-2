@@ -1,6 +1,6 @@
 {
   "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-  "title": {"text": "Every winner on one reel, 1969–2025", "subtitle": "One wedge per Best Film winner, clockwise from 1969 at the top; the 1973 and 2014 ties are stacked"},
+  "title": {"text": "58 winners: 42 under the AFI, 16 since AACTA took over in 2011", "subtitle": "One wedge per Best Film winner, clockwise from 1969 at the top; the 1973 and 2014 ties are stacked"},
   "width": "container",
   "height": 520,
   "params": [{"name": "decade", "value": "All"}],

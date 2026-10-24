@@ -1,7 +1,7 @@
 {
   "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
   "title": {
-    "text": "Drama dominates, but the winners drift",
+    "text": "Drama led every decade until the 2020s",
     "subtitle": "Best Film winners by decade and Wikidata genre; a film with two genres counts in both rows"
   },
   "width": {

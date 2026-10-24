@@ -1,6 +1,6 @@
 {
   "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-  "title": {"text": "The winners that also sold tickets", "subtitle": "The 22 Best Film winners in Screen Australia's top 100 Australian films of all time, Australian box office, current dollars (as at April 2025)"},
+  "title": {"text": "Only 22 of the 58 winners made the all-time top 100", "subtitle": "Winners in Screen Australia's top 100 Australian films of all time: Australian box office, current dollars (as at April 2025)"},
   "width": "container",
   "height": {"step": 22},
   "data": {"url": "data/top100_box_office.csv", "format": {"type": "csv", "parse": {"rank": "number", "release_year": "number", "box_office_aud": "number", "is_winner": "number"}}},

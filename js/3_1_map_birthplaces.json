@@ -1,7 +1,7 @@
 {
   "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
   "title": {
-    "text": "Where the directors were born",
+    "text": "Over a third of winning directors were born in Greater Sydney or Greater Melbourne",
     "subtitle": [
       "A dot map: one dot per Best Film win, placed at the winning director's birthplace; ochre = born in Australia, green = born overseas.",
       "Suburbs and nearby towns are merged into their city (Greater Sydney, Greater Melbourne, Greater Adelaide, Wellington)."
@@ -783,6 +783,65 @@
                   "field": "label"
                 }
               }
+            },
+            {
+              "data": {
+                "url": "data/best_film_directors.csv",
+                "format": {
+                  "type": "csv",
+                  "parse": {
+                    "year": "number",
+                    "lon": "number",
+                    "lat": "number"
+                  }
+                }
+              },
+              "transform": [
+                {
+                  "filter": "isValid(datum.lon) && isValid(datum.lat)"
+                },
+                {
+                  "filter": "datum.lon > -30 && datum.lon < 60 && datum.lat > 30"
+                },
+                {
+                  "calculate": "decade == 'All' || floor(datum.year / 10) * 10 + 's' == decade ? 1 : 0",
+                  "as": "in_lens"
+                },
+                {
+                  "aggregate": [
+                    {
+                      "op": "sum",
+                      "field": "in_lens",
+                      "as": "n"
+                    }
+                  ]
+                },
+                {
+                  "filter": "datum.n == 0"
+                },
+                {
+                  "calculate": "'No winning directors born ' + 'in Europe' + ' in the ' + decade",
+                  "as": "msg"
+                }
+              ],
+              "mark": {
+                "type": "text",
+                "fontSize": 13,
+                "color": "#6A5F55",
+                "align": "center",
+                "baseline": "middle"
+              },
+              "encoding": {
+                "x": {
+                  "value": 280.0
+                },
+                "y": {
+                  "value": 150.0
+                },
+                "text": {
+                  "field": "msg"
+                }
+              }
             }
           ]
         },
@@ -1129,6 +1188,65 @@
                 },
                 "text": {
                   "field": "label"
+                }
+              }
+            },
+            {
+              "data": {
+                "url": "data/best_film_directors.csv",
+                "format": {
+                  "type": "csv",
+                  "parse": {
+                    "year": "number",
+                    "lon": "number",
+                    "lat": "number"
+                  }
+                }
+              },
+              "transform": [
+                {
+                  "filter": "isValid(datum.lon) && isValid(datum.lat)"
+                },
+                {
+                  "filter": "datum.lon < -30"
+                },
+                {
+                  "calculate": "decade == 'All' || floor(datum.year / 10) * 10 + 's' == decade ? 1 : 0",
+                  "as": "in_lens"
+                },
+                {
+                  "aggregate": [
+                    {
+                      "op": "sum",
+                      "field": "in_lens",
+                      "as": "n"
+                    }
+                  ]
+                },
+                {
+                  "filter": "datum.n == 0"
+                },
+                {
+                  "calculate": "'No winning directors born ' + 'in the Americas' + ' in the ' + decade",
+                  "as": "msg"
+                }
+              ],
+              "mark": {
+                "type": "text",
+                "fontSize": 13,
+                "color": "#6A5F55",
+                "align": "center",
+                "baseline": "middle"
+              },
+              "encoding": {
+                "x": {
+                  "value": 176.5
+                },
+                "y": {
+                  "value": 150.0
+                },
+                "text": {
+                  "field": "msg"
                 }
               }
             }

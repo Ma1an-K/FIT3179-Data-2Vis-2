@@ -1,6 +1,6 @@
 {
   "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-  "title": {"text": "Set in Australia, set overseas, or no setting data", "subtitle": "One square per Best Film winner, 1969–2025; ten films per row, ordered by category then year"},
+  "title": {"text": ["Almost two in three winners", "are set in Australia"], "subtitle": ["One square per Best Film winner, 1969–2025;", "ten per row, ordered by group then year"]},
   "width": {"step": 26},
   "height": {"step": 26},
   "data": {"url": "data/best_film_settings.csv"},
@@ -18,7 +18,7 @@
       "transform": [{"filter": "datum.ord < 2"}],
       "mark": {"type": "square", "size": 480, "stroke": "#FFFFFF", "strokeWidth": 2},
       "encoding": {
-        "color": {"field": "where", "type": "nominal", "scale": {"domain": ["Set in Australia · 37", "Set overseas · 7", "No setting data · 14"], "range": ["#B5431F", "#2F5D50", "#FBF7F0"]}, "legend": {"title": "Each square is one film", "orient": "right", "symbolStrokeColor": "#AFA496", "symbolStrokeWidth": 1}}
+        "color": {"field": "where", "type": "nominal", "scale": {"domain": ["Set in Australia · 37", "Set overseas · 7", "No setting data · 14"], "range": ["#B5431F", "#2F5D50", "#FBF7F0"]}, "legend": {"title": "Each square is one film", "orient": "bottom", "direction": "vertical", "symbolStrokeColor": "#AFA496", "symbolStrokeWidth": 1}}
       }
     },
     {
