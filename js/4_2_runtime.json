@@ -1,29 +1,294 @@
 {
   "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-  "title": {"text": "About a hundred minutes, give or take", "subtitle": "Runtime of each Best Film winner by decade; box = middle half, line = median"},
+  "title": {
+    "text": "Winners have grown longer than the world's films",
+    "subtitle": [
+      "Ochre dots: each winner's runtime. Ochre line: trend through the winners.",
+      "Green line: median runtime of all feature films released worldwide that year (IMDb)."
+    ]
+  },
   "width": "container",
-  "height": 320,
-  "data": {"url": "data/best_film_facts.csv", "format": {"type": "csv", "parse": {"year": "number", "cast_size": "number", "runtime_min": "number"}}},
-  "transform": [
-    {"filter": "datum.runtime_min != null && datum.runtime_min > 0"},
-    {"calculate": "floor(datum.year / 10) * 10 + 's'", "as": "decade_label"},
-    {"calculate": "datum.decade_label == '1960s' ? '1970s' : datum.decade_label", "as": "decade_bin"}
-  ],
-  "layer": [
+  "height": 340,
+  "params": [
     {
-      "mark": {"type": "boxplot", "extent": "min-max", "size": 36, "box": {"fill": "#F3EBE0", "stroke": "#B5431F", "strokeWidth": 1.5}, "median": {"stroke": "#B5431F", "strokeWidth": 2.5}, "rule": {"stroke": "#AFA496"}, "ticks": {"stroke": "#AFA496", "size": 14}},
-      "encoding": {
-        "x": {"field": "decade_bin", "type": "ordinal", "axis": {"title": "Decade of the award", "labelAngle": 0}},
-        "y": {"field": "runtime_min", "type": "quantitative", "axis": {"title": "Runtime (minutes)"}, "scale": {"zero": false}}
+      "name": "decade",
+      "value": "All"
+    }
+  ],
+  "encoding": {
+    "x": {
+      "field": "year",
+      "type": "quantitative",
+      "scale": {
+        "domain": [
+          1968,
+          2026
+        ]
+      },
+      "axis": {
+        "title": "Year",
+        "format": "d",
+        "tickMinStep": 1
       }
     },
-    {
-      "mark": {"type": "circle", "size": 40, "color": "#2F5D50", "opacity": 0.7},
-      "encoding": {
-        "x": {"field": "decade_bin", "type": "ordinal"},
-        "y": {"field": "runtime_min", "type": "quantitative"},
-        "tooltip": [{"field": "film"}, {"field": "year"}, {"field": "runtime_min", "title": "Minutes"}]
+    "y": {
+      "type": "quantitative",
+      "scale": {
+        "domain": [
+          40,
+          165
+        ],
+        "zero": false
+      },
+      "axis": {
+        "title": "Runtime (minutes)"
       }
+    }
+  },
+  "layer": [
+    {
+      "data": {
+        "url": "data/world_runtime_by_year.csv",
+        "format": {
+          "type": "csv",
+          "parse": {
+            "year": "number",
+            "median_runtime": "number",
+            "films": "number"
+          }
+        }
+      },
+      "layer": [
+        {
+          "mark": {
+            "type": "line",
+            "color": "#2F5D50",
+            "strokeWidth": 2,
+            "opacity": 0.9
+          },
+          "encoding": {
+            "y": {
+              "field": "median_runtime"
+            }
+          }
+        },
+        {
+          "mark": {
+            "type": "point",
+            "opacity": 0,
+            "size": 60
+          },
+          "encoding": {
+            "y": {
+              "field": "median_runtime"
+            },
+            "tooltip": [
+              {
+                "field": "year",
+                "title": "Year"
+              },
+              {
+                "field": "median_runtime",
+                "title": "World median (min)"
+              },
+              {
+                "field": "films",
+                "title": "Feature films",
+                "format": ","
+              }
+            ]
+          }
+        },
+        {
+          "transform": [
+            {
+              "filter": "datum.year == 2025"
+            }
+          ],
+          "mark": {
+            "type": "text",
+            "align": "left",
+            "dx": 8,
+            "fontWeight": 600,
+            "fontSize": 12,
+            "color": "#2F5D50",
+            "text": "World median"
+          },
+          "encoding": {
+            "y": {
+              "field": "median_runtime"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "data": {
+        "url": "data/best_film_facts.csv",
+        "format": {
+          "type": "csv",
+          "parse": {
+            "year": "number",
+            "cast_size": "number",
+            "runtime_min": "number"
+          }
+        }
+      },
+      "transform": [
+        {
+          "filter": "datum.runtime_min != null && datum.runtime_min > 0"
+        },
+        {
+          "calculate": "floor(datum.year / 10) * 10 + 's'",
+          "as": "decade_label"
+        },
+        {
+          "calculate": "decade == 'All' || datum.decade_label == decade",
+          "as": "in_lens"
+        }
+      ],
+      "layer": [
+        {
+          "transform": [
+            {
+              "loess": "runtime_min",
+              "on": "year",
+              "bandwidth": 0.5
+            }
+          ],
+          "layer": [
+            {
+              "mark": {
+                "type": "line",
+                "color": "#B5431F",
+                "strokeWidth": 2.5
+              },
+              "encoding": {
+                "y": {
+                  "field": "runtime_min"
+                }
+              }
+            },
+            {
+              "transform": [
+                {
+                  "joinaggregate": [
+                    {
+                      "op": "max",
+                      "field": "year",
+                      "as": "last"
+                    }
+                  ]
+                },
+                {
+                  "filter": "datum.year == datum.last"
+                }
+              ],
+              "mark": {
+                "type": "text",
+                "align": "left",
+                "dx": 8,
+                "fontWeight": 600,
+                "fontSize": 12,
+                "color": "#B5431F",
+                "text": "Best Film trend"
+              },
+              "encoding": {
+                "y": {
+                  "field": "runtime_min"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "mark": {
+            "type": "circle",
+            "size": 55,
+            "color": "#B5431F",
+            "stroke": "#FFFFFF",
+            "strokeWidth": 1
+          },
+          "encoding": {
+            "y": {
+              "field": "runtime_min"
+            },
+            "opacity": {
+              "condition": {
+                "test": "datum.in_lens",
+                "value": 1
+              },
+              "value": 0.25
+            },
+            "tooltip": [
+              {
+                "field": "film",
+                "title": "Film"
+              },
+              {
+                "field": "year",
+                "title": "Year"
+              },
+              {
+                "field": "runtime_min",
+                "title": "Minutes"
+              }
+            ]
+          }
+        },
+        {
+          "transform": [
+            {
+              "filter": "datum.film == 'Elvis'"
+            },
+            {
+              "calculate": "datum.film + ', ' + datum.runtime_min + ' min'",
+              "as": "note"
+            }
+          ],
+          "mark": {
+            "type": "text",
+            "fontSize": 11,
+            "color": "#5E2110",
+            "align": "right",
+            "dx": -8
+          },
+          "encoding": {
+            "y": {
+              "field": "runtime_min"
+            },
+            "text": {
+              "field": "note"
+            }
+          }
+        },
+        {
+          "transform": [
+            {
+              "filter": "datum.film == 'Homesdale'"
+            },
+            {
+              "calculate": "datum.film + ', ' + datum.runtime_min + ' min'",
+              "as": "note"
+            }
+          ],
+          "mark": {
+            "type": "text",
+            "fontSize": 11,
+            "color": "#5E2110",
+            "align": "left",
+            "dx": 8
+          },
+          "encoding": {
+            "y": {
+              "field": "runtime_min"
+            },
+            "text": {
+              "field": "note"
+            }
+          }
+        }
+      ]
     }
   ]
 }

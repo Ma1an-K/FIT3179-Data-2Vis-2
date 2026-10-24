@@ -16,6 +16,7 @@ HEADERS = {
     "top100_box_office.csv": "rank,title,distributor,release_year,box_office_aud,is_winner,winner_title",
     "top5_each_year.csv": "year,rank,title,distributor,box_office_aud",
     "winner_vs_top.csv": "film,year,winner_gross,winner_rank,top_title,top_gross,winner_is_top",
+    "world_runtime_by_year.csv": "year,median_runtime,films",
 }
 for name, hdr in HEADERS.items():
     first = (D / name).open().readline().strip()
@@ -93,6 +94,10 @@ if len(t5) != 190 or {r["year"] for r in t5} != {str(y) for y in range(1988, 202
 wvt = list(csv.DictReader((D / "winner_vs_top.csv").open()))
 if len(wvt) < 15 or len({r["film"] for r in wvt}) != len(wvt): errors.append("winner_vs_top rows or duplicates")
 if any(int(r["winner_gross"]) > int(r["top_gross"]) for r in wvt): errors.append("winner gross above the year's top gross")
+world = list(csv.DictReader((D / "world_runtime_by_year.csv").open()))
+if len(world) != 57 or [int(r["year"]) for r in world] != list(range(1969, 2026)): errors.append("world runtime rows must be 57 contiguous years 1969-2025")
+if any(not 60 <= float(r["median_runtime"]) <= 130 for r in world): errors.append("implausible world median runtime")
+if any(int(r["films"]) < 1 for r in world): errors.append("world runtime year with no films")
 import json
 for jf in sorted((D.parent / "js").glob("*.json")):
     txt = json.dumps(json.loads(jf.read_text()))

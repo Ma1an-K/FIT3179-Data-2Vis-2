@@ -40,6 +40,10 @@ Screen Australia states no open licence; used under its site terms with attribut
 
 Winners not in the top 100 (36): The Devil's Playground; Storm Boy; Newsfront; My Brilliant Career; Lonely Hearts; Careful, He Might Hear You; Annie's Coming Out; Bliss; Malcolm; The Year My Voice Broke; The Navigator: A Medieval Odyssey; Evil Angels; Flirting; Angel Baby; Kiss or Kill; The Interview; Somersault; Look Both Ways; Ten Canoes; Romulus, My Father; The Black Balloon; Samson and Delilah; The Babadook; Sweet Country; The Nightingale; Babyteeth; Nitram; Jack and Jill: A Postscript; Three to Go: Michael; Homesdale; Stork; 27A; Libido: The Child; Sunday Too Far Away; Proof; Bring Her Back.
 
+## 3. IMDb — world feature-film runtimes
+Source: https://datasets.imdbws.com/title.basics.tsv.gz , accessed 24 October 2026 (the ~229 MB file is not kept in the repo). Licence: IMDb non-commercial datasets, personal and non-commercial use, https://developer.imdb.com/non-commercial-datasets/ . Only derived yearly figures are published here.
+- `world_runtime_by_year.csv` — `year, median_runtime, films`: 57 rows, 1969-2025. Built by `fetch_imdb_runtimes.py` (run from the repo root with the downloaded file's path as its argument). Keeps titles with `titleType` = `movie`, `isAdult` = 0, a numeric `runtimeMinutes` from 40 to 300 and `startYear` 1969-2025. The 40-minute floor excludes shorts mislabelled as features; the 300-minute cap excludes art installations and endurance films. `median_runtime` is the median of the kept runtimes for that release year, to one decimal; `films` is how many titles were kept.
+
 ## Boundaries
 - `js/au_states.geojson` — Australian states, simplified, from https://github.com/tonywr71/GeoJson-Data (derived from ABS boundaries)
 Retrieved 2026-10-11
