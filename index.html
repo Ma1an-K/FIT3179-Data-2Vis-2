@@ -38,13 +38,8 @@
       <span class="lens-badge">Changes with the decade selector</span>
       <div class="vis" id="vis-1-1" data-spec="js/1_1_reel.json"></div>
     </div>
-    <p class="caption">Every winner on one reel: each wedge is a winning film, reading clockwise from 1969. The decade selector filters the reel and the two maps of places (2.1 and 3.1) and highlights that decade in 4.1 and 4.2; the other charts always show all years.</p>
+    <p class="caption">Every winner on one reel: each wedge is a winning film, reading clockwise from 1969. The decade selector filters the reel and the two maps of places (2.1 and 3.1) and highlights that decade in 4.2; the other charts always show all years.</p>
     <p class="caption">1969's winner, <em>Jack and Jill: A Postscript</em>, has no location data on Wikidata, so the lens starts at the 1970s. 1973 and 2014 had joint winners: the second film of each pair sits on the outer ring.</p>
-    <h3 class="chart-title"><span class="no">1.2</span>What the winners are about</h3>
-    <div class="chart">
-      <div class="vis tinted" id="vis-1-2" data-spec="js/1_2_genre_heatmap.json"></div>
-    </div>
-    <p class="caption">Each cell counts winning films tagged with that genre on Wikidata. Thirty-one genres appear across the 58 winners; the eight most common have their own row and the rest are grouped as Other. Three winners have no genre recorded.</p>
   </section>
 
   <section id="s2">
@@ -90,19 +85,18 @@
 
   <section id="s4">
     <h2><span class="num">4</span> What kind of films win</h2>
-    <p class="narrative">What does a Best Film look like on paper? Using the cast lists and runtimes recorded on Wikidata, the winners of the 1970s to the 2010s grew bigger: the median credited cast rose from 3 to 16. Median runtime rose from 96 minutes in the 1970s to 116 in the 2020s, while the median feature film released worldwide stayed at about 90 minutes.</p>
-    <h3 class="chart-title"><span class="no">4.1</span>How many people are on screen</h3>
-    <div class="chart lens">
-      <span class="lens-badge">Changes with the decade selector</span>
-      <div class="vis" id="vis-4-1" data-spec="js/4_1_cast_size.json"></div>
+    <p class="narrative">What does a Best Film look like on paper? Drama is the genre Wikidata records most often for the winners, and it has won in every decade. The winners have also grown longer: their middle runtime rose from 96 minutes in the 1970s to 116 in the 2020s. Yet the Oscar winners for Best Picture ran longer still in every decade.</p>
+    <h3 class="chart-title"><span class="no">4.1</span>What the winners are about</h3>
+    <div class="chart">
+      <div class="vis tinted" id="vis-4-1" data-spec="js/4_1_genre_heatmap.json"></div>
     </div>
-    <p class="caption">One dot per winner with a cast list on Wikidata (55 of 58). The green tick is the decade's median. The decade selector highlights one decade. The 2020s median falls back to 4.5 across six films, most likely because Wikidata cast lists for recent films are still sparse.</p>
+    <p class="caption">Each cell counts winning films tagged with that genre on Wikidata. Thirty-one genres appear across the 58 winners; the eight most common have their own row and the rest are grouped as Other. Three winners have no genre recorded.</p>
     <h3 class="chart-title"><span class="no">4.2</span>How long they run</h3>
     <div class="chart lens">
       <span class="lens-badge">Changes with the decade selector</span>
       <div class="vis" id="vis-4-2" data-spec="js/4_2_runtime.json"></div>
     </div>
-    <p class="caption">Each ochre dot is one winner's runtime (52 of 58; 6 winners have no runtime on Wikidata). The ochre line is a loess trend through the winners; the green line is the median runtime of every feature film released worldwide that year, from IMDb (40 to 300 minutes, adult titles excluded). By decade, the winners' median runtime rose from 96 minutes in the 1970s to 108.5 in the 1980s, about 101 in the 1990s and 2000s, 113 in the 2010s and 116 in the 2020s. Over the same years the world median barely moved: 90 minutes in 1970 and 90 in 2025, dipping to 86 in 2010. The decade selector highlights one decade's winners; the lines always show all years.</p>
+    <p class="caption">Each ochre dot is one Australian winner's runtime (52 of 58; 6 winners have no runtime on Wikidata). Each green dot is the Oscar Best Picture winner for the same year of films (57 winners, 1969–2025, all with a runtime on Wikidata). Each line is a smoothed average of the dots of its colour. The median is the middle value: half the films run shorter, half longer. By decade, the Australian median rose from 96 minutes in the 1970s to 108.5 in the 1980s, about 101 in the 1990s and 2000s, 113 in the 2010s and 116 in the 2020s; the Oscar median was 131, 129, 152, 131.5, 121.5 and 139 minutes. The gap was smallest in the 2010s, at 8.5 minutes. The decade selector highlights one decade's dots in both colours; the lines always show all years.</p>
   </section>
 
   <section id="s5">

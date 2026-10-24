@@ -1,292 +1,135 @@
 {
   "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
   "title": {
-    "text": "Winners have grown longer than the world's films",
+    "text": "Australia's winners run shorter than Oscar winners in every decade",
     "subtitle": [
-      "Ochre dots: each winner's runtime. Ochre line: trend through the winners.",
-      "Green line: median runtime of all feature films released worldwide that year (IMDb)."
+      "Middle runtime of all winners: 104 minutes for Australia's Best Film, 130 for the Oscar for Best Picture.",
+      "Ochre dots: Australia's Best Film winners. Green dots: Oscar Best Picture winners. Lines: smoothed averages."
     ]
   },
   "width": "container",
-  "height": 340,
-  "params": [
-    {
-      "name": "decade",
-      "value": "All"
-    }
-  ],
+  "height": 360,
+  "params": [{"name": "decade", "value": "All"}],
   "encoding": {
     "x": {
       "field": "year",
       "type": "quantitative",
-      "scale": {
-        "domain": [
-          1968,
-          2026
-        ]
-      },
-      "axis": {
-        "title": "Year",
-        "format": "d",
-        "tickMinStep": 1
-      }
+      "scale": {"domain": [1968, 2026]},
+      "axis": {"title": "Award year", "format": "d", "tickMinStep": 1}
     },
     "y": {
       "type": "quantitative",
-      "scale": {
-        "domain": [
-          40,
-          165
-        ],
-        "zero": false
-      },
-      "axis": {
-        "title": "Runtime (minutes)"
-      }
+      "scale": {"domain": [40, 210], "zero": false},
+      "axis": {"title": "Runtime (minutes)"}
     }
   },
   "layer": [
     {
       "data": {
-        "url": "data/world_runtime_by_year.csv",
-        "format": {
-          "type": "csv",
-          "parse": {
-            "year": "number",
-            "median_runtime": "number",
-            "films": "number"
-          }
-        }
+        "url": "data/oscar_best_picture.csv",
+        "format": {"type": "csv", "parse": {"year": "number", "runtime_min": "number"}}
       },
+      "transform": [
+        {"filter": "datum.runtime_min != null && datum.runtime_min > 0"},
+        {"calculate": "floor(datum.year / 10) * 10 + 's'", "as": "decade_label"},
+        {"calculate": "decade == 'All' || datum.decade_label == decade", "as": "in_lens"}
+      ],
       "layer": [
         {
-          "mark": {
-            "type": "line",
-            "color": "#2F5D50",
-            "strokeWidth": 2,
-            "opacity": 0.9
-          },
-          "encoding": {
-            "y": {
-              "field": "median_runtime"
+          "transform": [{"loess": "runtime_min", "on": "year", "bandwidth": 0.5}],
+          "layer": [
+            {
+              "mark": {"type": "line", "color": "#2F5D50", "strokeWidth": 2.5},
+              "encoding": {"y": {"field": "runtime_min"}}
+            },
+            {
+              "transform": [
+                {"joinaggregate": [{"op": "max", "field": "year", "as": "last"}]},
+                {"filter": "datum.year == datum.last"}
+              ],
+              "mark": {"type": "text", "align": "left", "dx": 8, "fontWeight": 600, "fontSize": 12, "color": "#2F5D50", "text": "Oscar Best Picture"},
+              "encoding": {"y": {"field": "runtime_min"}}
             }
-          }
+          ]
         },
         {
-          "mark": {
-            "type": "point",
-            "opacity": 0,
-            "size": 60
-          },
+          "mark": {"type": "circle", "size": 34, "color": "#2F5D50"},
           "encoding": {
-            "y": {
-              "field": "median_runtime"
-            },
+            "y": {"field": "runtime_min"},
+            "opacity": {"condition": {"test": "datum.in_lens", "value": 0.6}, "value": 0.12},
             "tooltip": [
-              {
-                "field": "year",
-                "title": "Year"
-              },
-              {
-                "field": "median_runtime",
-                "title": "World median (min)"
-              },
-              {
-                "field": "films",
-                "title": "Feature films",
-                "format": ","
-              }
+              {"field": "film", "title": "Oscar Best Picture"},
+              {"field": "year", "title": "Year"},
+              {"field": "runtime_min", "title": "Minutes"}
             ]
           }
         },
         {
           "transform": [
-            {
-              "filter": "datum.year == 2025"
-            }
+            {"joinaggregate": [{"op": "max", "field": "runtime_min", "as": "longest"}]},
+            {"filter": "datum.runtime_min == datum.longest"},
+            {"calculate": "'Longest Oscar winner: ' + datum.film + ', ' + datum.runtime_min + ' min'", "as": "note"}
           ],
-          "mark": {
-            "type": "text",
-            "align": "left",
-            "dx": 8,
-            "fontWeight": 600,
-            "fontSize": 12,
-            "color": "#2F5D50",
-            "text": "World median"
-          },
-          "encoding": {
-            "y": {
-              "field": "median_runtime"
-            }
-          }
+          "mark": {"type": "text", "fontSize": 11, "color": "#2F5D50", "align": "left", "dx": 8, "limit": 420},
+          "encoding": {"y": {"field": "runtime_min"}, "text": {"field": "note"}}
         }
       ]
     },
     {
       "data": {
         "url": "data/best_film_facts.csv",
-        "format": {
-          "type": "csv",
-          "parse": {
-            "year": "number",
-            "cast_size": "number",
-            "runtime_min": "number"
-          }
-        }
+        "format": {"type": "csv", "parse": {"year": "number", "cast_size": "number", "runtime_min": "number"}}
       },
       "transform": [
-        {
-          "filter": "datum.runtime_min != null && datum.runtime_min > 0"
-        },
-        {
-          "calculate": "floor(datum.year / 10) * 10 + 's'",
-          "as": "decade_label"
-        },
-        {
-          "calculate": "decade == 'All' || datum.decade_label == decade",
-          "as": "in_lens"
-        }
+        {"filter": "datum.runtime_min != null && datum.runtime_min > 0"},
+        {"calculate": "floor(datum.year / 10) * 10 + 's'", "as": "decade_label"},
+        {"calculate": "decade == 'All' || datum.decade_label == decade", "as": "in_lens"}
       ],
       "layer": [
         {
-          "transform": [
-            {
-              "loess": "runtime_min",
-              "on": "year",
-              "bandwidth": 0.5
-            }
-          ],
+          "transform": [{"loess": "runtime_min", "on": "year", "bandwidth": 0.5}],
           "layer": [
             {
-              "mark": {
-                "type": "line",
-                "color": "#B5431F",
-                "strokeWidth": 2.5
-              },
-              "encoding": {
-                "y": {
-                  "field": "runtime_min"
-                }
-              }
+              "mark": {"type": "line", "color": "#B5431F", "strokeWidth": 2.5},
+              "encoding": {"y": {"field": "runtime_min"}}
             },
             {
               "transform": [
-                {
-                  "joinaggregate": [
-                    {
-                      "op": "max",
-                      "field": "year",
-                      "as": "last"
-                    }
-                  ]
-                },
-                {
-                  "filter": "datum.year == datum.last"
-                }
+                {"joinaggregate": [{"op": "max", "field": "year", "as": "last"}]},
+                {"filter": "datum.year == datum.last"}
               ],
-              "mark": {
-                "type": "text",
-                "align": "left",
-                "dx": 8,
-                "fontWeight": 600,
-                "fontSize": 12,
-                "color": "#B5431F",
-                "text": "Best Film trend"
-              },
-              "encoding": {
-                "y": {
-                  "field": "runtime_min"
-                }
-              }
+              "mark": {"type": "text", "align": "left", "dx": 8, "fontWeight": 600, "fontSize": 12, "color": "#B5431F", "text": "Australia's Best Film"},
+              "encoding": {"y": {"field": "runtime_min"}}
             }
           ]
         },
         {
-          "mark": {
-            "type": "circle",
-            "size": 55,
-            "color": "#B5431F",
-            "stroke": "#FFFFFF",
-            "strokeWidth": 1
-          },
+          "mark": {"type": "circle", "size": 60, "color": "#B5431F", "stroke": "#FFFFFF", "strokeWidth": 1},
           "encoding": {
-            "y": {
-              "field": "runtime_min"
-            },
-            "opacity": {
-              "condition": {
-                "test": "datum.in_lens",
-                "value": 1
-              },
-              "value": 0.25
-            },
+            "y": {"field": "runtime_min"},
+            "opacity": {"condition": {"test": "datum.in_lens", "value": 1}, "value": 0.2},
             "tooltip": [
-              {
-                "field": "film",
-                "title": "Film"
-              },
-              {
-                "field": "year",
-                "title": "Year"
-              },
-              {
-                "field": "runtime_min",
-                "title": "Minutes"
-              }
+              {"field": "film", "title": "Australia's Best Film"},
+              {"field": "year", "title": "Year"},
+              {"field": "runtime_min", "title": "Minutes"}
             ]
           }
         },
         {
           "transform": [
-            {
-              "filter": "datum.film == 'Elvis'"
-            },
-            {
-              "calculate": "datum.film + ', ' + datum.runtime_min + ' min'",
-              "as": "note"
-            }
+            {"filter": "datum.film == 'Elvis'"},
+            {"calculate": "datum.film + ', ' + datum.runtime_min + ' min'", "as": "note"}
           ],
-          "mark": {
-            "type": "text",
-            "fontSize": 11,
-            "color": "#5E2110",
-            "align": "right",
-            "dx": -8
-          },
-          "encoding": {
-            "y": {
-              "field": "runtime_min"
-            },
-            "text": {
-              "field": "note"
-            }
-          }
+          "mark": {"type": "text", "fontSize": 11, "color": "#5E2110", "align": "right", "dx": -8},
+          "encoding": {"y": {"field": "runtime_min"}, "text": {"field": "note"}}
         },
         {
           "transform": [
-            {
-              "filter": "datum.film == 'Homesdale'"
-            },
-            {
-              "calculate": "datum.film + ', ' + datum.runtime_min + ' min'",
-              "as": "note"
-            }
+            {"filter": "datum.film == 'Homesdale'"},
+            {"calculate": "datum.film + ', ' + datum.runtime_min + ' min'", "as": "note"}
           ],
-          "mark": {
-            "type": "text",
-            "fontSize": 11,
-            "color": "#5E2110",
-            "align": "left",
-            "dx": 8
-          },
-          "encoding": {
-            "y": {
-              "field": "runtime_min"
-            },
-            "text": {
-              "field": "note"
-            }
-          }
+          "mark": {"type": "text", "fontSize": 11, "color": "#5E2110", "align": "left", "dx": 8},
+          "encoding": {"y": {"field": "runtime_min"}, "text": {"field": "note"}}
         }
       ]
     }

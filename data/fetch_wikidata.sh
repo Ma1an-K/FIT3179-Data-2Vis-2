@@ -227,4 +227,26 @@ with open("data/director_careers.csv", "w", newline="") as f:
 PY
 rm data/_careers_raw.csv
 
-wc -l data/best_film_*.csv data/flows.csv
+# 8. Oscar comparison: Academy Award for Best Picture (Q102427) winners, one row per film. P585 on the award statement is
+#    the ceremony date, so year = ceremony year - 1 (the film year honoured, matching the AACTA year). Honoured years
+#    1969-2025. Producers who hold the award are dropped by the film-class filter. Labels fall back to "mul" (Forrest
+#    Gump has no "en" label). Runtime: best-rank P2047 values converted to minutes (some are stored in seconds,
+#    Q11574), shortest if several (same rule as best_film_facts.csv), rounded to the minute.
+Q 'SELECT ?f (SAMPLE(?lbl) AS ?film) (YEAR(MIN(?t)) - 1 AS ?year) (GROUP_CONCAT(DISTINCT CONCAT(STR(?amt), " ", STRAFTER(STR(?unit), "entity/")); separator="|") AS ?runtimes) WHERE {
+  ?f p:P166 ?st . ?st ps:P166 wd:Q102427 ; pq:P585 ?t .
+  ?f wdt:P31/wdt:P279* wd:Q11424 .
+  ?f rdfs:label ?lbl FILTER(LANG(?lbl) IN ("en", "mul"))
+  OPTIONAL { ?f p:P2047 ?rs . ?rs a wikibase:BestRank ; psv:P2047 [ wikibase:quantityAmount ?amt ; wikibase:quantityUnit ?unit ] }
+} GROUP BY ?f HAVING (YEAR(MIN(?t)) - 1 >= 1969 && YEAR(MIN(?t)) - 1 <= 2025) ORDER BY ?year' > data/_oscar_raw.csv
+python3 - <<'PY'
+import csv
+TO_MIN = {"Q7727": 1, "Q11574": 1 / 60}  # minute, second
+with open("data/oscar_best_picture.csv", "w", newline="") as f:
+    w = csv.writer(f, lineterminator="\n"); w.writerow(["film", "year", "runtime_min"])
+    for r in csv.DictReader(open("data/_oscar_raw.csv", newline="")):
+        vals = [float(a) * TO_MIN[u] for a, u in (x.split(" ") for x in r["runtimes"].split("|") if x)]
+        w.writerow([r["film"], r["year"], str(round(min(vals))) if vals else ""])
+PY
+rm data/_oscar_raw.csv
+
+wc -l data/best_film_*.csv data/flows.csv data/oscar_best_picture.csv
