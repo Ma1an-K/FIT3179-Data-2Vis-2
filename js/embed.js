@@ -4,8 +4,8 @@ const sharedConfig = {
   background: "transparent",
   font: "'Source Sans 3', sans-serif",
   title: { font: "'Fraunces', serif", fontSize: 18, fontWeight: 600, color: "#1E1A14", anchor: "start", subtitleColor: "#6A5F55", subtitleFontSize: 13 },
-  axis: { labelColor: "#6A5F55", titleColor: "#6A5F55", gridColor: "#E9E0D4", domainColor: "#DDD3C6", tickColor: "#DDD3C6", labelFontSize: 12, titleFontSize: 12 },
-  legend: { labelColor: "#6A5F55", titleColor: "#6A5F55", labelFontSize: 12, titleFontSize: 12 },
+  axis: { labelColor: "#6A5F55", titleColor: "#6A5F55", gridColor: "#E9E0D4", domainColor: "#DDD3C6", tickColor: "#DDD3C6", labelFontSize: 13, titleFontSize: 13 },
+  legend: { labelColor: "#6A5F55", titleColor: "#6A5F55", labelFontSize: 13, titleFontSize: 13 },
   view: { stroke: null }
 };
 
