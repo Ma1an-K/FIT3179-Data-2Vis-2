@@ -2,7 +2,7 @@
   "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
   "title": {
     "text": "Where the directors were born",
-    "subtitle": "One dot per Best Film win, placed at the winning director's birthplace; ochre = born in Australia, green = born overseas",
+    "subtitle": "One circle per birthplace, sized by the number of Best Film wins; ochre = born in Australia, green = born overseas. Nearby suburbs are grouped with their city.",
     "offset": 14
   },
   "params": [
@@ -114,126 +114,143 @@
               "filter": "decade == 'All' || floor(datum.year / 10) * 10 + 's' == decade"
             },
             {
-              "calculate": "datum.birthplace == 'Richmond' ? 'Melbourne' : (datum.birthplace == 'Paddington' ? 'Sydney' : (datum.birthplace == 'Camden' ? 'Sydney' : (datum.birthplace == 'Gawler' ? 'Adelaide' : (datum.birthplace == 'Strathmore Park' ? 'Wellington' : (datum.birthplace == 'Greytown' ? 'Wellington' : (datum.birthplace == 'Hartley Wintney' ? 'London' : (datum.birthplace == 'Temora' ? 'Griffith' : (datum.birthplace))))))))",
-              "as": "group"
+              "calculate": "datum.birthplace == 'Melbourne' || datum.birthplace == 'Richmond' ? 'Greater Melbourne' : (datum.birthplace == 'Sydney' || datum.birthplace == 'Camden' || datum.birthplace == 'Paddington' ? 'Greater Sydney' : (datum.birthplace == 'Adelaide' || datum.birthplace == 'Gawler' ? 'Greater Adelaide' : (datum.birthplace == 'Strathmore Park' ? 'Wellington' : datum.birthplace)))",
+              "as": "place"
             },
             {
-              "calculate": "datum.birthplace == datum.group ? 0 : 1",
-              "as": "member"
+              "calculate": "datum.place == 'Greater Melbourne' ? 144.963055555 : (datum.place == 'Greater Sydney' ? 151.21 : (datum.place == 'Greater Adelaide' ? 138.6 : (datum.place == 'Wellington' ? 174.777222222 : datum.lon)))",
+              "as": "plon"
             },
             {
-              "joinaggregate": [
+              "calculate": "datum.place == 'Greater Melbourne' ? -37.814166666 : (datum.place == 'Greater Sydney' ? -33.867777777 : (datum.place == 'Greater Adelaide' ? -34.9275 : (datum.place == 'Wellington' ? -41.288888888 : datum.lat)))",
+              "as": "plat"
+            },
+            {
+              "aggregate": [
                 {
                   "op": "count",
-                  "as": "gsize"
+                  "as": "n_dir"
                 }
               ],
               "groupby": [
-                "group"
+                "place",
+                "plon",
+                "plat",
+                "birth_country",
+                "director"
               ]
             },
             {
-              "window": [
+              "aggregate": [
                 {
-                  "op": "row_number",
-                  "as": "i"
+                  "op": "sum",
+                  "field": "n_dir",
+                  "as": "wins"
                 },
                 {
-                  "op": "first_value",
-                  "field": "lon",
-                  "as": "glon"
-                },
-                {
-                  "op": "first_value",
-                  "field": "lat",
-                  "as": "glat"
+                  "op": "values",
+                  "field": "director",
+                  "as": "dir_rows"
                 }
               ],
               "groupby": [
-                "group"
-              ],
-              "sort": [
-                {
-                  "field": "member"
-                },
-                {
-                  "field": "birthplace"
-                },
-                {
-                  "field": "year"
-                }
-              ],
-              "frame": [
-                null,
-                null
+                "place",
+                "plon",
+                "plat",
+                "birth_country"
               ]
             },
             {
-              "calculate": "min(datum.gsize, 3)",
-              "as": "cols"
+              "calculate": "join(pluck(datum.dir_rows, 'director'), ', ')",
+              "as": "directors"
             },
             {
-              "calculate": "((datum.i - 1) % 3 - (datum.cols - 1) / 2) * 8",
-              "as": "px"
-            },
-            {
-              "calculate": "floor((datum.i - 1) / 3) * 8",
-              "as": "py"
-            },
-            {
-              "calculate": "'M' + (datum.px - 3.5) + ',' + datum.py + 'a3.5,3.5 0 1,0 7.0,0a3.5,3.5 0 1,0 -7.0,0Z'",
-              "as": "dot"
+              "calculate": "datum.birth_country == 'Australia' ? 'Australia' : 'Overseas'",
+              "as": "origin"
             }
           ],
           "mark": {
-            "type": "point",
-            "filled": true,
-            "size": 4,
-            "opacity": 1,
+            "type": "circle",
+            "opacity": 0.9,
             "stroke": "#FFFFFF",
-            "strokeWidth": 0.8
+            "strokeWidth": 1
           },
           "encoding": {
             "longitude": {
-              "field": "glon",
+              "field": "plon",
               "type": "quantitative"
             },
             "latitude": {
-              "field": "glat",
+              "field": "plat",
               "type": "quantitative"
             },
-            "shape": {
-              "field": "dot",
-              "type": "nominal",
-              "scale": null
+            "size": {
+              "field": "wins",
+              "type": "quantitative",
+              "scale": {
+                "domain": [
+                  1,
+                  10
+                ],
+                "range": [
+                  40,
+                  900
+                ]
+              },
+              "legend": {
+                "title": "Best Film wins",
+                "values": [
+                  1,
+                  3,
+                  5,
+                  10
+                ],
+                "orient": "bottom-right",
+                "symbolType": "circle",
+                "fillColor": "#F7F2EA",
+                "padding": 8,
+                "symbolFillColor": "#9A8C7E",
+                "symbolStrokeColor": "#FFFFFF",
+                "symbolStrokeWidth": 1,
+                "symbolOpacity": 0.9
+              }
+            },
+            "order": {
+              "field": "wins",
+              "sort": "descending"
             },
             "color": {
-              "condition": {
-                "test": "datum.birth_country == 'Australia'",
-                "value": "#B5431F"
-              },
-              "value": "#2F5D50"
+              "field": "origin",
+              "type": "nominal",
+              "legend": null,
+              "scale": {
+                "domain": [
+                  "Australia",
+                  "Overseas"
+                ],
+                "range": [
+                  "#B5431F",
+                  "#2F5D50"
+                ]
+              }
             },
             "tooltip": [
               {
-                "field": "director",
-                "title": "Director"
-              },
-              {
-                "field": "film",
-                "title": "Film"
-              },
-              {
-                "field": "year",
-                "title": "Year"
-              },
-              {
-                "field": "birthplace",
+                "field": "place",
                 "title": "Born"
               },
               {
                 "field": "birth_country",
                 "title": "Country"
+              },
+              {
+                "field": "wins",
+                "type": "quantitative",
+                "title": "Best Film wins"
+              },
+              {
+                "field": "directors",
+                "title": "Directors"
               }
             ]
           }
@@ -261,119 +278,78 @@
               "filter": "decade == 'All' || floor(datum.year / 10) * 10 + 's' == decade"
             },
             {
-              "calculate": "datum.birthplace == 'Richmond' ? 'Melbourne' : (datum.birthplace == 'Paddington' ? 'Sydney' : (datum.birthplace == 'Camden' ? 'Sydney' : (datum.birthplace == 'Gawler' ? 'Adelaide' : (datum.birthplace == 'Strathmore Park' ? 'Wellington' : (datum.birthplace == 'Greytown' ? 'Wellington' : (datum.birthplace == 'Hartley Wintney' ? 'London' : (datum.birthplace == 'Temora' ? 'Griffith' : (datum.birthplace))))))))",
-              "as": "group"
+              "calculate": "datum.birthplace == 'Melbourne' || datum.birthplace == 'Richmond' ? 'Greater Melbourne' : (datum.birthplace == 'Sydney' || datum.birthplace == 'Camden' || datum.birthplace == 'Paddington' ? 'Greater Sydney' : (datum.birthplace == 'Adelaide' || datum.birthplace == 'Gawler' ? 'Greater Adelaide' : (datum.birthplace == 'Strathmore Park' ? 'Wellington' : datum.birthplace)))",
+              "as": "place"
             },
             {
-              "calculate": "datum.birthplace == datum.group ? 0 : 1",
-              "as": "member"
+              "calculate": "datum.place == 'Greater Melbourne' ? 144.963055555 : (datum.place == 'Greater Sydney' ? 151.21 : (datum.place == 'Greater Adelaide' ? 138.6 : (datum.place == 'Wellington' ? 174.777222222 : datum.lon)))",
+              "as": "plon"
             },
             {
-              "joinaggregate": [
-                {
-                  "op": "count",
-                  "as": "gsize"
-                }
-              ],
-              "groupby": [
-                "group"
-              ]
-            },
-            {
-              "window": [
-                {
-                  "op": "row_number",
-                  "as": "i"
-                },
-                {
-                  "op": "first_value",
-                  "field": "lon",
-                  "as": "glon"
-                },
-                {
-                  "op": "first_value",
-                  "field": "lat",
-                  "as": "glat"
-                }
-              ],
-              "groupby": [
-                "group"
-              ],
-              "sort": [
-                {
-                  "field": "member"
-                },
-                {
-                  "field": "birthplace"
-                },
-                {
-                  "field": "year"
-                }
-              ],
-              "frame": [
-                null,
-                null
-              ]
-            },
-            {
-              "calculate": "min(datum.gsize, 3)",
-              "as": "cols"
+              "calculate": "datum.place == 'Greater Melbourne' ? -37.814166666 : (datum.place == 'Greater Sydney' ? -33.867777777 : (datum.place == 'Greater Adelaide' ? -34.9275 : (datum.place == 'Wellington' ? -41.288888888 : datum.lat)))",
+              "as": "plat"
             },
             {
               "aggregate": [
                 {
                   "op": "count",
-                  "as": "n"
+                  "as": "n_dir"
                 }
               ],
               "groupby": [
-                "birthplace",
+                "place",
+                "plon",
+                "plat",
                 "birth_country",
-                "group",
-                "member",
-                "glon",
-                "glat",
-                "cols",
-                "gsize"
+                "director"
               ]
             },
             {
-              "window": [
+              "aggregate": [
                 {
-                  "op": "row_number",
-                  "as": "k"
-                }
-              ],
-              "groupby": [
-                "group"
-              ],
-              "sort": [
-                {
-                  "field": "member"
+                  "op": "sum",
+                  "field": "n_dir",
+                  "as": "wins"
                 },
                 {
-                  "field": "birthplace"
+                  "op": "values",
+                  "field": "director",
+                  "as": "dir_rows"
                 }
+              ],
+              "groupby": [
+                "place",
+                "plon",
+                "plat",
+                "birth_country"
               ]
             },
             {
-              "filter": "datum.n >= 2 || datum.birth_country == 'New Zealand' || datum.gsize > datum.n"
+              "calculate": "join(pluck(datum.dir_rows, 'director'), ', ')",
+              "as": "directors"
             },
             {
-              "calculate": "datum.birthplace + ' · ' + datum.n",
+              "calculate": "datum.birth_country == 'Australia' ? 'Australia' : 'Overseas'",
+              "as": "origin"
+            },
+            {
+              "filter": "datum.wins >= 2 || datum.birth_country == 'New Zealand'"
+            },
+            {
+              "calculate": "datum.place + ' · ' + datum.wins",
               "as": "label"
             },
             {
-              "calculate": "datum.birthplace == 'Melbourne' ? 'right' : (datum.birthplace == 'Richmond' ? 'right' : (datum.birthplace == 'Adelaide' ? 'right' : (datum.birthplace == 'Gawler' ? 'right' : (datum.birthplace == 'Griffith' ? 'right' : (datum.birthplace == 'London' ? 'right' : (datum.birthplace == 'Hartley Wintney' ? 'right' : (datum.birthplace == 'Peekskill' ? 'right' : (datum.birthplace == 'Temora' ? 'right' : ('left')))))))))",
+              "calculate": "datum.place == 'Greytown' ? -9 : (datum.place == 'Wellington' ? 5 : (datum.place == 'Greater Melbourne' ? 13 : (datum.place == 'London' ? -12 : 0)))",
+              "as": "ldy"
+            },
+            {
+              "calculate": "indexof(['Greater Adelaide', 'Griffith', 'London', 'Hartley Wintney', 'Peekskill'], datum.place) >= 0 ? 'right' : 'left'",
               "as": "lalign"
             },
             {
-              "calculate": "(datum.lalign == 'left' ? 1 : -1) * ((datum.cols - 1) / 2 * 8 + 3.5 + 12) + (datum.birthplace == 'Melbourne' ? 0 : (datum.birthplace == 'Richmond' ? 0 : (datum.birthplace == 'Adelaide' ? 0 : (datum.birthplace == 'Gawler' ? 0 : (datum.birthplace == 'Griffith' ? 0 : (datum.birthplace == 'London' ? 0 : (datum.birthplace == 'Hartley Wintney' ? 0 : (datum.birthplace == 'Peekskill' ? 0 : (datum.birthplace == 'Temora' ? 0 : (0))))))))))",
+              "calculate": "(datum.lalign == 'left' ? 1 : -1) * (sqrt((40 + (datum.wins - 1) * 860 / 9) / PI) * (datum.ldy == 0 ? 1 : 0.7) + 5)",
               "as": "ldx"
-            },
-            {
-              "calculate": "(datum.k - 1) * 13 + (datum.birthplace == 'Melbourne' ? 0 : (datum.birthplace == 'Richmond' ? 0 : (datum.birthplace == 'Adelaide' ? 0 : (datum.birthplace == 'Gawler' ? 0 : (datum.birthplace == 'Griffith' ? -13 : (datum.birthplace == 'London' ? 0 : (datum.birthplace == 'Hartley Wintney' ? 0 : (datum.birthplace == 'Peekskill' ? 0 : (datum.birthplace == 'Temora' ? -13 : (0))))))))))",
-              "as": "ldy"
             }
           ],
           "mark": {
@@ -393,11 +369,11 @@
           },
           "encoding": {
             "longitude": {
-              "field": "glon",
+              "field": "plon",
               "type": "quantitative"
             },
             "latitude": {
-              "field": "glat",
+              "field": "plat",
               "type": "quantitative"
             },
             "text": {
@@ -490,126 +466,127 @@
                   "filter": "decade == 'All' || floor(datum.year / 10) * 10 + 's' == decade"
                 },
                 {
-                  "calculate": "datum.birthplace == 'Richmond' ? 'Melbourne' : (datum.birthplace == 'Paddington' ? 'Sydney' : (datum.birthplace == 'Camden' ? 'Sydney' : (datum.birthplace == 'Gawler' ? 'Adelaide' : (datum.birthplace == 'Strathmore Park' ? 'Wellington' : (datum.birthplace == 'Greytown' ? 'Wellington' : (datum.birthplace == 'Hartley Wintney' ? 'London' : (datum.birthplace == 'Temora' ? 'Griffith' : (datum.birthplace))))))))",
-                  "as": "group"
+                  "calculate": "datum.birthplace == 'Melbourne' || datum.birthplace == 'Richmond' ? 'Greater Melbourne' : (datum.birthplace == 'Sydney' || datum.birthplace == 'Camden' || datum.birthplace == 'Paddington' ? 'Greater Sydney' : (datum.birthplace == 'Adelaide' || datum.birthplace == 'Gawler' ? 'Greater Adelaide' : (datum.birthplace == 'Strathmore Park' ? 'Wellington' : datum.birthplace)))",
+                  "as": "place"
                 },
                 {
-                  "calculate": "datum.birthplace == datum.group ? 0 : 1",
-                  "as": "member"
+                  "calculate": "datum.place == 'Greater Melbourne' ? 144.963055555 : (datum.place == 'Greater Sydney' ? 151.21 : (datum.place == 'Greater Adelaide' ? 138.6 : (datum.place == 'Wellington' ? 174.777222222 : datum.lon)))",
+                  "as": "plon"
                 },
                 {
-                  "joinaggregate": [
+                  "calculate": "datum.place == 'Greater Melbourne' ? -37.814166666 : (datum.place == 'Greater Sydney' ? -33.867777777 : (datum.place == 'Greater Adelaide' ? -34.9275 : (datum.place == 'Wellington' ? -41.288888888 : datum.lat)))",
+                  "as": "plat"
+                },
+                {
+                  "aggregate": [
                     {
                       "op": "count",
-                      "as": "gsize"
+                      "as": "n_dir"
                     }
                   ],
                   "groupby": [
-                    "group"
+                    "place",
+                    "plon",
+                    "plat",
+                    "birth_country",
+                    "director"
                   ]
                 },
                 {
-                  "window": [
+                  "aggregate": [
                     {
-                      "op": "row_number",
-                      "as": "i"
+                      "op": "sum",
+                      "field": "n_dir",
+                      "as": "wins"
                     },
                     {
-                      "op": "first_value",
-                      "field": "lon",
-                      "as": "glon"
-                    },
-                    {
-                      "op": "first_value",
-                      "field": "lat",
-                      "as": "glat"
+                      "op": "values",
+                      "field": "director",
+                      "as": "dir_rows"
                     }
                   ],
                   "groupby": [
-                    "group"
-                  ],
-                  "sort": [
-                    {
-                      "field": "member"
-                    },
-                    {
-                      "field": "birthplace"
-                    },
-                    {
-                      "field": "year"
-                    }
-                  ],
-                  "frame": [
-                    null,
-                    null
+                    "place",
+                    "plon",
+                    "plat",
+                    "birth_country"
                   ]
                 },
                 {
-                  "calculate": "min(datum.gsize, 3)",
-                  "as": "cols"
+                  "calculate": "join(pluck(datum.dir_rows, 'director'), ', ')",
+                  "as": "directors"
                 },
                 {
-                  "calculate": "((datum.i - 1) % 3 - (datum.cols - 1) / 2) * 8",
-                  "as": "px"
-                },
-                {
-                  "calculate": "floor((datum.i - 1) / 3) * 8",
-                  "as": "py"
-                },
-                {
-                  "calculate": "'M' + (datum.px - 3.5) + ',' + datum.py + 'a3.5,3.5 0 1,0 7.0,0a3.5,3.5 0 1,0 -7.0,0Z'",
-                  "as": "dot"
+                  "calculate": "datum.birth_country == 'Australia' ? 'Australia' : 'Overseas'",
+                  "as": "origin"
                 }
               ],
               "mark": {
-                "type": "point",
-                "filled": true,
-                "size": 4,
-                "opacity": 1,
+                "type": "circle",
+                "opacity": 0.9,
                 "stroke": "#FFFFFF",
-                "strokeWidth": 0.8
+                "strokeWidth": 1
               },
               "encoding": {
                 "longitude": {
-                  "field": "glon",
+                  "field": "plon",
                   "type": "quantitative"
                 },
                 "latitude": {
-                  "field": "glat",
+                  "field": "plat",
                   "type": "quantitative"
                 },
-                "shape": {
-                  "field": "dot",
-                  "type": "nominal",
-                  "scale": null
+                "size": {
+                  "field": "wins",
+                  "type": "quantitative",
+                  "scale": {
+                    "domain": [
+                      1,
+                      10
+                    ],
+                    "range": [
+                      40,
+                      900
+                    ]
+                  },
+                  "legend": null
+                },
+                "order": {
+                  "field": "wins",
+                  "sort": "descending"
                 },
                 "color": {
-                  "condition": {
-                    "test": "datum.birth_country == 'Australia'",
-                    "value": "#B5431F"
-                  },
-                  "value": "#2F5D50"
+                  "field": "origin",
+                  "type": "nominal",
+                  "legend": null,
+                  "scale": {
+                    "domain": [
+                      "Australia",
+                      "Overseas"
+                    ],
+                    "range": [
+                      "#B5431F",
+                      "#2F5D50"
+                    ]
+                  }
                 },
                 "tooltip": [
                   {
-                    "field": "director",
-                    "title": "Director"
-                  },
-                  {
-                    "field": "film",
-                    "title": "Film"
-                  },
-                  {
-                    "field": "year",
-                    "title": "Year"
-                  },
-                  {
-                    "field": "birthplace",
+                    "field": "place",
                     "title": "Born"
                   },
                   {
                     "field": "birth_country",
                     "title": "Country"
+                  },
+                  {
+                    "field": "wins",
+                    "type": "quantitative",
+                    "title": "Best Film wins"
+                  },
+                  {
+                    "field": "directors",
+                    "title": "Directors"
                   }
                 ]
               }
@@ -637,119 +614,75 @@
                   "filter": "decade == 'All' || floor(datum.year / 10) * 10 + 's' == decade"
                 },
                 {
-                  "calculate": "datum.birthplace == 'Richmond' ? 'Melbourne' : (datum.birthplace == 'Paddington' ? 'Sydney' : (datum.birthplace == 'Camden' ? 'Sydney' : (datum.birthplace == 'Gawler' ? 'Adelaide' : (datum.birthplace == 'Strathmore Park' ? 'Wellington' : (datum.birthplace == 'Greytown' ? 'Wellington' : (datum.birthplace == 'Hartley Wintney' ? 'London' : (datum.birthplace == 'Temora' ? 'Griffith' : (datum.birthplace))))))))",
-                  "as": "group"
+                  "calculate": "datum.birthplace == 'Melbourne' || datum.birthplace == 'Richmond' ? 'Greater Melbourne' : (datum.birthplace == 'Sydney' || datum.birthplace == 'Camden' || datum.birthplace == 'Paddington' ? 'Greater Sydney' : (datum.birthplace == 'Adelaide' || datum.birthplace == 'Gawler' ? 'Greater Adelaide' : (datum.birthplace == 'Strathmore Park' ? 'Wellington' : datum.birthplace)))",
+                  "as": "place"
                 },
                 {
-                  "calculate": "datum.birthplace == datum.group ? 0 : 1",
-                  "as": "member"
+                  "calculate": "datum.place == 'Greater Melbourne' ? 144.963055555 : (datum.place == 'Greater Sydney' ? 151.21 : (datum.place == 'Greater Adelaide' ? 138.6 : (datum.place == 'Wellington' ? 174.777222222 : datum.lon)))",
+                  "as": "plon"
                 },
                 {
-                  "joinaggregate": [
-                    {
-                      "op": "count",
-                      "as": "gsize"
-                    }
-                  ],
-                  "groupby": [
-                    "group"
-                  ]
-                },
-                {
-                  "window": [
-                    {
-                      "op": "row_number",
-                      "as": "i"
-                    },
-                    {
-                      "op": "first_value",
-                      "field": "lon",
-                      "as": "glon"
-                    },
-                    {
-                      "op": "first_value",
-                      "field": "lat",
-                      "as": "glat"
-                    }
-                  ],
-                  "groupby": [
-                    "group"
-                  ],
-                  "sort": [
-                    {
-                      "field": "member"
-                    },
-                    {
-                      "field": "birthplace"
-                    },
-                    {
-                      "field": "year"
-                    }
-                  ],
-                  "frame": [
-                    null,
-                    null
-                  ]
-                },
-                {
-                  "calculate": "min(datum.gsize, 3)",
-                  "as": "cols"
+                  "calculate": "datum.place == 'Greater Melbourne' ? -37.814166666 : (datum.place == 'Greater Sydney' ? -33.867777777 : (datum.place == 'Greater Adelaide' ? -34.9275 : (datum.place == 'Wellington' ? -41.288888888 : datum.lat)))",
+                  "as": "plat"
                 },
                 {
                   "aggregate": [
                     {
                       "op": "count",
-                      "as": "n"
+                      "as": "n_dir"
                     }
                   ],
                   "groupby": [
-                    "birthplace",
+                    "place",
+                    "plon",
+                    "plat",
                     "birth_country",
-                    "group",
-                    "member",
-                    "glon",
-                    "glat",
-                    "cols",
-                    "gsize"
+                    "director"
                   ]
                 },
                 {
-                  "window": [
+                  "aggregate": [
                     {
-                      "op": "row_number",
-                      "as": "k"
-                    }
-                  ],
-                  "groupby": [
-                    "group"
-                  ],
-                  "sort": [
-                    {
-                      "field": "member"
+                      "op": "sum",
+                      "field": "n_dir",
+                      "as": "wins"
                     },
                     {
-                      "field": "birthplace"
+                      "op": "values",
+                      "field": "director",
+                      "as": "dir_rows"
                     }
+                  ],
+                  "groupby": [
+                    "place",
+                    "plon",
+                    "plat",
+                    "birth_country"
                   ]
                 },
                 {
-                  "filter": "true"
+                  "calculate": "join(pluck(datum.dir_rows, 'director'), ', ')",
+                  "as": "directors"
                 },
                 {
-                  "calculate": "datum.birthplace + ' · ' + datum.n",
+                  "calculate": "datum.birth_country == 'Australia' ? 'Australia' : 'Overseas'",
+                  "as": "origin"
+                },
+                {
+                  "calculate": "datum.place + ' · ' + datum.wins",
                   "as": "label"
                 },
                 {
-                  "calculate": "datum.birthplace == 'Melbourne' ? 'right' : (datum.birthplace == 'Richmond' ? 'right' : (datum.birthplace == 'Adelaide' ? 'right' : (datum.birthplace == 'Gawler' ? 'right' : (datum.birthplace == 'Griffith' ? 'right' : (datum.birthplace == 'London' ? 'right' : (datum.birthplace == 'Hartley Wintney' ? 'right' : (datum.birthplace == 'Peekskill' ? 'right' : (datum.birthplace == 'Temora' ? 'right' : ('left')))))))))",
+                  "calculate": "datum.place == 'Greytown' ? -9 : (datum.place == 'Wellington' ? 5 : (datum.place == 'Greater Melbourne' ? 13 : (datum.place == 'London' ? -12 : 0)))",
+                  "as": "ldy"
+                },
+                {
+                  "calculate": "indexof(['Greater Adelaide', 'Griffith', 'London', 'Hartley Wintney', 'Peekskill'], datum.place) >= 0 ? 'right' : 'left'",
                   "as": "lalign"
                 },
                 {
-                  "calculate": "(datum.lalign == 'left' ? 1 : -1) * ((datum.cols - 1) / 2 * 8 + 3.5 + 12) + (datum.birthplace == 'Melbourne' ? 0 : (datum.birthplace == 'Richmond' ? 0 : (datum.birthplace == 'Adelaide' ? 0 : (datum.birthplace == 'Gawler' ? 0 : (datum.birthplace == 'Griffith' ? 0 : (datum.birthplace == 'London' ? 0 : (datum.birthplace == 'Hartley Wintney' ? 0 : (datum.birthplace == 'Peekskill' ? 0 : (datum.birthplace == 'Temora' ? 0 : (0))))))))))",
+                  "calculate": "(datum.lalign == 'left' ? 1 : -1) * (sqrt((40 + (datum.wins - 1) * 860 / 9) / PI) * (datum.ldy == 0 ? 1 : 0.7) + 5)",
                   "as": "ldx"
-                },
-                {
-                  "calculate": "(datum.k - 1) * 13 + (datum.birthplace == 'Melbourne' ? 0 : (datum.birthplace == 'Richmond' ? 0 : (datum.birthplace == 'Adelaide' ? 0 : (datum.birthplace == 'Gawler' ? 0 : (datum.birthplace == 'Griffith' ? -13 : (datum.birthplace == 'London' ? 0 : (datum.birthplace == 'Hartley Wintney' ? 0 : (datum.birthplace == 'Peekskill' ? 0 : (datum.birthplace == 'Temora' ? -13 : (0))))))))))",
-                  "as": "ldy"
                 }
               ],
               "mark": {
@@ -769,11 +702,11 @@
               },
               "encoding": {
                 "longitude": {
-                  "field": "glon",
+                  "field": "plon",
                   "type": "quantitative"
                 },
                 "latitude": {
-                  "field": "glat",
+                  "field": "plat",
                   "type": "quantitative"
                 },
                 "text": {
@@ -863,126 +796,127 @@
                   "filter": "decade == 'All' || floor(datum.year / 10) * 10 + 's' == decade"
                 },
                 {
-                  "calculate": "datum.birthplace == 'Richmond' ? 'Melbourne' : (datum.birthplace == 'Paddington' ? 'Sydney' : (datum.birthplace == 'Camden' ? 'Sydney' : (datum.birthplace == 'Gawler' ? 'Adelaide' : (datum.birthplace == 'Strathmore Park' ? 'Wellington' : (datum.birthplace == 'Greytown' ? 'Wellington' : (datum.birthplace == 'Hartley Wintney' ? 'London' : (datum.birthplace == 'Temora' ? 'Griffith' : (datum.birthplace))))))))",
-                  "as": "group"
+                  "calculate": "datum.birthplace == 'Melbourne' || datum.birthplace == 'Richmond' ? 'Greater Melbourne' : (datum.birthplace == 'Sydney' || datum.birthplace == 'Camden' || datum.birthplace == 'Paddington' ? 'Greater Sydney' : (datum.birthplace == 'Adelaide' || datum.birthplace == 'Gawler' ? 'Greater Adelaide' : (datum.birthplace == 'Strathmore Park' ? 'Wellington' : datum.birthplace)))",
+                  "as": "place"
                 },
                 {
-                  "calculate": "datum.birthplace == datum.group ? 0 : 1",
-                  "as": "member"
+                  "calculate": "datum.place == 'Greater Melbourne' ? 144.963055555 : (datum.place == 'Greater Sydney' ? 151.21 : (datum.place == 'Greater Adelaide' ? 138.6 : (datum.place == 'Wellington' ? 174.777222222 : datum.lon)))",
+                  "as": "plon"
                 },
                 {
-                  "joinaggregate": [
+                  "calculate": "datum.place == 'Greater Melbourne' ? -37.814166666 : (datum.place == 'Greater Sydney' ? -33.867777777 : (datum.place == 'Greater Adelaide' ? -34.9275 : (datum.place == 'Wellington' ? -41.288888888 : datum.lat)))",
+                  "as": "plat"
+                },
+                {
+                  "aggregate": [
                     {
                       "op": "count",
-                      "as": "gsize"
+                      "as": "n_dir"
                     }
                   ],
                   "groupby": [
-                    "group"
+                    "place",
+                    "plon",
+                    "plat",
+                    "birth_country",
+                    "director"
                   ]
                 },
                 {
-                  "window": [
+                  "aggregate": [
                     {
-                      "op": "row_number",
-                      "as": "i"
+                      "op": "sum",
+                      "field": "n_dir",
+                      "as": "wins"
                     },
                     {
-                      "op": "first_value",
-                      "field": "lon",
-                      "as": "glon"
-                    },
-                    {
-                      "op": "first_value",
-                      "field": "lat",
-                      "as": "glat"
+                      "op": "values",
+                      "field": "director",
+                      "as": "dir_rows"
                     }
                   ],
                   "groupby": [
-                    "group"
-                  ],
-                  "sort": [
-                    {
-                      "field": "member"
-                    },
-                    {
-                      "field": "birthplace"
-                    },
-                    {
-                      "field": "year"
-                    }
-                  ],
-                  "frame": [
-                    null,
-                    null
+                    "place",
+                    "plon",
+                    "plat",
+                    "birth_country"
                   ]
                 },
                 {
-                  "calculate": "min(datum.gsize, 3)",
-                  "as": "cols"
+                  "calculate": "join(pluck(datum.dir_rows, 'director'), ', ')",
+                  "as": "directors"
                 },
                 {
-                  "calculate": "((datum.i - 1) % 3 - (datum.cols - 1) / 2) * 8",
-                  "as": "px"
-                },
-                {
-                  "calculate": "floor((datum.i - 1) / 3) * 8",
-                  "as": "py"
-                },
-                {
-                  "calculate": "'M' + (datum.px - 3.5) + ',' + datum.py + 'a3.5,3.5 0 1,0 7.0,0a3.5,3.5 0 1,0 -7.0,0Z'",
-                  "as": "dot"
+                  "calculate": "datum.birth_country == 'Australia' ? 'Australia' : 'Overseas'",
+                  "as": "origin"
                 }
               ],
               "mark": {
-                "type": "point",
-                "filled": true,
-                "size": 4,
-                "opacity": 1,
+                "type": "circle",
+                "opacity": 0.9,
                 "stroke": "#FFFFFF",
-                "strokeWidth": 0.8
+                "strokeWidth": 1
               },
               "encoding": {
                 "longitude": {
-                  "field": "glon",
+                  "field": "plon",
                   "type": "quantitative"
                 },
                 "latitude": {
-                  "field": "glat",
+                  "field": "plat",
                   "type": "quantitative"
                 },
-                "shape": {
-                  "field": "dot",
-                  "type": "nominal",
-                  "scale": null
+                "size": {
+                  "field": "wins",
+                  "type": "quantitative",
+                  "scale": {
+                    "domain": [
+                      1,
+                      10
+                    ],
+                    "range": [
+                      40,
+                      900
+                    ]
+                  },
+                  "legend": null
+                },
+                "order": {
+                  "field": "wins",
+                  "sort": "descending"
                 },
                 "color": {
-                  "condition": {
-                    "test": "datum.birth_country == 'Australia'",
-                    "value": "#B5431F"
-                  },
-                  "value": "#2F5D50"
+                  "field": "origin",
+                  "type": "nominal",
+                  "legend": null,
+                  "scale": {
+                    "domain": [
+                      "Australia",
+                      "Overseas"
+                    ],
+                    "range": [
+                      "#B5431F",
+                      "#2F5D50"
+                    ]
+                  }
                 },
                 "tooltip": [
                   {
-                    "field": "director",
-                    "title": "Director"
-                  },
-                  {
-                    "field": "film",
-                    "title": "Film"
-                  },
-                  {
-                    "field": "year",
-                    "title": "Year"
-                  },
-                  {
-                    "field": "birthplace",
+                    "field": "place",
                     "title": "Born"
                   },
                   {
                     "field": "birth_country",
                     "title": "Country"
+                  },
+                  {
+                    "field": "wins",
+                    "type": "quantitative",
+                    "title": "Best Film wins"
+                  },
+                  {
+                    "field": "directors",
+                    "title": "Directors"
                   }
                 ]
               }
@@ -1010,119 +944,75 @@
                   "filter": "decade == 'All' || floor(datum.year / 10) * 10 + 's' == decade"
                 },
                 {
-                  "calculate": "datum.birthplace == 'Richmond' ? 'Melbourne' : (datum.birthplace == 'Paddington' ? 'Sydney' : (datum.birthplace == 'Camden' ? 'Sydney' : (datum.birthplace == 'Gawler' ? 'Adelaide' : (datum.birthplace == 'Strathmore Park' ? 'Wellington' : (datum.birthplace == 'Greytown' ? 'Wellington' : (datum.birthplace == 'Hartley Wintney' ? 'London' : (datum.birthplace == 'Temora' ? 'Griffith' : (datum.birthplace))))))))",
-                  "as": "group"
+                  "calculate": "datum.birthplace == 'Melbourne' || datum.birthplace == 'Richmond' ? 'Greater Melbourne' : (datum.birthplace == 'Sydney' || datum.birthplace == 'Camden' || datum.birthplace == 'Paddington' ? 'Greater Sydney' : (datum.birthplace == 'Adelaide' || datum.birthplace == 'Gawler' ? 'Greater Adelaide' : (datum.birthplace == 'Strathmore Park' ? 'Wellington' : datum.birthplace)))",
+                  "as": "place"
                 },
                 {
-                  "calculate": "datum.birthplace == datum.group ? 0 : 1",
-                  "as": "member"
+                  "calculate": "datum.place == 'Greater Melbourne' ? 144.963055555 : (datum.place == 'Greater Sydney' ? 151.21 : (datum.place == 'Greater Adelaide' ? 138.6 : (datum.place == 'Wellington' ? 174.777222222 : datum.lon)))",
+                  "as": "plon"
                 },
                 {
-                  "joinaggregate": [
-                    {
-                      "op": "count",
-                      "as": "gsize"
-                    }
-                  ],
-                  "groupby": [
-                    "group"
-                  ]
-                },
-                {
-                  "window": [
-                    {
-                      "op": "row_number",
-                      "as": "i"
-                    },
-                    {
-                      "op": "first_value",
-                      "field": "lon",
-                      "as": "glon"
-                    },
-                    {
-                      "op": "first_value",
-                      "field": "lat",
-                      "as": "glat"
-                    }
-                  ],
-                  "groupby": [
-                    "group"
-                  ],
-                  "sort": [
-                    {
-                      "field": "member"
-                    },
-                    {
-                      "field": "birthplace"
-                    },
-                    {
-                      "field": "year"
-                    }
-                  ],
-                  "frame": [
-                    null,
-                    null
-                  ]
-                },
-                {
-                  "calculate": "min(datum.gsize, 3)",
-                  "as": "cols"
+                  "calculate": "datum.place == 'Greater Melbourne' ? -37.814166666 : (datum.place == 'Greater Sydney' ? -33.867777777 : (datum.place == 'Greater Adelaide' ? -34.9275 : (datum.place == 'Wellington' ? -41.288888888 : datum.lat)))",
+                  "as": "plat"
                 },
                 {
                   "aggregate": [
                     {
                       "op": "count",
-                      "as": "n"
+                      "as": "n_dir"
                     }
                   ],
                   "groupby": [
-                    "birthplace",
+                    "place",
+                    "plon",
+                    "plat",
                     "birth_country",
-                    "group",
-                    "member",
-                    "glon",
-                    "glat",
-                    "cols",
-                    "gsize"
+                    "director"
                   ]
                 },
                 {
-                  "window": [
+                  "aggregate": [
                     {
-                      "op": "row_number",
-                      "as": "k"
-                    }
-                  ],
-                  "groupby": [
-                    "group"
-                  ],
-                  "sort": [
-                    {
-                      "field": "member"
+                      "op": "sum",
+                      "field": "n_dir",
+                      "as": "wins"
                     },
                     {
-                      "field": "birthplace"
+                      "op": "values",
+                      "field": "director",
+                      "as": "dir_rows"
                     }
+                  ],
+                  "groupby": [
+                    "place",
+                    "plon",
+                    "plat",
+                    "birth_country"
                   ]
                 },
                 {
-                  "filter": "true"
+                  "calculate": "join(pluck(datum.dir_rows, 'director'), ', ')",
+                  "as": "directors"
                 },
                 {
-                  "calculate": "datum.birthplace + ' · ' + datum.n",
+                  "calculate": "datum.birth_country == 'Australia' ? 'Australia' : 'Overseas'",
+                  "as": "origin"
+                },
+                {
+                  "calculate": "datum.place + ' · ' + datum.wins",
                   "as": "label"
                 },
                 {
-                  "calculate": "datum.birthplace == 'Melbourne' ? 'right' : (datum.birthplace == 'Richmond' ? 'right' : (datum.birthplace == 'Adelaide' ? 'right' : (datum.birthplace == 'Gawler' ? 'right' : (datum.birthplace == 'Griffith' ? 'right' : (datum.birthplace == 'London' ? 'right' : (datum.birthplace == 'Hartley Wintney' ? 'right' : (datum.birthplace == 'Peekskill' ? 'right' : (datum.birthplace == 'Temora' ? 'right' : ('left')))))))))",
+                  "calculate": "datum.place == 'Greytown' ? -9 : (datum.place == 'Wellington' ? 5 : (datum.place == 'Greater Melbourne' ? 13 : (datum.place == 'London' ? -12 : 0)))",
+                  "as": "ldy"
+                },
+                {
+                  "calculate": "indexof(['Greater Adelaide', 'Griffith', 'London', 'Hartley Wintney', 'Peekskill'], datum.place) >= 0 ? 'right' : 'left'",
                   "as": "lalign"
                 },
                 {
-                  "calculate": "(datum.lalign == 'left' ? 1 : -1) * ((datum.cols - 1) / 2 * 8 + 3.5 + 12) + (datum.birthplace == 'Melbourne' ? 0 : (datum.birthplace == 'Richmond' ? 0 : (datum.birthplace == 'Adelaide' ? 0 : (datum.birthplace == 'Gawler' ? 0 : (datum.birthplace == 'Griffith' ? 0 : (datum.birthplace == 'London' ? 0 : (datum.birthplace == 'Hartley Wintney' ? 0 : (datum.birthplace == 'Peekskill' ? 0 : (datum.birthplace == 'Temora' ? 0 : (0))))))))))",
+                  "calculate": "(datum.lalign == 'left' ? 1 : -1) * (sqrt((40 + (datum.wins - 1) * 860 / 9) / PI) * (datum.ldy == 0 ? 1 : 0.7) + 5)",
                   "as": "ldx"
-                },
-                {
-                  "calculate": "(datum.k - 1) * 13 + (datum.birthplace == 'Melbourne' ? 0 : (datum.birthplace == 'Richmond' ? 0 : (datum.birthplace == 'Adelaide' ? 0 : (datum.birthplace == 'Gawler' ? 0 : (datum.birthplace == 'Griffith' ? -13 : (datum.birthplace == 'London' ? 0 : (datum.birthplace == 'Hartley Wintney' ? 0 : (datum.birthplace == 'Peekskill' ? 0 : (datum.birthplace == 'Temora' ? -13 : (0))))))))))",
-                  "as": "ldy"
                 }
               ],
               "mark": {
@@ -1142,11 +1032,11 @@
               },
               "encoding": {
                 "longitude": {
-                  "field": "glon",
+                  "field": "plon",
                   "type": "quantitative"
                 },
                 "latitude": {
-                  "field": "glat",
+                  "field": "plat",
                   "type": "quantitative"
                 },
                 "text": {
@@ -1158,5 +1048,13 @@
         }
       ]
     }
-  ]
+  ],
+  "resolve": {
+    "scale": {
+      "size": "independent"
+    },
+    "legend": {
+      "size": "independent"
+    }
+  }
 }
